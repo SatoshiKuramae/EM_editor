@@ -206,7 +206,8 @@ void GUIManager::Update()
 
                 // 既存オブジェクトの削除
                 for (auto* obj : m_gameObjects) {
-                    delete obj;
+                    //delete obj;
+                    obj->Uninit();
                     obj = nullptr;
                 }
                 m_selectedIndex = -1; // 選択をリセット
@@ -222,9 +223,9 @@ void GUIManager::Update()
                 m_selectedIndex = m_gameObjects.empty() ? -1 : 0; // 選択リセット
             }
 
-            std::ofstream out("data\\gameobjects.JSON");
-            out << jsonOutput.dump(4); // 4はインデント幅
-            out.close();
+            //std::ofstream out("data\\gameobjects.JSON");
+            //out << jsonOutput.dump(4); // 4はインデント幅
+            //out.close();
 
             ImGui::CloseCurrentPopup();
             showSaveConfirm = false;
@@ -239,20 +240,20 @@ void GUIManager::Update()
         ImGui::EndPopup();
     }
     //オブジェクト削除
-    //if (ImGui::Button("Delete Object")) {
-    //    if (m_selectedIndex >= 0 && m_selectedIndex < static_cast<int>(m_gameObjects.size())) {
-    //        delete m_gameObjects[m_selectedIndex]; // メモリを解放
-    //        m_gameObjects.erase(m_gameObjects.begin() + m_selectedIndex); // リストから削除
+    if (ImGui::Button("Delete Object")) {
+        if (m_selectedIndex >= 0 && m_selectedIndex < static_cast<int>(m_gameObjects.size())) {
+            m_gameObjects[m_selectedIndex]->Uninit(); // メモリを解放
+            m_gameObjects.erase(m_gameObjects.begin() + m_selectedIndex); // リストから削除
 
-    //        // インデックスを調整
-    //        if (m_gameObjects.empty()) {
-    //            m_selectedIndex = -1;
-    //        }
-    //        else if (m_selectedIndex >= static_cast<int>(m_gameObjects.size())) {
-    //            m_selectedIndex = static_cast<int>(m_gameObjects.size()) - 1;
-    //        }
-    //    }
-    //}
+            // インデックスを調整
+            if (m_gameObjects.empty()) {
+                m_selectedIndex = -1;
+            }
+            else if (m_selectedIndex >= static_cast<int>(m_gameObjects.size())) {
+                m_selectedIndex = static_cast<int>(m_gameObjects.size()) - 1;
+            }
+        }
+    }
 
     ImGui::End();
 
