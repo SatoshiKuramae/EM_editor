@@ -10,6 +10,8 @@
 #include <vector>
 #include "gameobject.h"
 #include "main.h"
+#include "objectX.h"
+#include "manager.h"
 class GUIManager
 {
 public:
@@ -33,11 +35,13 @@ public:
 	// 初期化チェック用
 	bool IsInitialized() const { return m_Initialized; }
 
+	void SetSelectedObject(CObjectX* obj);
 private:
 	bool m_Initialized;
 
 	std::vector<GameObject*> m_gameObjects;
 	int m_selectedIndex = -1;
+	CObjectX* selectedObject = nullptr;
 };
 
 #endif

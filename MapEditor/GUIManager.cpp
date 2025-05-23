@@ -110,6 +110,7 @@ void GUIManager::Update()
         sprintf(label, "Object %d", i);
         if (ImGui::Selectable(label, m_selectedIndex == i)) {
             m_selectedIndex = i;
+            selectedObject = m_gameObjects[i];
         }
     }
 
@@ -274,13 +275,13 @@ void GUIManager::Update()
         D3DXVECTOR3 move = obj->GetMove();
         int summonframe = obj->GetSummonCount();
 
-        if (ImGui::DragFloat3("Move", (float*)&move, 0.1f)) {
+        if (ImGui::DragFloat3("Move{x,y,z}", (float*)&move, 0.1f)) {
             obj->SetMove(move);
         }
         if (ImGui::Combo("Name", &currentType, typeItems, IM_ARRAYSIZE(typeItems))) {
             obj->SetObjectType(static_cast<GameObject::GameObjectType>(currentType));
         }
-        if (ImGui::DragFloat3("Pos", (float*)&pos, 0.1f)) {
+        if (ImGui::DragFloat3("Pos{x,y,z}", (float*)&pos, 0.1f)) {
             obj->SetPos(pos);
         }
         if (ImGui::DragInt("SummonFrame", &summonframe, 1)) {
@@ -299,6 +300,27 @@ void GUIManager::Update()
 
     ImGui::End();
 
+
+    for (auto obj : m_gameObjects)
+    {
+        if (obj == selectedObject)
+        {
+            // アウトライン描画
+            obj->DrawOutline();
+
+            // ワイヤーフレーム有効化
+            CManager::GetRenderer()->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+            obj->Draw(); // 通常描画（モードがワイヤーフレームになってる）
+
+            // 元に戻す
+            CManager::GetRenderer()->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+        }
+        else
+        {
+            obj->Draw(); // 通常描画
+        }
+    }
     // ==================================
 
 }
@@ -308,9 +330,6 @@ void GUIManager::EndFrame(IDirect3DDevice9* device)
 {
     if (!m_Initialized)
         return;
-
-    
-
     ImGui::EndFrame();
     
     ImGui::Render();
@@ -329,6 +348,6 @@ bool GUIManager::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam);
 }
 
-//void GUIManager::SetObjectList(std::vector<GameObject*>& objectList) {
-//    m_gameObjects = objectList;
-//}
+void GUIManager::SetSelectedObject(CObjectX* obj) {
+    selectedObject = obj;
+}

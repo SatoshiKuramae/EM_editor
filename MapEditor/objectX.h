@@ -20,6 +20,7 @@ public:
 	void Uninit() override;
 	void Update() override;
 	void Draw() override;
+	void DrawOutline();
 	void Load();
 	//void Setpos(D3DXVECTOR3 pos);
 	//void SetMove(D3DXVECTOR3 move);//ˆÚ“®—Ê‚Ìİ’è

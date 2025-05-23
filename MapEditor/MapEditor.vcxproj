@@ -150,6 +150,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="floor.cpp" />
     <ClCompile Include="gameobject.cpp" />
+    <ClCompile Include="grid.cpp" />
     <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx9.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="floor.h" />
     <ClInclude Include="gameobject.h" />
+    <ClInclude Include="grid.h" />
     <ClInclude Include="GUIManager.h" />
     <ClInclude Include="imgui\backends\imgui_impl_dx9.h" />
     <ClInclude Include="imgui\backends\imgui_impl_win32.h" />

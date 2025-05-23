@@ -11,6 +11,7 @@
 #include "renderer.h"
 #include "input.h"
 
+//前方宣言
 class CCamera;
 class CLight;
 
@@ -29,11 +30,13 @@ public:
 	static CInputKeyboard* GetKeyboard();
 	static CCamera* GetCamera();
 	static CLight* GetLight();
+
 private:
 	static CRenderer* m_pRenderer;	//レンダラー
 	static CInputKeyboard* m_pKeyboard;
 	static CCamera* m_pCamera;	//ビュー情報
 	static CLight* m_pLight;	//ライト情報
+
 };
 
 #endif

@@ -70,15 +70,14 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 			}
 		}
 	}
+
 	//レンダーステート設定
 	m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-	//諸々初期化
-	//ポリゴン初期化
-
+	m_Grid.Init(m_pD3DDevice);
 
 	return S_OK;
 
@@ -96,7 +95,7 @@ void CRenderer::Draw()		//全オブジェクトの描画
 	//画面クリア（バックバッファ＆Zバッファのクリア）
 	m_pD3DDevice->Clear(0, NULL,
 		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-		D3DCOLOR_RGBA(100, 0, 0, 0), 1.0f, 0);
+		D3DCOLOR_RGBA(50, 0, 0, 0), 1.0f, 0);
 
 	//描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
@@ -106,6 +105,17 @@ void CRenderer::Draw()		//全オブジェクトの描画
 
 		//各種オブジェクトの描画処理
 		CObject::DrawAll();
+
+		D3DXMATRIX view, proj, viewProj;
+		LPDIRECT3DDEVICE9 device = CManager::GetRenderer()->GetDevice();
+
+		device->GetTransform(D3DTS_VIEW, &view);
+		device->GetTransform(D3DTS_PROJECTION, &proj);
+
+
+		viewProj = view * proj;
+		m_Grid.Draw(viewProj);
+
 
 		// ImGui の描画処理
 		ImGui::Render();
@@ -133,6 +143,7 @@ void CRenderer::Uninit()
 		m_pD3D->Release();
 		m_pD3D = NULL;
 	}
+	m_Grid.Release();
 }
 
 //3Dデバイスの取得

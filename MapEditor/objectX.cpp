@@ -113,6 +113,47 @@ void CObjectX::Draw()
 	pDevice->SetMaterial(&matDef);
 }
 
+void CObjectX::DrawOutline()
+{
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	D3DXMATRIX mtxRot, mtxTrans, mtxScale, mtxWorld;
+	D3DMATERIAL9 outlineMaterial = {};
+	outlineMaterial.Diffuse = D3DXCOLOR(0, 0, 0, 1);  // 黒
+	outlineMaterial.Ambient = outlineMaterial.Diffuse;
+
+	// 通常よりちょっとだけ拡大
+	const float outlineScale = 1.5;
+
+	D3DXMatrixIdentity(&mtxWorld);
+
+	D3DXMatrixScaling(&mtxScale, m_scale.x * outlineScale, m_scale.y * outlineScale, m_scale.z * outlineScale);
+	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxScale);
+
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
+
+	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
+	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTrans);
+
+	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
+
+	// ラスタライザ設定変更（ワイヤーフレーム or カリング無効）
+	pDevice->SetRenderState(D3DRS_ZENABLE, FALSE); // Zバッファ無効でアウトラインが上に
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW); // 裏面を描画（アウトライン用）
+
+	pDevice->SetMaterial(&outlineMaterial);
+	pDevice->SetTexture(0, NULL);
+
+	for (DWORD i = 0; i < m_dwNumMat; ++i)
+	{
+		m_pMesh->DrawSubset(i);
+	}
+
+	// 戻す
+	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW); // 通常のカリングに戻す
+}
 //ロード処理
 void CObjectX::Load()
 {

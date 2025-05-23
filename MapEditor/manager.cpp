@@ -22,6 +22,7 @@
 #include "GUImanager.h"
 #include "gameobject.h"
 
+
 //静的メンバ初期化
 CRenderer* CManager::m_pRenderer = nullptr;
 CInputKeyboard* CManager::m_pKeyboard = nullptr;
@@ -39,7 +40,7 @@ CManager::CManager()
 //デストラクタ
 CManager::~CManager()
 {
-
+	
 }
 
 //初期化
@@ -62,6 +63,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pLight->Init();
 
 	g_pGuimanager = new GUIManager();
+
+
+	
 
 	//マネージャーを初期化
 	if (!g_pGuimanager->Initialize(hWnd, GetRenderer()->GetDevice()))
@@ -122,7 +126,9 @@ void CManager::Update()
 //描画処理
 void CManager::Draw()
 {
+	
 	m_pRenderer->Draw();
+
 }
 
 //レンダラー取得
