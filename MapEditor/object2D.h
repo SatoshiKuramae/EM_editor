@@ -30,8 +30,7 @@ public:
 	void Draw() override;
 	static CObject2D* Create();
 	void BindTexture(LPDIRECT3DTEXTURE9 pTex,D3DXVECTOR2 fTexpos);		//テクスチャ割り当て
-	void SetMove(D3DXVECTOR3 move) { m_move = move; }	//移動量の設定
-	D3DXVECTOR3& GetMove() { return  m_move; }			//移動量の取得
+	
 	void SetAnim(D3DXVECTOR2 AnimCnt);
 	void SetParam(D3DXVECTOR3 fpos, float wide, float height);
 
@@ -44,6 +43,9 @@ public:
 	D3DXVECTOR3 GetScale() const override { return m_scale; }
 	void SetScale(const D3DXVECTOR3& scale) override { m_scale = scale; }
 
+	D3DXVECTOR3 GetMove() const override { return  m_move; }
+	void SetMove(D3DXVECTOR3 move) { m_move = move; }
+	
 protected:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		//頂点バッファ
 	LPDIRECT3DTEXTURE9 m_pTexture;		//テクスチャ

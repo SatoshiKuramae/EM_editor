@@ -25,7 +25,7 @@ public:
 	void BeginFrame();
 	void Update();        // ‚±‚±‚É•`‰æˆ—‚ğ‚Ü‚Æ‚ß‚é
 	void EndFrame(IDirect3DDevice9* device);
-	void SetObjectList(std::vector<GameObject*>& objectList);
+	//void SetObjectList(std::vector<GameObject*>& objectList);
 
 	// WndProcˆ—
 	bool WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);

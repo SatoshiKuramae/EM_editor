@@ -11,7 +11,7 @@
 class CObject
 {
 public:
-	typedef enum
+	enum class TYPE
 	{
 		NONE=0,
 		ENEMY,
@@ -20,10 +20,11 @@ public:
 		BLOCK,
 		FLOOR,
 		GAMEOBJECT,
-	}TYPE;
+	};
 
 	CObject(int nPriority = 3);		//描画優先設定
 	virtual ~CObject();
+
 	virtual HRESULT Init() = 0;
 	virtual void Uninit() = 0;
 	virtual void Update() = 0;
@@ -43,6 +44,9 @@ public:
 
 	virtual D3DXVECTOR3 GetScale() const { return D3DXVECTOR3(1, 1, 1); }
 	virtual void SetScale(const D3DXVECTOR3&) {}
+
+	virtual D3DXVECTOR3 GetMove() const { return D3DXVECTOR3(1, 1, 1); }
+	virtual void SetMove(const D3DXVECTOR3&) {}
 
 	// オブジェクトタイプ取得
 	TYPE GetType() { return m_type; }

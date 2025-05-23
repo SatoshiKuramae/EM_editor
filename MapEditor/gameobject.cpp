@@ -13,11 +13,31 @@ GameObject::GameObject()
     SetPos(D3DXVECTOR3(0, 0, 0));
     SetScale(D3DXVECTOR3(1, 1, 1));
     SetRot(D3DXVECTOR3(0, 0, 0));
+    SetSummonCount(0);
 }
 
+GameObject::~GameObject()
+{
+    if (m_pMesh) {
+        m_pMesh->Release();
+        m_pMesh = nullptr;
+    }
+
+    if (m_pBuffMat) {
+        m_pBuffMat->Release();
+        m_pBuffMat = nullptr;
+    }
+
+    // テクスチャも忘れずに解放（必要であれば）
+    for (int i = 0; i < NUMTEXTURE; ++i) {
+        if (m_pTexture[i]) {
+            m_pTexture[i]->Release();
+            m_pTexture[i] = nullptr;
+        }
+    }
+}
 HRESULT GameObject::Init()
 {
-    CObject::SetType(TYPE::PLAYER);
     GameObject::Load();
     
     CObjectX::Init();
@@ -27,7 +47,7 @@ HRESULT GameObject::Init()
 }
 void GameObject::Load()
 {
-    CObject::SetType(TYPE::PLAYER);
+    CObject::SetType(TYPE::BLOCK);
     LPDIRECT3DDEVICE9 pDevice;
     pDevice = CManager::GetRenderer()->GetDevice();
 
@@ -84,18 +104,43 @@ GameObject* GameObject::Loadjson(const json& objData)
 {
     this->Init();
 
-    if (objData.contains("position")) {
-        auto p = objData["position"];
+    if (objData.contains("Move")) {
+        auto m = objData["Move"];
+        this->SetMove(D3DXVECTOR3(m[0], m[1], m[2]));
+    }
+    if (objData.contains("Name")) {
+        std::string typeStr = objData["Name"];
+        this->SetObjectType(GameObject::FromTypeString(typeStr));
+    }
+    if (objData.contains("Pos")) {
+        auto p = objData["Pos"];
         this->SetPos(D3DXVECTOR3(p[0], p[1], p[2]));
     }
-    if (objData.contains("rotation")) {
+    /*if (objData.contains("rotation")) {
         auto r = objData["rotation"];
         this->SetRot(D3DXVECTOR3(r[0], r[1], r[2]));
     }
     if (objData.contains("scale")) {
         auto s = objData["scale"];
         this->SetScale(D3DXVECTOR3(s[0], s[1], s[2]));
+    }*/
+    if (objData.contains("SummonFrame")) {
+        int summonframe = objData["SummonFrame"];
+        this->SetSummonCount(summonframe);
     }
-
     return this;
+}
+
+const char* GameObject::GetTypeString() {
+    switch (m_type) {
+    case GameObjectType::SafeZone: return "SafeZone";
+    case GameObjectType::Obstacle: return "Obstacle";
+    default: return "Unknown";
+    }
+}
+
+GameObject::GameObjectType GameObject::FromTypeString(const std::string& str) {
+    if (str == "SafeZone") return GameObjectType::SafeZone;
+    if (str == "Obstacle") return GameObjectType::Obstacle;
+    return GameObjectType::SafeZone; // デフォルト
 }

@@ -64,6 +64,13 @@ void GUIManager::Shutdown()
     if (!m_Initialized)
         return;
 
+    // 所有している GameObject をすべて削除
+    /*for (auto* obj : m_gameObjects) {
+        delete obj;
+    }
+    m_gameObjects.clear();
+    m_selectedIndex = -1;*/
+
     ImGui_ImplDX9_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
@@ -105,14 +112,22 @@ void GUIManager::Update()
             m_selectedIndex = i;
         }
     }
+
     ImGui::EndChild();
 
+
+    //オブジェクト生成
+    
+
     if (ImGui::Button("Add GameObject")) {
+        
         GameObject* newObj = new GameObject();
         newObj->Init();
+        newObj->SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
         newObj->SetPos(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
         newObj->SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
         newObj->SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+        newObj->SetSummonCount(0);
         m_gameObjects.push_back(newObj);
         m_selectedIndex = static_cast<int>(m_gameObjects.size()) - 1;
     }
@@ -138,13 +153,19 @@ void GUIManager::Update()
                 D3DXVECTOR3 pos = obj->GetPos();
                 D3DXVECTOR3 rot = obj->GetRot();
                 D3DXVECTOR3 scale = obj->GetScale();
+                D3DXVECTOR3 move = obj->GetMove();
+                int summonsnt = obj->GetSummonCount();
 
                 nlohmann::json objData;
-                objData["position"] = { pos.x, pos.y, pos.z };
-                objData["rotation"] = { rot.x, rot.y, rot.z };
-                objData["scale"] = { scale.x, scale.y, scale.z };
-
-                jsonOutput["objects"].push_back(objData);
+                //移動値、名前、位置、召喚フレーム
+                //SafeZone,Obstacle
+                objData["Move"] = { move.x,move.y,move.z };
+                objData["Name"] = obj->GetTypeString();  // 例: "SafeZone"
+                objData["Pos"] = { pos.x, pos.y, pos.z };
+                //objData["rotation"] = { rot.x, rot.y, rot.z };
+                //objData["scale"] = { scale.x, scale.y, scale.z };
+                objData["SummonFrame"] = summonsnt;
+                jsonOutput.push_back(objData);
             }
 
             std::ofstream out("data\\gameobjects.JSON");
@@ -164,30 +185,74 @@ void GUIManager::Update()
         ImGui::EndPopup();
     }
 
-    if (ImGui::Button("Import JSON")) {
-        std::ifstream in("data\\gameobjects.json");
-        if (in) {
-            nlohmann::json jsonInput;
-            in >> jsonInput;
-            in.close();
+    if (ImGui::Button("Import Json")) {
 
-            // 既存オブジェクトの削除
-            for (auto* obj : m_gameObjects) {
-                delete obj;
-            }
-            m_selectedIndex = -1; // 選択をリセット
-            m_gameObjects.clear(); // 既存オブジェクトを削除（必要に応じて）
+        showSaveConfirm = true; // 確認ウィンドウを出すトリガー
+        ImGui::OpenPopup("Import Json");
 
-            for (const auto& objData : jsonInput["objects"]) {
-                GameObject* newObj = new GameObject();
-                newObj->Loadjson(objData); // GameObjectが処理を担当
-                m_gameObjects.push_back(newObj);
-            }
-
-            m_selectedIndex = m_gameObjects.empty() ? -1 : 0; // 選択リセット
-        }
+        std::ofstream out("data\\gameobjects.txt");
     }
+    if (ImGui::BeginPopupModal("Import Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Import?");
+        ImGui::Separator();
+        if (ImGui::Button("Yes", ImVec2(120, 0))) {
+            nlohmann::json jsonOutput;
 
+            std::ifstream in("data\\gameobjects.json");
+            if (in) {
+                nlohmann::json jsonInput;
+                in >> jsonInput;
+                in.close();
+
+                // 既存オブジェクトの削除
+                for (auto* obj : m_gameObjects) {
+                    delete obj;
+                    obj = nullptr;
+                }
+                m_selectedIndex = -1; // 選択をリセット
+                m_gameObjects.clear(); // 既存オブジェクトを削除（必要に応じて）
+
+
+                for (const auto& objData : jsonInput) {
+                    GameObject* newObj = new GameObject();
+                    newObj->Loadjson(objData); // GameObjectが処理を担当
+                    m_gameObjects.push_back(newObj);
+                }
+
+                m_selectedIndex = m_gameObjects.empty() ? -1 : 0; // 選択リセット
+            }
+
+            std::ofstream out("data\\gameobjects.JSON");
+            out << jsonOutput.dump(4); // 4はインデント幅
+            out.close();
+
+            ImGui::CloseCurrentPopup();
+            showSaveConfirm = false;
+        }
+        
+        ImGui::SameLine();
+        if (ImGui::Button("No", ImVec2(120, 0))) {
+            ImGui::CloseCurrentPopup();
+            showSaveConfirm = false;
+        }
+
+        ImGui::EndPopup();
+    }
+    //オブジェクト削除
+    //if (ImGui::Button("Delete Object")) {
+    //    if (m_selectedIndex >= 0 && m_selectedIndex < static_cast<int>(m_gameObjects.size())) {
+    //        delete m_gameObjects[m_selectedIndex]; // メモリを解放
+    //        m_gameObjects.erase(m_gameObjects.begin() + m_selectedIndex); // リストから削除
+
+    //        // インデックスを調整
+    //        if (m_gameObjects.empty()) {
+    //            m_selectedIndex = -1;
+    //        }
+    //        else if (m_selectedIndex >= static_cast<int>(m_gameObjects.size())) {
+    //            m_selectedIndex = static_cast<int>(m_gameObjects.size()) - 1;
+    //        }
+    //    }
+    //}
 
     ImGui::End();
 
@@ -196,20 +261,36 @@ void GUIManager::Update()
     ImGui::Begin("Object Parameters");
 
     if (m_selectedIndex >= 0 && m_selectedIndex < m_gameObjects.size()) {
+
         GameObject* obj = m_gameObjects[m_selectedIndex];
+        GameObject::GameObjectType type = obj->GetObjectType(); // タイプ取得
+        int currentType = static_cast<int>(type);
+        const char* typeItems[] = { "SafeZone", "Obstacle" };
+
         D3DXVECTOR3 pos = obj->GetPos();
         D3DXVECTOR3 rot = obj->GetRot();
         D3DXVECTOR3 scale = obj->GetScale();
+        D3DXVECTOR3 move = obj->GetMove();
+        int summonframe = obj->GetSummonCount();
 
-        if (ImGui::DragFloat3("Position", (float*)&pos, 0.1f)) {
+        if (ImGui::DragFloat3("Move", (float*)&move, 0.1f)) {
+            obj->SetMove(move);
+        }
+        if (ImGui::Combo("Name", &currentType, typeItems, IM_ARRAYSIZE(typeItems))) {
+            obj->SetObjectType(static_cast<GameObject::GameObjectType>(currentType));
+        }
+        if (ImGui::DragFloat3("Pos", (float*)&pos, 0.1f)) {
             obj->SetPos(pos);
         }
-        if (ImGui::DragFloat3("Rotation", (float*)&rot, 0.1f)) {
+        if (ImGui::DragInt("SummonFrame", &summonframe, 1)) {
+            obj->SetSummonCount(summonframe);
+        }
+        /*if (ImGui::DragFloat3("Rotation", (float*)&rot, 0.1f)) {
             obj->SetRot(rot);
         }
         if (ImGui::DragFloat3("Scale", (float*)&scale, 0.1f)) {
             obj->SetScale(scale);
-        }
+        }*/
     }
     else {
         ImGui::Text("No object selected.");
@@ -226,6 +307,8 @@ void GUIManager::EndFrame(IDirect3DDevice9* device)
 {
     if (!m_Initialized)
         return;
+
+    
 
     ImGui::EndFrame();
     
@@ -245,6 +328,6 @@ bool GUIManager::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam);
 }
 
-void GUIManager::SetObjectList(std::vector<GameObject*>& objectList) {
-    m_gameObjects = objectList;
-}
+//void GUIManager::SetObjectList(std::vector<GameObject*>& objectList) {
+//    m_gameObjects = objectList;
+//}

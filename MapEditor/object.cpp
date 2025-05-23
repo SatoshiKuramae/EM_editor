@@ -32,7 +32,11 @@ CObject::CObject(int nPriority)
 //デストラクタ
 CObject::~CObject()
 {
-
+	//for (int i = 0; i < MAX_PRIORITY; ++i) {
+	//	for (int j = 0; j < NUMOBJECT; ++j) {
+	//		m_apObject[i][j] = nullptr;
+	//	}
+	//}
 }
 
 //全オブジェクト解放
@@ -103,6 +107,7 @@ void CObject::DrawAll()
 		{
 			if (m_apObject[nCntPri][i] != nullptr)
 			{
+
 				m_apObject[nCntPri][i]->Draw();
 			}
 		}

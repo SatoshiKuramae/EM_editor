@@ -39,6 +39,9 @@ public:
 	D3DXVECTOR3 GetScale() const override { return m_scale; }
 	void SetScale(const D3DXVECTOR3& scale) override { m_scale = scale; }
 
+	D3DXVECTOR3 GetMove() const override { return m_move; }
+	void SetMove(const D3DXVECTOR3& move) override { m_move = move; }
+
 protected:
 
 	D3DXVECTOR3 m_pos;		//ˆÊ’u

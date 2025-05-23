@@ -41,6 +41,8 @@ public:
 	D3DXVECTOR3 GetScale() const override { return m_scale; }
 	void SetScale(const D3DXVECTOR3& scale) override { m_scale = scale; }
 
+	D3DXVECTOR3 GetMove() const override { return m_move; }
+	void SetMove(const D3DXVECTOR3& move) override { m_move = move; }
 protected:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		//頂点バッファ
 	LPDIRECT3DTEXTURE9 m_pTexture;		//テクスチャ
@@ -48,6 +50,7 @@ protected:
 	D3DXVECTOR3 m_pos;		//位置
 	D3DXVECTOR3 m_rot;		//角度
 	D3DXVECTOR3 m_scale;	//拡大率
+	D3DXVECTOR3 m_move;
 	D3DXMATRIX m_mtxWorld;
 	float m_NowTexpos_x;
 	float m_NowTexpos_y;

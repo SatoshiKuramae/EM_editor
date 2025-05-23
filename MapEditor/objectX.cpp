@@ -48,8 +48,7 @@ void CObjectX::Uninit()
 //XVˆ—
 void CObjectX::Update()
 {
-	m_pos.x += m_move.x;
-	m_pos.z += m_move.z;
+	
 }
 
 //•`‰æˆ—
