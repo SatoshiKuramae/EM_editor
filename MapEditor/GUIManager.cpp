@@ -105,6 +105,7 @@ void GUIManager::Update()
     static int patternIndex = 1;
     const int maxPattern = 3; // パターン数（必要に応じて増やせる）
 
+    //パターンを変更
     if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
         patternIndex--;
         if (patternIndex < 1) patternIndex = maxPattern;
@@ -140,8 +141,6 @@ void GUIManager::Update()
 
 
     //オブジェクト生成
-    
-
     if (ImGui::Button("Add GameObject")) {
         
         GameObject* newObj = new GameObject();
@@ -163,13 +162,14 @@ void GUIManager::Update()
 
         std::ofstream out("data\\gameobjects.txt");
     }
+
     // モーダルポップアップ
     if (ImGui::BeginPopupModal("Save Confirmation", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text("Save?");
         ImGui::Separator();
 
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
-            std::string filename = "data\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+            std::string filename = "Data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
             nlohmann::json jsonOutput;
 
             for (auto* obj : m_gameObjects) {
@@ -201,6 +201,8 @@ void GUIManager::Update()
         ImGui::EndPopup();
     }
 
+
+    //Json読み込み
     if (ImGui::Button("Import Json")) {
 
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
@@ -212,7 +214,7 @@ void GUIManager::Update()
         ImGui::Text("Import?");
         ImGui::Separator();
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
-            std::string filename = "data\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+            std::string filename = "Data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
             nlohmann::json jsonOutput;
 
             std::ifstream in(filename);
@@ -274,8 +276,9 @@ void GUIManager::Update()
 
     ImGui::End();
 
-
+    //==================================================================
     // --- 選択されたオブジェクトのパラメータ操作ウィンドウ ---
+    //==================================================================
     ImGui::Begin("Object Parameters");
 
     if (m_selectedIndex >= 0 && m_selectedIndex < m_gameObjects.size()) {
