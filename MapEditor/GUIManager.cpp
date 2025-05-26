@@ -160,7 +160,7 @@ void GUIManager::Update()
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Save Confirmation");
 
-        std::ofstream out("data\\gameobjects.txt");
+        std::ofstream out("Data\\gameobjects.txt");
     }
 
     // モーダルポップアップ
