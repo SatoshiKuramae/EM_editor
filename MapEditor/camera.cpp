@@ -126,7 +126,7 @@ void CCamera::Update()
 	//	
 	//}
 	
-	if (pKeyboard->GetKeyboardTrigger(DIK_RETURN) == true)
+	/*if (pKeyboard->GetKeyboardTrigger(DIK_RETURN) == true)
 	{
 		if (CCamera::m_flattery == false)
 		{
@@ -136,7 +136,7 @@ void CCamera::Update()
 		{
 			CCamera::m_flattery = false;
 		}
-	}
+	}*/
 
 
 

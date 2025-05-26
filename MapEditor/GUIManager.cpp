@@ -102,6 +102,28 @@ void GUIManager::Update()
 
     ImGui::Text("Selected Object: %d", m_selectedIndex);
 
+    static int patternIndex = 1;
+    const int maxPattern = 3; // パターン数（必要に応じて増やせる）
+
+    if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
+        patternIndex--;
+        if (patternIndex < 1) patternIndex = maxPattern;
+        showSaveConfirm = true; // 確認ウィンドウを出すトリガー
+        ImGui::OpenPopup("Import Json");
+
+        std::ofstream out("data\\gameobjects.txt");
+    }
+    ImGui::SameLine();
+    ImGui::Text("Pattern %d/%d", patternIndex, maxPattern);
+    ImGui::SameLine();
+    if (ImGui::ArrowButton("##right", ImGuiDir_Right)) {
+        patternIndex++;
+        if (patternIndex > maxPattern) patternIndex = 1;
+        showSaveConfirm = true; // 確認ウィンドウを出すトリガー
+        ImGui::OpenPopup("Import Json");
+
+        std::ofstream out("data\\gameobjects.txt");
+    }
 
     // スクロール可能なリスト領域
     ImGui::BeginChild("List", ImVec2(200, 300), true);
@@ -147,29 +169,22 @@ void GUIManager::Update()
         ImGui::Separator();
 
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
+            std::string filename = "data\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
             nlohmann::json jsonOutput;
 
-            for (size_t i = 0; i < m_gameObjects.size(); ++i) {
-                GameObject* obj = m_gameObjects[i];
+            for (auto* obj : m_gameObjects) {
                 D3DXVECTOR3 pos = obj->GetPos();
-                D3DXVECTOR3 rot = obj->GetRot();
-                D3DXVECTOR3 scale = obj->GetScale();
                 D3DXVECTOR3 move = obj->GetMove();
                 int summonsnt = obj->GetSummonCount();
-
                 nlohmann::json objData;
-                //移動値、名前、位置、召喚フレーム
-                //SafeZone,Obstacle
-                objData["Move"] = { move.x,move.y,move.z };
-                objData["Name"] = obj->GetTypeString();  // 例: "SafeZone"
+                objData["Move"] = { move.x, move.y, move.z };
+                objData["Name"] = obj->GetTypeString();
                 objData["Pos"] = { pos.x, pos.y, pos.z };
-                //objData["rotation"] = { rot.x, rot.y, rot.z };
-                //objData["scale"] = { scale.x, scale.y, scale.z };
                 objData["SummonFrame"] = summonsnt;
                 jsonOutput.push_back(objData);
             }
 
-            std::ofstream out("data\\gameobjects.JSON");
+            std::ofstream out(filename);
             out << jsonOutput.dump(4); // 4はインデント幅
             out.close();
 
@@ -197,9 +212,10 @@ void GUIManager::Update()
         ImGui::Text("Import?");
         ImGui::Separator();
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
+            std::string filename = "data\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
             nlohmann::json jsonOutput;
 
-            std::ifstream in("data\\gameobjects.json");
+            std::ifstream in(filename);
             if (in) {
                 nlohmann::json jsonInput;
                 in >> jsonInput;
@@ -214,7 +230,7 @@ void GUIManager::Update()
                 m_selectedIndex = -1; // 選択をリセット
                 m_gameObjects.clear(); // 既存オブジェクトを削除（必要に応じて）
 
-
+                //新規読み込み
                 for (const auto& objData : jsonInput) {
                     GameObject* newObj = new GameObject();
                     newObj->Loadjson(objData); // GameObjectが処理を担当
