@@ -169,7 +169,7 @@ void GUIManager::Update()
         ImGui::Separator();
 
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
-            std::string filename = "Data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+            std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
             nlohmann::json jsonOutput;
 
             for (auto* obj : m_gameObjects) {
@@ -214,7 +214,7 @@ void GUIManager::Update()
         ImGui::Text("Import?");
         ImGui::Separator();
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
-            std::string filename = "Data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+            std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
             nlohmann::json jsonOutput;
 
             std::ifstream in(filename);
