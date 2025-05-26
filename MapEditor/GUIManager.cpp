@@ -298,6 +298,15 @@ void GUIManager::Update()
             obj->SetObjectType(static_cast<GameObject::GameObjectType>(currentType));
         }
         if (ImGui::DragFloat3("Pos{x,y,z}", (float*)&pos, 0.1f)) {
+
+            // X‚Ì”ÍˆÍ§ŒÀ
+            if (pos.x < -300.0f) pos.x = -300.0f;
+            if (pos.x > 300.0f) pos.x = 300.0f;
+
+            // Y‚Ì”ÍˆÍ§ŒÀ
+            if (pos.y < -170.0f) pos.y = -170.0f;
+            if (pos.y > 170.0f) pos.y = 170.0f;
+
             obj->SetPos(pos);
         }
         if (ImGui::DragInt("SummonFrame", &summonframe, 1)) {
