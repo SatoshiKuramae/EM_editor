@@ -179,7 +179,7 @@ void CCamera::Update()
 	}
 
 	//注視点までの距離を変える
-	if (pKeyboard->GetKeyboardPress(DIK_Q) == true)
+	/*if (pKeyboard->GetKeyboardPress(DIK_Q) == true)
 	{
 		m_posV.z += 1.0f;
 		m_TargetPosV.z += 1.0f;
@@ -193,30 +193,35 @@ void CCamera::Update()
 		m_TargetPosV.z += 1.0f;
 		m_TargetPosV.y += 1.0f;
 		m_TargetPosV.x += 1.0f;
-	}
+	}*/
 
-	//視点の位置移動（前後左右）
-	if (pKeyboard->GetKeyboardPress(DIK_UP) == true)
-	{
-		m_posV.z += CAMERASPEED;
-		m_posR.z += CAMERASPEED;
-	}
+	// 矢印キー入力で移動（カメラの向き基準で前後左右）
+	float moveSpeed = CAMERASPEED;
 
-	if (pKeyboard->GetKeyboardPress(DIK_DOWN) == true)
-	{
-		m_posV.z -= CAMERASPEED;
-		m_posR.z -= CAMERASPEED;
-	}
+	// カメラの前方向（XZ平面で回転を反映）
+	D3DXVECTOR3 forward(sinf(m_rot.y), 0, cosf(m_rot.y));
+	D3DXVec3Normalize(&forward, &forward);
 
-	if (pKeyboard->GetKeyboardPress(DIK_RIGHT) == true)
-	{
-		m_posV.x += CAMERASPEED;
-		m_posR.x += CAMERASPEED;
+	// カメラの右方向（forwardと上方向のクロス）
+	D3DXVECTOR3 right;
+	D3DXVec3Cross(&right, &m_vecU, &forward);
+	D3DXVec3Normalize(&right, &right);
+
+	if (pKeyboard->GetKeyboardPress(DIK_UP)) {
+		m_posV += forward * moveSpeed;
+		m_posR += forward * moveSpeed;
 	}
-	if (pKeyboard->GetKeyboardPress(DIK_LEFT) == true)
-	{
-		m_posV.x -= CAMERASPEED;
-		m_posR.x -= CAMERASPEED;
+	if (pKeyboard->GetKeyboardPress(DIK_DOWN)) {
+		m_posV -= forward * moveSpeed;
+		m_posR -= forward * moveSpeed;
+	}
+	if (pKeyboard->GetKeyboardPress(DIK_RIGHT)) {
+		m_posV += right * moveSpeed;
+		m_posR += right * moveSpeed;
+	}
+	if (pKeyboard->GetKeyboardPress(DIK_LEFT)) {
+		m_posV -= right * moveSpeed;
+		m_posR -= right * moveSpeed;
 	}
 
 	if (m_flattery == true)

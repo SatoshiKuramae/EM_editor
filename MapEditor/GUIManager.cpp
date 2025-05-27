@@ -158,8 +158,6 @@ void GUIManager::Update()
 
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Save Confirmation");
-
-        
     }
 
     // モーダルポップアップ
