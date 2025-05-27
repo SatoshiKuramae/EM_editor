@@ -103,7 +103,7 @@ void GUIManager::Update()
     ImGui::Text("Selected Object: %d", m_selectedIndex);
 
     static int patternIndex = 1;
-    const int maxPattern = 3; // パターン数（必要に応じて増やせる）
+    const int maxPattern = 10; // パターン数（必要に応じて増やせる）
 
     //パターンを変更
     if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
@@ -112,7 +112,7 @@ void GUIManager::Update()
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Import Json");
 
-        std::ofstream out("data\\gameobjects.txt");
+        
     }
     ImGui::SameLine();
     ImGui::Text("Pattern %d/%d", patternIndex, maxPattern);
@@ -123,7 +123,6 @@ void GUIManager::Update()
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Import Json");
 
-        std::ofstream out("data\\gameobjects.txt");
     }
 
     // スクロール可能なリスト領域
@@ -160,7 +159,7 @@ void GUIManager::Update()
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Save Confirmation");
 
-        std::ofstream out("Data\\gameobjects.txt");
+        
     }
 
     // モーダルポップアップ
@@ -169,7 +168,7 @@ void GUIManager::Update()
         ImGui::Separator();
 
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
-            std::string filename = "Data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+            std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
             nlohmann::json jsonOutput;
 
             for (auto* obj : m_gameObjects) {
@@ -208,13 +207,12 @@ void GUIManager::Update()
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Import Json");
 
-        std::ofstream out("data\\gameobjects.txt");
     }
     if (ImGui::BeginPopupModal("Import Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text("Import?");
         ImGui::Separator();
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
-            std::string filename = "Data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+            std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
             nlohmann::json jsonOutput;
 
             std::ifstream in(filename);
