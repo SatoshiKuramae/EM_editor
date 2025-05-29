@@ -103,7 +103,7 @@ void GUIManager::Update()
     ImGui::Text("Selected Object: %d", m_selectedIndex);
 
     static int patternIndex = 1;
-    const int maxPattern = 20; // パターン数（必要に応じて増やせる）
+    const int maxPattern = 10; // パターン数（必要に応じて増やせる）
 
     //パターンを変更
     if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
