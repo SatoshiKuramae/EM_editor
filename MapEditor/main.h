@@ -31,7 +31,7 @@
 #define BLUE (255)
 #define A (255)
 
-#define NUMOBJECT (10)
+#define NUMOBJECT (128)
 #define NUMPRIORITY (10)
 #define MAXPOS_X (1280.0f)
 #define MAXPOS_Y (720.0f)

@@ -103,7 +103,7 @@ void GUIManager::Update()
     ImGui::Text("Selected Object: %d", m_selectedIndex);
 
     static int patternIndex = 1;
-    const int maxPattern = 10; // パターン数（必要に応じて増やせる）
+    const int maxPattern = 20; // パターン数（必要に応じて増やせる）
 
     //パターンを変更
     if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
@@ -143,14 +143,18 @@ void GUIManager::Update()
     if (ImGui::Button("Add GameObject")) {
         
         GameObject* newObj = new GameObject();
-        newObj->Init();
-        newObj->SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-        newObj->SetPos(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-        newObj->SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-        newObj->SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-        newObj->SetSummonCount(0);
-        m_gameObjects.push_back(newObj);
-        m_selectedIndex = static_cast<int>(m_gameObjects.size()) - 1;
+        if (newObj)
+        {
+            newObj->Init();
+            newObj->SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+            newObj->SetPos(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+            newObj->SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+            newObj->SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+            newObj->SetSummonCount(0);
+            m_gameObjects.push_back(newObj);
+            m_selectedIndex = static_cast<int>(m_gameObjects.size()) - 1;
+        }
+        
     }
 
     //データ書き出し
@@ -327,23 +331,27 @@ void GUIManager::Update()
 
     for (auto obj : m_gameObjects)
     {
-        if (obj == selectedObject)
+        if (!obj)
         {
-            // アウトライン描画
-            obj->DrawOutline();
+            if (obj == selectedObject)
+            {
+                // アウトライン描画
+                obj->DrawOutline();
 
-            // ワイヤーフレーム有効化
-            CManager::GetRenderer()->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+                // ワイヤーフレーム有効化
+                CManager::GetRenderer()->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
-            obj->Draw(); // 通常描画（モードがワイヤーフレームになってる）
+                obj->Draw(); // 通常描画（モードがワイヤーフレームになってる）
 
-            // 元に戻す
-            CManager::GetRenderer()->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+                // 元に戻す
+                CManager::GetRenderer()->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+            }
+            else
+            {
+                obj->Draw(); // 通常描画
+            }
         }
-        else
-        {
-            obj->Draw(); // 通常描画
-        }
+        
     }
     // ==================================
 
