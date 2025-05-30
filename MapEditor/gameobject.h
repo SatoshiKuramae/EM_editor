@@ -20,19 +20,18 @@ class GameObject : public CObjectX {
 public:
 
     enum class GameObjectType {
-        SafeZone,  // S極
-        Obstacle   // N極
+        SafeZone,
+        Obstacle
     };
 
     GameObject();
     ~GameObject();
 
     HRESULT Init();
-    void Load();
+    virtual void Load() = 0;
     GameObject* Loadjson(const json& objData);
     void Update() override;
     void Draw() override;
-    static GameObject* Create();
 
     void SetObjectType(GameObjectType type) { m_type = type; }
     GameObjectType GetObjectType() const { return m_type; }
@@ -43,15 +42,53 @@ public:
     void SetSummonCount(int summoncnt) { m_nSummonCnt = summoncnt; }
     int GetSummonCount()const { return m_nSummonCnt;}
 
-    
-    void MarkForDelete() { m_markedForDelete = true; }
-    bool IsMarkedForDelete() const { return m_markedForDelete; }
-
-private:
+protected:
     std::string m_name;
     GameObjectType m_type;
     int m_nSummonCnt;
-    bool m_markedForDelete = false;
-    
+
+};
+
+//現在表示しているキューブ
+class CubeObject : public GameObject
+{
+public:
+    CubeObject() {};
+    ~CubeObject() {};
+
+    HRESULT Init();
+    void Load() override;
+    static CubeObject* Create();
+
+private:
+    // Cube固有のメッシュ、マテリアル、テクスチャ
+    LPD3DXMESH m_pMesh_cube = nullptr;
+    LPD3DXBUFFER m_pBuffMat_cube = nullptr;
+    DWORD m_dwNumMat_cube = 0;
+    D3DXMATERIAL* m_pMaterial_cube = nullptr;
+    LPDIRECT3DTEXTURE9 m_pTexture_cube[NUMTEXTURE] = { nullptr };
+};
+
+class ArrowObject : public GameObject
+{
+public:
+    ArrowObject() {};
+    ~ArrowObject() {};
+
+    HRESULT Init();
+    void Load() override;
+    void Draw() override;
+    static ArrowObject* Create();
+    void SetVisible(bool visible) { m_isVisible = visible; }
+    bool IsVisible() const { return m_isVisible; }
+
+private:
+    // Cube固有のメッシュ、マテリアル、テクスチャ
+    LPD3DXMESH m_pMesh_arrow = nullptr;
+    LPD3DXBUFFER m_pBuffMat_arrow = nullptr;
+    DWORD m_dwNumMat_arrow = 0;
+    D3DXMATERIAL* m_pMaterial_arrow = nullptr;
+    LPDIRECT3DTEXTURE9 m_pTexture_arrow[NUMTEXTURE] = { nullptr };
+    bool m_isVisible = false;
 };
 #endif

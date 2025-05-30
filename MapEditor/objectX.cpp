@@ -181,7 +181,7 @@ void CObjectX::Load()
 //	m_scale = scale;
 //}
 
-void CObjectX::BindMesh(LPD3DXMESH pMesh, LPD3DXBUFFER pBuffMat, DWORD dwNumMat, D3DXMATERIAL* pMat, LPDIRECT3DTEXTURE9 pTexture)
+void CObjectX::BindMesh(LPD3DXMESH pMesh, LPD3DXBUFFER pBuffMat, DWORD dwNumMat, D3DXMATERIAL* pMat, LPDIRECT3DTEXTURE9* pTexture)
 {
 	m_pMesh = pMesh;
 	m_pBuffMat = pBuffMat;
@@ -191,7 +191,7 @@ void CObjectX::BindMesh(LPD3DXMESH pMesh, LPD3DXBUFFER pBuffMat, DWORD dwNumMat,
 	{
 		if (m_pTexture[i] == nullptr)
 		{
-			m_pTexture[i] = pTexture;
+			m_pTexture[i] = pTexture[i];
 			break;
 		}
 	}

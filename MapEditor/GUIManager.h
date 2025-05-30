@@ -41,7 +41,8 @@ private:
 
 	std::vector<GameObject*> m_gameObjects;
 	int m_selectedIndex = -1;
-	CObjectX* selectedObject = nullptr;
+	CObjectX* selectedObject = nullptr;	
+	ArrowObject* m_arrowObject = nullptr;	//矢印オブジェクトのポインタ
 };
 
 #endif

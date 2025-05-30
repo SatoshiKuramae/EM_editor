@@ -55,6 +55,10 @@ bool GUIManager::Initialize(HWND hwnd, IDirect3DDevice9* device)
 
 
     m_Initialized = true;
+
+    m_arrowObject = new ArrowObject();
+    m_arrowObject->Init();
+    m_arrowObject->SetVisible(false);
     return true;
 }
 
@@ -142,21 +146,31 @@ void GUIManager::Update()
     //オブジェクト生成
     if (ImGui::Button("Add GameObject")) {
         
-        GameObject* newObj = new GameObject();
-        if (newObj)
+        if (m_gameObjects.size() >= NUMOBJECT)
         {
-            newObj->Init();
-            newObj->SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-            newObj->SetPos(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-            newObj->SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-            newObj->SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-            newObj->SetSummonCount(0);
-            m_gameObjects.push_back(newObj);
-            m_selectedIndex = static_cast<int>(m_gameObjects.size()) - 1;
+            // 最大数に達している場合のエラー処理
+            ImGui::OpenPopup("Error");
+        }
+        else
+        {
+            GameObject* newObj = CubeObject::Create();
+            if (newObj)
+            {
+                m_gameObjects.push_back(newObj);
+                m_selectedIndex = m_gameObjects.size() - 1;
+            }
         }
         
+        
     }
-
+    //エラーメッセージ
+    if (ImGui::BeginPopupModal("Error", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("NumObject is Max");
+        if (ImGui::Button("OK")) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
     //データ書き出し
     if (ImGui::Button("Export Json")) {
 
@@ -234,7 +248,7 @@ void GUIManager::Update()
 
                 //新規読み込み
                 for (const auto& objData : jsonInput) {
-                    GameObject* newObj = new GameObject();
+                    GameObject* newObj = new CubeObject();
                     newObj->Loadjson(objData); // GameObjectが処理を担当
                     m_gameObjects.push_back(newObj);
                 }
@@ -283,6 +297,7 @@ void GUIManager::Update()
 
     if (m_selectedIndex >= 0 && m_selectedIndex < m_gameObjects.size()) {
 
+        // 矢印オブジェクト生成
         GameObject* obj = m_gameObjects[m_selectedIndex];
         GameObject::GameObjectType type = obj->GetObjectType(); // タイプ取得
         int currentType = static_cast<int>(type);
@@ -293,6 +308,7 @@ void GUIManager::Update()
         D3DXVECTOR3 scale = obj->GetScale();
         D3DXVECTOR3 move = obj->GetMove();
         int summonframe = obj->GetSummonCount();
+
 
         if (ImGui::DragFloat3("Move{x,y,z}", (float*)&move, 0.1f)) {
             obj->SetMove(move);
@@ -321,9 +337,14 @@ void GUIManager::Update()
         if (ImGui::DragFloat3("Scale", (float*)&scale, 0.1f)) {
             obj->SetScale(scale);
         }*/
+
+
+        m_arrowObject->SetPos(pos);  // 原点として配置
+        m_arrowObject->SetVisible(true);
     }
     else {
         ImGui::Text("No object selected.");
+        m_arrowObject->SetVisible(false);
     }
 
     ImGui::End();
@@ -352,6 +373,11 @@ void GUIManager::Update()
             }
         }
         
+    }
+
+    if (m_arrowObject && m_arrowObject->IsVisible())
+    {
+        m_arrowObject->Draw();
     }
     // ==================================
 

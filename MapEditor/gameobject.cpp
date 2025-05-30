@@ -36,44 +36,16 @@ GameObject::~GameObject()
         }
     }
 }
+
 HRESULT GameObject::Init()
 {
-    GameObject::Load();
+    //GameObject::Load();
     
     CObjectX::Init();
 
-
     return S_OK;
 }
-void GameObject::Load()
-{
-    CObject::SetType(TYPE::BLOCK);
-    LPDIRECT3DDEVICE9 pDevice;
-    pDevice = CManager::GetRenderer()->GetDevice();
 
-    //Xファイルの読み込み
-    D3DXLoadMeshFromX("data\\obj01.x",
-        D3DXMESH_SYSTEMMEM, pDevice,
-        NULL,
-        &m_pBuffMat,
-        NULL,
-        &m_dwNumMat,
-        &m_pMesh);
-
-    //for (int nCntmodel = 0; nCntmodel < NUMTEXTURE; nCntmodel++)
-    //{
-    //    // モデルのテクスチャファイル
-    //    m_pMaterial = (D3DXMATERIAL*)m_pBuffMat[nCntmodel].GetBufferPointer();
-
-    //    for (int nCntMat = 0; nCntMat < (int)m_dwNumMat; nCntMat++)
-    //    {
-    //        if (m_pMaterial[nCntMat].pTextureFilename != nullptr)
-    //        { // テクスチャがあるとき
-    //            D3DXCreateTextureFromFile(pDevice, m_pMaterial[nCntMat].pTextureFilename, &m_pTexture[nCntmodel]); // テクスチャを読み込む
-    //        }
-    //    }
-    //}
-}
 
 
 void GameObject::Update()
@@ -88,17 +60,6 @@ void GameObject::Draw()
     CObjectX::Draw();
 }
 
-
-GameObject* GameObject::Create()
-{
-    GameObject* pGameobject = new GameObject;
-
-    pGameobject->Init();
-
-    pGameobject->SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-
-    return pGameobject;
-}
 
 GameObject* GameObject::Loadjson(const json& objData)
 {
@@ -143,4 +104,125 @@ GameObject::GameObjectType GameObject::FromTypeString(const std::string& str) {
     if (str == "SafeZone") return GameObjectType::SafeZone;
     if (str == "Obstacle") return GameObjectType::Obstacle;
     return GameObjectType::SafeZone; // デフォルト
+}
+
+//================================
+//仮オブジェクト
+//================================
+HRESULT CubeObject::Init()
+{
+    Load();
+
+    CObjectX::Init();
+
+    return S_OK;
+}
+
+void CubeObject::Load()
+{
+    CObject::SetType(TYPE::BLOCK);
+    LPDIRECT3DDEVICE9 pDevice;
+    pDevice = CManager::GetRenderer()->GetDevice();
+
+    //Xファイルの読み込み
+    D3DXLoadMeshFromX("data\\model\\obj01.x",
+        D3DXMESH_SYSTEMMEM, pDevice,
+        NULL,
+        &m_pBuffMat_cube,
+        NULL,
+        &m_dwNumMat_cube,
+        &m_pMesh_cube);
+
+    // モデルのテクスチャファイル
+    m_pMaterial_cube = (D3DXMATERIAL*)m_pBuffMat_cube->GetBufferPointer();
+    for (int nCntmodel = 0; nCntmodel < NUMTEXTURE; nCntmodel++)
+    {
+        for (int nCntMat = 0; nCntMat < (int)m_dwNumMat_cube; nCntMat++)
+        {
+            if (m_pMaterial_cube[nCntMat].pTextureFilename != nullptr)
+            { // テクスチャがあるとき
+                D3DXCreateTextureFromFile(pDevice, m_pMaterial_cube[nCntMat].pTextureFilename, &m_pTexture_cube[nCntmodel]); // テクスチャを読み込む
+            }
+        }
+    }
+    // BindMesh呼び出し
+    BindMesh(m_pMesh_cube, m_pBuffMat_cube, m_dwNumMat_cube, m_pMaterial_cube, m_pTexture_cube);
+
+}
+
+CubeObject* CubeObject::Create()
+{
+    CubeObject* obj = new CubeObject();
+    obj->Init();
+    obj->SetMove(D3DXVECTOR3(0, 0, 0));
+    obj->SetPos(D3DXVECTOR3(0, 0, 0));
+    obj->SetRot(D3DXVECTOR3(0, 0, 0));
+    obj->SetScale(D3DXVECTOR3(1, 1, 1));
+    obj->SetSummonCount(0);
+
+    return obj;
+}
+
+HRESULT ArrowObject::Init()
+{
+    Load();
+
+    CObjectX::Init();
+
+    return S_OK;
+}
+
+void ArrowObject::Load()
+{
+    CObject::SetType(TYPE::BLOCK);
+    LPDIRECT3DDEVICE9 pDevice;
+    pDevice = CManager::GetRenderer()->GetDevice();
+
+    //Xファイルの読み込み
+    D3DXLoadMeshFromX("data\\model\\arrow.x",
+        D3DXMESH_SYSTEMMEM, pDevice,
+        NULL,
+        &m_pBuffMat_arrow,
+        NULL,
+        &m_dwNumMat_arrow,
+        &m_pMesh_arrow);
+
+    // モデルのテクスチャファイル
+    m_pMaterial_arrow = (D3DXMATERIAL*)m_pBuffMat_arrow->GetBufferPointer();
+    for (int nCntmodel = 0; nCntmodel < NUMTEXTURE; nCntmodel++)
+    {
+        for (int nCntMat = 0; nCntMat < (int)m_dwNumMat_arrow; nCntMat++)
+        {
+            if (m_pMaterial_arrow[nCntMat].pTextureFilename != nullptr)
+            { // テクスチャがあるとき
+                D3DXCreateTextureFromFile(pDevice, m_pMaterial_arrow[nCntMat].pTextureFilename, &m_pTexture_arrow[nCntmodel]); // テクスチャを読み込む
+            }
+        }
+    }
+    // BindMesh呼び出し
+    BindMesh(m_pMesh_arrow, m_pBuffMat_arrow, m_dwNumMat_arrow, m_pMaterial_arrow, m_pTexture_arrow);
+
+}
+
+void ArrowObject::Draw()
+{
+    if (!m_isVisible) {
+        return;  // 非表示なら描画しない
+    }
+
+    // 通常の描画処理
+    CObjectX::Draw();
+}
+
+ArrowObject* ArrowObject::Create()
+{
+    ArrowObject* obj = new ArrowObject();
+    obj->Init();
+    obj->SetMove(D3DXVECTOR3(0, 0, 0));
+    obj->SetPos(D3DXVECTOR3(0, 0, 0));
+    obj->SetRot(D3DXVECTOR3(0, 0, 0));
+    obj->SetScale(D3DXVECTOR3(1, 1, 1));
+    obj->SetSummonCount(0);
+
+    return obj;
 }

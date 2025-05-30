@@ -26,7 +26,7 @@ public:
 	//void SetMove(D3DXVECTOR3 move);//à⁄ìÆó ÇÃê›íË
 	//void SetRot(D3DXVECTOR3 rot);
 	//void SetScale(D3DXVECTOR3 scale);
-	void BindMesh(LPD3DXMESH pMesh, LPD3DXBUFFER pBuffMat, DWORD dwNumMat, D3DXMATERIAL* pMat, LPDIRECT3DTEXTURE9 pTexture);
+	void BindMesh(LPD3DXMESH pMesh, LPD3DXBUFFER pBuffMat, DWORD dwNumMat, D3DXMATERIAL* pMat, LPDIRECT3DTEXTURE9* pTexture);
 	//D3DXVECTOR3& GetScale() { return m_scale; }
 	//D3DXVECTOR3& GetRot() { return m_rot; }
 	//D3DXVECTOR3& GetPos() { return m_pos; }	//à íuèÓïÒÇ»Ç«ÇéÊìæ
