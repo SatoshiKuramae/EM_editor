@@ -303,12 +303,12 @@ void GUIManager::Update()
         if (ImGui::DragFloat3("Pos{x,y,z}", (float*)&pos, 0.1f)) {
 
             // X‚Ì”ÍˆÍ§ŒÀ
-            if (pos.x < -300.0f) pos.x = -300.0f;
-            if (pos.x > 300.0f) pos.x = 300.0f;
+            if (pos.x < -260.0f) pos.x = -260.0f;
+            if (pos.x > 260.0f) pos.x = 260.0f;
 
             // Y‚Ì”ÍˆÍ§ŒÀ
-            if (pos.y < -170.0f) pos.y = -170.0f;
-            if (pos.y > 170.0f) pos.y = 170.0f;
+            if (pos.y < -135.0f) pos.y = -135.0f;
+            if (pos.y > 135.0f) pos.y = 135.0f;
 
             obj->SetPos(pos);
         }
