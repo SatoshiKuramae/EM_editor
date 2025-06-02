@@ -43,7 +43,7 @@ bool GUIManager::Initialize(HWND hwnd, IDirect3DDevice9* device)
     config.FontDataOwnedByAtlas = true;
 
     io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\meiryo.ttc", 18.0f, &config, io.Fonts->GetGlyphRangesJapanese());
-    
+
     // スタイル設定
     ImGui::StyleColorsDark();
     ImGuiStyle& style = ImGui::GetStyle();
@@ -102,9 +102,10 @@ void GUIManager::Update()
         return;
 
     // ====== ここに描画処理を書く ======
-    ImGui::Begin("Object List");
+    ImGui::Begin(u8"オブジェクトリスト");
 
-    ImGui::Text("Selected Object: %d", m_selectedIndex);
+    ImGui::Text(u8"選択中のオブジェクト: %d", m_selectedIndex);
+
 
     static int patternIndex = 1;
     const int maxPattern = 10; // パターン数（必要に応じて増やせる）
@@ -119,7 +120,7 @@ void GUIManager::Update()
         
     }
     ImGui::SameLine();
-    ImGui::Text("Pattern %d/%d", patternIndex, maxPattern);
+    ImGui::Text(u8"パターン %d/%d", patternIndex, maxPattern);
     ImGui::SameLine();
     if (ImGui::ArrowButton("##right", ImGuiDir_Right)) {
         patternIndex++;
@@ -130,10 +131,10 @@ void GUIManager::Update()
     }
 
     // スクロール可能なリスト領域
-    ImGui::BeginChild("List", ImVec2(200, 300), true);
+    ImGui::BeginChild(u8"リスト", ImVec2(200, 300), true);
     for (int i = 0; i < static_cast<int>(m_gameObjects.size()); ++i) {
         char label[32];
-        sprintf(label, "Object %d", i);
+        sprintf(label, u8"オブジェクト %d", i);
         if (ImGui::Selectable(label, m_selectedIndex == i)) {
             m_selectedIndex = i;
             selectedObject = m_gameObjects[i];
@@ -144,7 +145,7 @@ void GUIManager::Update()
 
 
     //オブジェクト生成
-    if (ImGui::Button("Add GameObject")) {
+    if (ImGui::Button(u8"オブジェクト生成")) {
         
         if (m_gameObjects.size() >= NUMOBJECT)
         {
@@ -165,14 +166,14 @@ void GUIManager::Update()
     }
     //エラーメッセージ
     if (ImGui::BeginPopupModal("Error", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("NumObject is Max");
+        ImGui::Text(u8"オブジェクトが最大値に達しました");
         if (ImGui::Button("OK")) {
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
     }
     //データ書き出し
-    if (ImGui::Button("Export Json")) {
+    if (ImGui::Button(u8"セーブ")) {
 
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Save Confirmation");
@@ -180,7 +181,7 @@ void GUIManager::Update()
 
     // モーダルポップアップ
     if (ImGui::BeginPopupModal("Save Confirmation", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Save?");
+        ImGui::Text(u8"セーブしますか?");
         ImGui::Separator();
 
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
@@ -218,14 +219,14 @@ void GUIManager::Update()
 
 
     //Json読み込み
-    if (ImGui::Button("Import Json")) {
+    if (ImGui::Button(u8"ロード")) {
 
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Import Json");
 
     }
     if (ImGui::BeginPopupModal("Import Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Import?");
+        ImGui::Text(u8"Jsonを読み込みますか?");
         ImGui::Separator();
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
             std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
@@ -273,7 +274,7 @@ void GUIManager::Update()
         ImGui::EndPopup();
     }
     //オブジェクト削除
-    if (ImGui::Button("Delete Object")) {
+    if (ImGui::Button(u8"選択中のオブジェクト削除")) {
         if (m_selectedIndex >= 0 && m_selectedIndex < static_cast<int>(m_gameObjects.size())) {
             m_gameObjects[m_selectedIndex]->Uninit(); // メモリを解放
             m_gameObjects.erase(m_gameObjects.begin() + m_selectedIndex); // リストから削除
@@ -293,7 +294,7 @@ void GUIManager::Update()
     //==================================================================
     // --- 選択されたオブジェクトのパラメータ操作ウィンドウ ---
     //==================================================================
-    ImGui::Begin("Object Parameters");
+    ImGui::Begin(u8"オブジェクトのパラメータ");
 
     if (m_selectedIndex >= 0 && m_selectedIndex < m_gameObjects.size()) {
 
@@ -343,7 +344,7 @@ void GUIManager::Update()
         m_arrowObject->SetVisible(true);
     }
     else {
-        ImGui::Text("No object selected.");
+        ImGui::Text(u8"選択されていません");
         m_arrowObject->SetVisible(false);
     }
 
