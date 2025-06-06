@@ -12,7 +12,7 @@
 #define NUMTEXTURE (5)
 #define NUMOBJECTTYPE (5)
 #define JUMP_DEC (2.2f)		//重力
-#define OBJ_MAX (5) // NUMOBJECTTYPEに合わせる
+
 
 using json = nlohmann::json; // 省略しないなら nlohmann::json を毎回使ってもOK
 
@@ -46,10 +46,11 @@ protected:
     std::string m_name;
     GameObjectType m_type;
     int m_nSummonCnt;
+    std::string m_modelPath;
 
 };
 
-//現在表示しているキューブ
+//現在表示しているキューブ 
 class CubeObject : public GameObject
 {
 public:
@@ -69,6 +70,23 @@ private:
     LPDIRECT3DTEXTURE9 m_pTexture_cube[NUMTEXTURE] = { nullptr };
 };
 
+//種類をもったゲージオブジェクト　TODO 配置するオブジェに種類を追加、配置後に種類を変更できるようにすると良い
+//class GenericObject : public GameObject {
+//public:
+//    GenericObject(const std::string& path) {
+//        m_modelPath = path;
+//    }
+//    ~GenericObject() {};
+//
+//
+//    HRESULT Init();
+//    void Load() override;
+//    void Draw() override;
+//    static ArrowObject* Create();
+//
+//};
+
+//矢印オブジェクト
 class ArrowObject : public GameObject
 {
 public:
@@ -83,7 +101,7 @@ public:
     bool IsVisible() const { return m_isVisible; }
 
 private:
-    // Cube固有のメッシュ、マテリアル、テクスチャ
+    // ArrowObject固有のメッシュ、マテリアル、テクスチャ
     LPD3DXMESH m_pMesh_arrow = nullptr;
     LPD3DXBUFFER m_pBuffMat_arrow = nullptr;
     DWORD m_dwNumMat_arrow = 0;

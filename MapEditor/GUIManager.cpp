@@ -144,7 +144,7 @@ void GUIManager::Update()
     ImGui::EndChild();
 
 
-    //オブジェクト生成
+    //オブジェクト生成(ボタンを増やして数種類のモデルを配置できるように)
     if (ImGui::Button(u8"オブジェクト生成")) {
         
         if (m_gameObjects.size() >= NUMOBJECT)
@@ -191,11 +191,15 @@ void GUIManager::Update()
             for (auto* obj : m_gameObjects) {
                 D3DXVECTOR3 pos = obj->GetPos();
                 D3DXVECTOR3 move = obj->GetMove();
+                D3DXVECTOR3 rot = obj->GetRot();
+                D3DXVECTOR3 scale = obj->GetScale();
                 int summonsnt = obj->GetSummonCount();
                 nlohmann::json objData;
                 objData["Move"] = { move.x, move.y, move.z };
                 objData["Name"] = obj->GetTypeString();
                 objData["Pos"] = { pos.x, pos.y, pos.z };
+                objData["Rot"] = { rot.x, rot.y, rot.z };
+                objData["Scale"] = { scale.x, scale.y, scale.z };
                 objData["SummonFrame"] = summonsnt;
                 jsonOutput.push_back(objData);
             }
@@ -332,12 +336,12 @@ void GUIManager::Update()
         if (ImGui::DragInt("SummonFrame", &summonframe, 1)) {
             obj->SetSummonCount(summonframe);
         }
-        /*if (ImGui::DragFloat3("Rotation", (float*)&rot, 0.1f)) {
+        if (ImGui::DragFloat3("Rotation", (float*)&rot, 0.1f)) {
             obj->SetRot(rot);
         }
         if (ImGui::DragFloat3("Scale", (float*)&scale, 0.1f)) {
             obj->SetScale(scale);
-        }*/
+        }
 
 
         m_arrowObject->SetPos(pos);  // 原点として配置
