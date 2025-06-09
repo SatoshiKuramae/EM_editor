@@ -42,49 +42,45 @@ public:
     void SetSummonCount(int summoncnt) { m_nSummonCnt = summoncnt; }
     int GetSummonCount()const { return m_nSummonCnt;}
 
+    void SetLogicRotation(const D3DXVECTOR3& rot) { m_logicRotation = rot; }
+    D3DXVECTOR3 GetLogicRotation() const { return m_logicRotation; }
+
+    // モデル差し替え関数（派生クラスで必要に応じてオーバーライド）
+    virtual void ChangeModel(const std::string& modelPath) {}
+    // モデルパスのGetter/Setter
+    std::string GetModelPath() const { return m_modelPath; }
+    void SetModelPath(const std::string& path) { m_modelPath = path; }
+    
 protected:
     std::string m_name;
     GameObjectType m_type;
     int m_nSummonCnt;
     std::string m_modelPath;
-
+    D3DXVECTOR3 m_logicRotation;    //回転量
 };
 
-//現在表示しているキューブ 
-class CubeObject : public GameObject
-{
+
+
+//種類をもったゲージオブジェクト　TODO 配置するオブジェに種類を追加、配置後に種類を変更できるようにすると良い
+class CGenericObject : public GameObject {
 public:
-    CubeObject() {};
-    ~CubeObject() {};
+    CGenericObject() {};
+    ~CGenericObject() {};
+
 
     HRESULT Init();
     void Load() override;
-    static CubeObject* Create();
-
+    void Draw() override;
+    static CGenericObject* Create(const std::string& modelPath);
+    void ChangeModel(const std::string& modelPath) override;
+    void ReleaseModelResources();
 private:
-    // Cube固有のメッシュ、マテリアル、テクスチャ
-    LPD3DXMESH m_pMesh_cube = nullptr;
-    LPD3DXBUFFER m_pBuffMat_cube = nullptr;
-    DWORD m_dwNumMat_cube = 0;
-    D3DXMATERIAL* m_pMaterial_cube = nullptr;
-    LPDIRECT3DTEXTURE9 m_pTexture_cube[NUMTEXTURE] = { nullptr };
+    LPD3DXMESH m_pMesh_Gn_Object = nullptr;
+    LPD3DXBUFFER m_pBuffMat_Gn_Object = nullptr;
+    DWORD m_dwNumMat_Gn_Object = 0;
+    D3DXMATERIAL* m_pMaterial_Gn_Object = nullptr;
+    LPDIRECT3DTEXTURE9 m_pTexture_Gn_Object[NUMTEXTURE] = { nullptr };
 };
-
-//種類をもったゲージオブジェクト　TODO 配置するオブジェに種類を追加、配置後に種類を変更できるようにすると良い
-//class GenericObject : public GameObject {
-//public:
-//    GenericObject(const std::string& path) {
-//        m_modelPath = path;
-//    }
-//    ~GenericObject() {};
-//
-//
-//    HRESULT Init();
-//    void Load() override;
-//    void Draw() override;
-//    static ArrowObject* Create();
-//
-//};
 
 //矢印オブジェクト
 class ArrowObject : public GameObject

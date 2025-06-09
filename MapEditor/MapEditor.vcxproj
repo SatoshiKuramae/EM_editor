@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="FileUtil.cpp" />
     <ClCompile Include="floor.cpp" />
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="grid.cpp" />
@@ -179,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="FileUtil.h" />
     <ClInclude Include="floor.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="grid.h" />

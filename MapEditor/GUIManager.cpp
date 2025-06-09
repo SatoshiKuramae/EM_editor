@@ -10,7 +10,7 @@
 #include "object.h"
 #include "gameobject.h"
 #include "pch.h"
-
+#include "FileUtil.h"
 using json = nlohmann::json; // 省略しないなら nlohmann::json を毎回使ってもOK
 
 
@@ -104,8 +104,16 @@ void GUIManager::Update()
     // ====== ここに描画処理を書く ======
     ImGui::Begin(u8"オブジェクトリスト");
 
-    ImGui::Text(u8"選択中のオブジェクト: %d", m_selectedIndex);
-
+ 
+    //m_selectedIndexが-1なら何も選択されていない
+    if (m_selectedIndex == -1)
+    {
+        ImGui::Text(u8"何も選択されていません");
+    }
+    else
+    {
+        ImGui::Text(u8"選択中のオブジェクト: %d", m_selectedIndex);
+    }
 
     static int patternIndex = 1;
     const int maxPattern = 10; // パターン数（必要に応じて増やせる）
@@ -116,18 +124,17 @@ void GUIManager::Update()
         if (patternIndex < 1) patternIndex = maxPattern;
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Import Json");
-
-        
     }
+
     ImGui::SameLine();
     ImGui::Text(u8"パターン %d/%d", patternIndex, maxPattern);
     ImGui::SameLine();
+
     if (ImGui::ArrowButton("##right", ImGuiDir_Right)) {
         patternIndex++;
         if (patternIndex > maxPattern) patternIndex = 1;
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Import Json");
-
     }
 
     // スクロール可能なリスト領域
@@ -143,35 +150,52 @@ void GUIManager::Update()
 
     ImGui::EndChild();
 
+    //モデルのパスを指定フォルダ内から取得
+    std::vector<std::string> modelFiles = GetXFileNamesInDirectory("Data\\model\\","x");
+    static int selected = 0;
+    static std::string selectedModelPath; // 選ばれたモデルのパス
 
-    //オブジェクト生成(ボタンを増やして数種類のモデルを配置できるように)
-    if (ImGui::Button(u8"オブジェクト生成")) {
-        
-        if (m_gameObjects.size() >= NUMOBJECT)
-        {
-            // 最大数に達している場合のエラー処理
-            ImGui::OpenPopup("Error");
-        }
-        else
-        {
-            GameObject* newObj = CubeObject::Create();
-            if (newObj)
-            {
-                m_gameObjects.push_back(newObj);
-                m_selectedIndex = m_gameObjects.size() - 1;
+    //=======================================================
+    //数種類対応のオブジェクト生成
+    //=======================================================
+    if (!selectedModelPath.empty()) {
+        ImGui::Text(u8"選択中のモデル: %s", selectedModelPath.c_str());
+    }
+    else
+    {
+        ImGui::Text(u8"生成するモデルが選択されていません");
+    }
+    if (!modelFiles.empty()) {
+        ImGui::Text(u8"モデルファイル一覧:");
+
+        for (int i = 0; i < modelFiles.size(); ++i) {
+            if (ImGui::Selectable(modelFiles[i].c_str(), selected == i)) {
+                selected = i;
+                selectedModelPath = "data\\model\\" + modelFiles[i]; // フルパスで保存
             }
         }
-        
-        
-    }
-    //エラーメッセージ
-    if (ImGui::BeginPopupModal("Error", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text(u8"オブジェクトが最大値に達しました");
-        if (ImGui::Button("OK")) {
-            ImGui::CloseCurrentPopup();
+
+        // ▼ モデル生成ボタンを追加
+        if (ImGui::Button(u8"このモデルでオブジェクトを生成")) {
+            // 例: GenericObject生成に使う
+            if (!selectedModelPath.empty())
+            {
+                GameObject* newObj = CGenericObject::Create(selectedModelPath);
+                newObj->Load();
+                if (newObj)
+                {
+                    m_gameObjects.push_back(newObj);
+                    m_selectedIndex = m_gameObjects.size() - 1;
+                    selectedObject = newObj;
+                }
+            }
         }
-        ImGui::EndPopup();
     }
+    else {
+
+        ImGui::Text("モデルファイルが見つかりません");
+    }
+
     //データ書き出し
     if (ImGui::Button(u8"セーブ")) {
 
@@ -179,19 +203,22 @@ void GUIManager::Update()
         ImGui::OpenPopup("Save Confirmation");
     }
 
-    // モーダルポップアップ
+    //セーブ時ポップアップ
     if (ImGui::BeginPopupModal("Save Confirmation", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text(u8"セーブしますか?");
         ImGui::Separator();
+        std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+        nlohmann::json jsonOutput;
+        ImGui::Text(u8"ファイルの名前\n%s", filename.c_str());
+
 
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
-            std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
-            nlohmann::json jsonOutput;
+            
 
             for (auto* obj : m_gameObjects) {
                 D3DXVECTOR3 pos = obj->GetPos();
                 D3DXVECTOR3 move = obj->GetMove();
-                D3DXVECTOR3 rot = obj->GetRot();
+                D3DXVECTOR3 rot = obj->GetLogicRotation();
                 D3DXVECTOR3 scale = obj->GetScale();
                 int summonsnt = obj->GetSummonCount();
                 nlohmann::json objData;
@@ -201,6 +228,7 @@ void GUIManager::Update()
                 objData["Rot"] = { rot.x, rot.y, rot.z };
                 objData["Scale"] = { scale.x, scale.y, scale.z };
                 objData["SummonFrame"] = summonsnt;
+                objData["ModelName"] = obj->GetModelPath();;
                 jsonOutput.push_back(objData);
             }
 
@@ -213,11 +241,12 @@ void GUIManager::Update()
         }
 
         ImGui::SameLine();
+
+        //セーブしない
         if (ImGui::Button("No", ImVec2(120, 0))) {
             ImGui::CloseCurrentPopup();
             showSaveConfirm = false;
         }
-
         ImGui::EndPopup();
     }
 
@@ -229,13 +258,16 @@ void GUIManager::Update()
         ImGui::OpenPopup("Import Json");
 
     }
+
+    //読み込み時ポップアップ
     if (ImGui::BeginPopupModal("Import Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text(u8"Jsonを読み込みますか?");
         ImGui::Separator();
+        std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+        nlohmann::json jsonOutput;
+        ImGui::Text(u8"ファイルの名前\n%s", filename.c_str());
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
-            std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
-            nlohmann::json jsonOutput;
-
+            
             std::ifstream in(filename);
             if (in) {
                 nlohmann::json jsonInput;
@@ -251,25 +283,24 @@ void GUIManager::Update()
                 m_selectedIndex = -1; // 選択をリセット
                 m_gameObjects.clear(); // 既存オブジェクトを削除（必要に応じて）
 
-                //新規読み込み
                 for (const auto& objData : jsonInput) {
-                    GameObject* newObj = new CubeObject();
+                    GameObject* newObj = new CGenericObject;
                     newObj->Loadjson(objData); // GameObjectが処理を担当
                     m_gameObjects.push_back(newObj);
+                    newObj->Init();     // モデルパスが設定された後に初期化
+                    newObj->Load();     // 必要なら Load も明示的に
                 }
 
                 m_selectedIndex = m_gameObjects.empty() ? -1 : 0; // 選択リセット
             }
-
-            //std::ofstream out("data\\gameobjects.JSON");
-            //out << jsonOutput.dump(4); // 4はインデント幅
-            //out.close();
 
             ImGui::CloseCurrentPopup();
             showSaveConfirm = false;
         }
         
         ImGui::SameLine();
+
+        //読み込みを行わない
         if (ImGui::Button("No", ImVec2(120, 0))) {
             ImGui::CloseCurrentPopup();
             showSaveConfirm = false;
@@ -277,6 +308,7 @@ void GUIManager::Update()
 
         ImGui::EndPopup();
     }
+
     //オブジェクト削除
     if (ImGui::Button(u8"選択中のオブジェクト削除")) {
         if (m_selectedIndex >= 0 && m_selectedIndex < static_cast<int>(m_gameObjects.size())) {
@@ -291,6 +323,42 @@ void GUIManager::Update()
                 m_selectedIndex = static_cast<int>(m_gameObjects.size()) - 1;
             }
         }
+    }
+
+
+    //モデル差し替え
+    if (ImGui::Button(u8"モデルを差し替え"))
+    {
+        confirmedSave = true;
+        ImGui::OpenPopup("Change Model");
+    }
+    if (ImGui::BeginPopupModal("Change Model", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        
+
+        ImGui::Text(u8"変更後のモデルパスを選んでください");
+        ImGui::Separator();
+        for (int i = 0; i < modelFiles.size(); ++i) {
+            if (ImGui::Selectable(modelFiles[i].c_str(), selected == i, ImGuiSelectableFlags_DontClosePopups)) {
+                selected = i;
+                selectedModelPath = "data\\model\\" + modelFiles[i];
+            }
+        }
+
+        if (ImGui::Button(u8"確定")) {
+            if (auto generic = dynamic_cast<CGenericObject*>(selectedObject)) {
+                generic->ChangeModel(selectedModelPath);
+            }
+
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button(u8"キャンセル")) {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
     }
 
     ImGui::End();
@@ -309,7 +377,7 @@ void GUIManager::Update()
         const char* typeItems[] = { "SafeZone", "Obstacle" };
 
         D3DXVECTOR3 pos = obj->GetPos();
-        D3DXVECTOR3 rot = obj->GetRot();
+        D3DXVECTOR3 rot = obj->GetLogicRotation();
         D3DXVECTOR3 scale = obj->GetScale();
         D3DXVECTOR3 move = obj->GetMove();
         int summonframe = obj->GetSummonCount();
@@ -337,12 +405,11 @@ void GUIManager::Update()
             obj->SetSummonCount(summonframe);
         }
         if (ImGui::DragFloat3("Rotation", (float*)&rot, 0.1f)) {
-            obj->SetRot(rot);
+            obj->SetLogicRotation(rot);
         }
         if (ImGui::DragFloat3("Scale", (float*)&scale, 0.1f)) {
             obj->SetScale(scale);
         }
-
 
         m_arrowObject->SetPos(pos);  // 原点として配置
         m_arrowObject->SetVisible(true);
@@ -355,6 +422,7 @@ void GUIManager::Update()
     ImGui::End();
 
 
+    //描画処理呼び出し
     for (auto obj : m_gameObjects)
     {
         if (!obj)
@@ -380,11 +448,12 @@ void GUIManager::Update()
         
     }
 
+    //矢印オブジェクトの表示を行うか否か
     if (m_arrowObject && m_arrowObject->IsVisible())
     {
         m_arrowObject->Draw();
     }
-    // ==================================
+
 
 }
 
