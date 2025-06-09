@@ -17,7 +17,7 @@
 
 constexpr double POS_X_MAX = 260.0f;
 constexpr double POS_Y_MAX = 135.0f;
-constexpr int NUM_PATTERN = 10;
+constexpr int NUM_PATTERN = 50;
 
 //GUIマネージャークラス
 class GUIManager
