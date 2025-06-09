@@ -34,7 +34,7 @@ bool GUIManager::Initialize(HWND hwnd, IDirect3DDevice9* device)
     // ImGuiコンテキストの作成
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
 
 
     ImFontConfig config;
