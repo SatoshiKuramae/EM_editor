@@ -42,7 +42,9 @@ public:
     void SetSummonCount(int summoncnt) { m_nSummonCnt = summoncnt; }
     int GetSummonCount()const { return m_nSummonCnt;}
 
+    //向きではなく回転量を操作するから親クラスのrotじゃなくて独自の数値が必要なんすよﾎﾞｯｼｬｧｧｧﾝ
     void SetLogicRotation(const D3DXVECTOR3& rot) { m_logicRotation = rot; }
+    //向きではなく回転量を操作するから親クラスのrotじゃなくて独自の数値が必要なんすよﾎﾞｯｼｬｧｧｧﾝ
     D3DXVECTOR3 GetLogicRotation() const { return m_logicRotation; }
 
     // モデル差し替え関数（派生クラスで必要に応じてオーバーライド）

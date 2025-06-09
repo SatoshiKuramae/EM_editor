@@ -9,8 +9,7 @@
 #include "imgui_impl_dx9.h"
 #include "object.h"
 #include "gameobject.h"
-#include "pch.h"
-#include "FileUtil.h"
+
 using json = nlohmann::json; // 省略しないなら nlohmann::json を毎回使ってもOK
 
 
@@ -95,9 +94,6 @@ void GUIManager::BeginFrame()
 //更新処理
 void GUIManager::Update() 
 {
-    static bool showSaveConfirm = false;
-    static bool confirmedSave = false;
-
     if (!m_Initialized)
         return;
 
@@ -114,9 +110,6 @@ void GUIManager::Update()
     {
         ImGui::Text(u8"選択中のオブジェクト: %d", m_selectedIndex);
     }
-
-    static int patternIndex = 1;
-    const int maxPattern = 10; // パターン数（必要に応じて増やせる）
 
     //パターンを変更
     if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
@@ -138,7 +131,7 @@ void GUIManager::Update()
     }
 
     // スクロール可能なリスト領域
-    ImGui::BeginChild(u8"リスト", ImVec2(200, 300), true);
+    ImGui::BeginChild("list", ImVec2(200, 300), true);
     for (int i = 0; i < static_cast<int>(m_gameObjects.size()); ++i) {
         char label[32];
         sprintf(label, u8"オブジェクト %d", i);
@@ -149,11 +142,6 @@ void GUIManager::Update()
     }
 
     ImGui::EndChild();
-
-    //モデルのパスを指定フォルダ内から取得
-    std::vector<std::string> modelFiles = GetXFileNamesInDirectory("Data\\model\\","x");
-    static int selected = 0;
-    static std::string selectedModelPath; // 選ばれたモデルのパス
 
     //=======================================================
     //数種類対応のオブジェクト生成
@@ -168,12 +156,16 @@ void GUIManager::Update()
     if (!modelFiles.empty()) {
         ImGui::Text(u8"モデルファイル一覧:");
 
+        ImGui::BeginChild("ModelList", ImVec2(300, 100), true);  // ← 幅300、高さ100のスクロール可能な子ウィンドウ
+
         for (int i = 0; i < modelFiles.size(); ++i) {
             if (ImGui::Selectable(modelFiles[i].c_str(), selected == i)) {
                 selected = i;
-                selectedModelPath = "data\\model\\" + modelFiles[i]; // フルパスで保存
+                selectedModelPath = gameobjectpath + modelFiles[i]; // フルパスで保存
             }
         }
+
+        ImGui::EndChild();
 
         // ▼ モデル生成ボタンを追加
         if (ImGui::Button(u8"このモデルでオブジェクトを生成")) {
@@ -207,8 +199,6 @@ void GUIManager::Update()
     if (ImGui::BeginPopupModal("Save Confirmation", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text(u8"セーブしますか?");
         ImGui::Separator();
-        std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
-        nlohmann::json jsonOutput;
         ImGui::Text(u8"ファイルの名前\n%s", filename.c_str());
 
 
@@ -263,8 +253,6 @@ void GUIManager::Update()
     if (ImGui::BeginPopupModal("Import Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text(u8"Jsonを読み込みますか?");
         ImGui::Separator();
-        std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
-        nlohmann::json jsonOutput;
         ImGui::Text(u8"ファイルの名前\n%s", filename.c_str());
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
             
@@ -392,12 +380,12 @@ void GUIManager::Update()
         if (ImGui::DragFloat3("Pos{x,y,z}", (float*)&pos, 0.1f)) {
 
             // Xの範囲制限
-            if (pos.x < -260.0f) pos.x = -260.0f;
-            if (pos.x > 260.0f) pos.x = 260.0f;
+            if (pos.x < -POS_X_MAX) pos.x = -POS_X_MAX;
+            if (pos.x > POS_X_MAX) pos.x = POS_X_MAX;
 
             // Yの範囲制限
-            if (pos.y < -135.0f) pos.y = -135.0f;
-            if (pos.y > 135.0f) pos.y = 135.0f;
+            if (pos.y < -POS_Y_MAX) pos.y = -POS_Y_MAX;
+            if (pos.y > POS_Y_MAX) pos.y = POS_Y_MAX;
 
             obj->SetPos(pos);
         }

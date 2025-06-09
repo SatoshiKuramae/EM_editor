@@ -12,11 +12,21 @@
 #include "main.h"
 #include "objectX.h"
 #include "manager.h"
+#include "pch.h"
+#include "FileUtil.h"
+
+constexpr double POS_X_MAX = 260.0f;
+constexpr double POS_Y_MAX = 135.0f;
+constexpr int NUM_PATTERN = 10;
+
+//GUIマネージャークラス
 class GUIManager
 {
 public:
 
+	//コンストラクタ
 	GUIManager();
+	//デストラクタ
 	~GUIManager();
 
 	//初期化、シャットダウン
@@ -37,8 +47,20 @@ public:
 
 	void SetSelectedObject(CObjectX* obj);
 private:
+	int patternIndex = 1;
+	const int maxPattern = NUM_PATTERN; // パターン数（必要に応じて増やせる）
 	bool m_Initialized;
-
+	bool showSaveConfirm = false;
+	bool confirmedSave = false;
+	//配置するゲームオブジェクトモデルのパス
+	std::string gameobjectpath = ("Data\\gameobject\\");
+	//指定フォルダ内のファイル名を取得する
+	std::vector<std::string> modelFiles = GetXFileNamesInDirectory(gameobjectpath, "x");
+	//JSONファイルの保存先のパスと名前
+	std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+	nlohmann::json jsonOutput;
+	int selected = 0;
+	std::string selectedModelPath; // 選ばれたモデルのパス
 	std::vector<GameObject*> m_gameObjects;
 	int m_selectedIndex = -1;
 	CObjectX* selectedObject = nullptr;	
