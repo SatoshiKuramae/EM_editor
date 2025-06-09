@@ -1,4 +1,4 @@
-//===============================================================================
+﻿//===============================================================================
 //
 //Object.cpp
 // 
@@ -9,12 +9,12 @@
 
 //===================================================================
 //
-//�e�N���X
+//親クラス
 //
 //===================================================================
 GameObject::GameObject()
 {
-    // �ʒu�E�X�P�[���ȂǏ�����
+    // 位置・スケールなど初期化
     SetPos(D3DXVECTOR3(0, 0, 0));
     SetScale(D3DXVECTOR3(1, 1, 1));
     SetRot(D3DXVECTOR3(0, 0, 0));
@@ -33,7 +33,7 @@ GameObject::~GameObject()
         m_pBuffMat = nullptr;
     }
 
-    // �e�N�X�`�����Y�ꂸ�ɉ���i�K�v�ł���΁j
+    // テクスチャも忘れずに解放（必要であれば）
     for (int i = 0; i < NUMTEXTURE; ++i) {
         if (m_pTexture[i]) {
             m_pTexture[i]->Release();
@@ -54,13 +54,13 @@ HRESULT GameObject::Init()
 
 void GameObject::Update()
 {
-    // CObjectX �̊�{�X�V + GameObject �Ǝ�����
+    // CObjectX の基本更新 + GameObject 独自処理
     CObjectX::Update();
 }
 
 void GameObject::Draw()
 {
-    // CObjectX �ɕ`��C���Ė��Ȃ���΂��̂܂�
+    // CObjectX に描画任せて問題なければそのまま
     CObjectX::Draw();
 }
 
@@ -95,7 +95,7 @@ GameObject* GameObject::Loadjson(const json& objData)
     }
     if (objData.contains("ModelName")) {
         std::string path = objData["ModelName"];
-        this->SetModelPath(path);  // �����o�ϐ��Ɋi�[�im_modelPath �Ȃǁj
+        this->SetModelPath(path);  // メンバ変数に格納（m_modelPath など）
     }
 
     return this;
@@ -112,13 +112,13 @@ const char* GameObject::GetTypeString() {
 GameObject::GameObjectType GameObject::FromTypeString(const std::string& str) {
     if (str == "SafeZone") return GameObjectType::SafeZone;
     if (str == "Obstacle") return GameObjectType::Obstacle;
-    return GameObjectType::SafeZone; // �f�t�H���g
+    return GameObjectType::SafeZone; // デフォルト
 }
 
 
 //===================================================================
 //
-//���I�u�W�F�N�g�N���X
+//矢印オブジェクトクラス
 //
 //===================================================================
 HRESULT ArrowObject::Init()
@@ -136,8 +136,8 @@ void ArrowObject::Load()
     LPDIRECT3DDEVICE9 pDevice;
     pDevice = CManager::GetRenderer()->GetDevice();
 
-    //X�t�@�C���̓ǂݍ���
-    D3DXLoadMeshFromX("data\\arrow.x",
+    //Xファイルの読み込み
+    D3DXLoadMeshFromX("data\\model\\arrow.x",
         D3DXMESH_SYSTEMMEM, pDevice,
         NULL,
         &m_pBuffMat_arrow,
@@ -145,7 +145,7 @@ void ArrowObject::Load()
         &m_dwNumMat_arrow,
         &m_pMesh_arrow);
 
-    // ���f���̃e�N�X�`���t�@�C��
+    // モデルのテクスチャファイル
     m_pMaterial_arrow = (D3DXMATERIAL*)m_pBuffMat_arrow->GetBufferPointer();
     for (DWORD i = 0; i < m_dwNumMat_arrow; ++i)
     {
@@ -154,7 +154,7 @@ void ArrowObject::Load()
             D3DXCreateTextureFromFile(pDevice, m_pMaterial_arrow[i].pTextureFilename, &m_pTexture_arrow[i]);
         }
     }
-    // BindMesh�Ăяo��
+    // BindMesh呼び出し
     BindMesh(m_pMesh_arrow, m_pBuffMat_arrow, m_dwNumMat_arrow, m_pMaterial_arrow, m_pTexture_arrow);
 
 }
@@ -162,10 +162,10 @@ void ArrowObject::Load()
 void ArrowObject::Draw()
 {
     if (!m_isVisible) {
-        return;  // ��\���Ȃ�`�悵�Ȃ�
+        return;  // 非表示なら描画しない
     }
 
-    // �ʏ�̕`�揈��
+    // 通常の描画処理
     CObjectX::Draw();
 }
 
@@ -183,7 +183,7 @@ ArrowObject* ArrowObject::Create()
 
 //===================================================================
 //
-//�����Ή��^�I�u�W�F�N�g�N���X
+//複数対応型オブジェクトクラス
 //
 //===================================================================
 
@@ -202,7 +202,7 @@ void CGenericObject::Load()
     LPDIRECT3DDEVICE9 pDevice;
     pDevice = CManager::GetRenderer()->GetDevice();
 
-    //X�t�@�C���̓ǂݍ���
+    //Xファイルの読み込み
     D3DXLoadMeshFromX(m_modelPath.c_str(),
         D3DXMESH_SYSTEMMEM, pDevice,
         NULL,
@@ -211,7 +211,7 @@ void CGenericObject::Load()
         &m_dwNumMat_Gn_Object,
         &m_pMesh_Gn_Object);
 
-    // ���f���̃e�N�X�`���t�@�C��
+    // モデルのテクスチャファイル
     m_pMaterial_Gn_Object = (D3DXMATERIAL*)m_pBuffMat_Gn_Object->GetBufferPointer();
 
     for (DWORD i = 0; i < m_dwNumMat_Gn_Object; ++i)
@@ -221,7 +221,7 @@ void CGenericObject::Load()
             D3DXCreateTextureFromFile(pDevice, m_pMaterial_Gn_Object[i].pTextureFilename, &m_pTexture_Gn_Object[i]);
         }
     }
-    // BindMesh�Ăяo��
+    // BindMesh呼び出し
     BindMesh(m_pMesh_Gn_Object, m_pBuffMat_Gn_Object, m_dwNumMat_Gn_Object, m_pMaterial_Gn_Object, m_pTexture_Gn_Object);
 
 }
@@ -229,7 +229,7 @@ void CGenericObject::Load()
 void CGenericObject::Draw()
 {
 
-    // �ʏ�̕`�揈��
+    // 通常の描画処理
     CObjectX::Draw();
 }
 
@@ -248,8 +248,8 @@ CGenericObject* CGenericObject::Create(const std::string& modelPath)
 }
 
 void CGenericObject::ChangeModel(const std::string& modelPath) {
-    SetModelPath(modelPath);  // ���f���p�X�X�V
-    Load();                   // �ēǂݍ���
+    SetModelPath(modelPath);  // モデルパス更新
+    Load();                   // 再読み込み
 }
 
 void CGenericObject::ReleaseModelResources() {

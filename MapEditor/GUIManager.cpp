@@ -1,4 +1,4 @@
-//==============================================================
+ï»¿//==============================================================
 //
 // GUImanager.cpp
 //
@@ -10,45 +10,45 @@
 #include "object.h"
 #include "gameobject.h"
 
-using json = nlohmann::json; // È—ª‚µ‚È‚¢‚È‚ç nlohmann::json ‚ğ–ˆ‰ñg‚Á‚Ä‚àOK
+using json = nlohmann::json; // çœç•¥ã—ãªã„ãªã‚‰ nlohmann::json ã‚’æ¯å›ä½¿ã£ã¦ã‚‚OK
 
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 GUIManager::GUIManager()
     : m_Initialized(false)
 {
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 GUIManager::~GUIManager()
 {
     Shutdown();
 }
 
-//‰Šú‰»ˆ—
+//åˆæœŸåŒ–å‡¦ç†
 bool GUIManager::Initialize(HWND hwnd, IDirect3DDevice9* device)
 {
     if (m_Initialized)
         return true;
     patternIndex = 1;
-    // ImGuiƒRƒ“ƒeƒLƒXƒg‚Ìì¬
+    // ImGuiã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã®ä½œæˆ
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
 
 
     ImFontConfig config;
-    config.DstFont = 0; // ‘½‚­‚Ìê‡‚Í0‚ÅOK
+    config.DstFont = 0; // å¤šãã®å ´åˆã¯0ã§OK
     config.FontDataOwnedByAtlas = true;
 
     io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\meiryo.ttc", 18.0f, &config, io.Fonts->GetGlyphRangesJapanese());
 
-    // ƒXƒ^ƒCƒ‹İ’è
+    // ã‚¹ã‚¿ã‚¤ãƒ«è¨­å®š
     ImGui::StyleColorsDark();
     ImGuiStyle& style = ImGui::GetStyle();
-    style.Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // ”’‚¢ƒtƒHƒ“ƒg
+    style.Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // ç™½ã„ãƒ•ã‚©ãƒ³ãƒˆ
 
-    // ‰Šú‰»
+    // åˆæœŸåŒ–
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX9_Init(device);
 
@@ -61,13 +61,13 @@ bool GUIManager::Initialize(HWND hwnd, IDirect3DDevice9* device)
     return true;
 }
 
-//I—¹ˆ—
+//çµ‚äº†å‡¦ç†
 void GUIManager::Shutdown()
 {
     if (!m_Initialized)
         return;
 
-    // Š—L‚µ‚Ä‚¢‚é GameObject ‚ğ‚·‚×‚Äíœ
+    // æ‰€æœ‰ã—ã¦ã„ã‚‹ GameObject ã‚’ã™ã¹ã¦å‰Šé™¤
     /*for (auto* obj : m_gameObjects) {
         delete obj;
     }
@@ -80,7 +80,7 @@ void GUIManager::Shutdown()
     m_Initialized = false;
 }
 
-//•`‰æŠJn
+//æç”»é–‹å§‹
 void GUIManager::BeginFrame()
 {
     if (!m_Initialized)
@@ -91,53 +91,53 @@ void GUIManager::BeginFrame()
     ImGui::NewFrame();
 }
 
-//XVˆ—
+//æ›´æ–°å‡¦ç†
 void GUIManager::Update() 
 {
-    //JSONƒtƒ@ƒCƒ‹‚Ì•Û‘¶æ‚ÌƒpƒX‚Æ–¼‘O
+    //JSONãƒ•ã‚¡ã‚¤ãƒ«ã®ä¿å­˜å…ˆã®ãƒ‘ã‚¹ã¨åå‰
     std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
 
     if (!m_Initialized)
         return;
 
-    // ====== ‚±‚±‚É•`‰æˆ—‚ğ‘‚­ ======
-    ImGui::Begin(u8"ƒIƒuƒWƒFƒNƒgƒŠƒXƒg");
+    // ====== ã“ã“ã«æç”»å‡¦ç†ã‚’æ›¸ã ======
+    ImGui::Begin(u8"ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒªã‚¹ãƒˆ");
 
  
-    //m_selectedIndex‚ª-1‚È‚ç‰½‚à‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢
+    //m_selectedIndexãŒ-1ãªã‚‰ä½•ã‚‚é¸æŠã•ã‚Œã¦ã„ãªã„
     if (m_selectedIndex == -1)
     {
-        ImGui::Text(u8"‰½‚à‘I‘ğ‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+        ImGui::Text(u8"ä½•ã‚‚é¸æŠã•ã‚Œã¦ã„ã¾ã›ã‚“");
     }
     else
     {
-        ImGui::Text(u8"‘I‘ğ’†‚ÌƒIƒuƒWƒFƒNƒg: %d", m_selectedIndex);
+        ImGui::Text(u8"é¸æŠä¸­ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ: %d", m_selectedIndex);
     }
 
-    //ƒpƒ^[ƒ“‚ğ•ÏX
+    //ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’å¤‰æ›´
     if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
         patternIndex--;
         if (patternIndex < 1) patternIndex = maxPattern;
-        showSaveConfirm = true; // Šm”FƒEƒBƒ“ƒhƒE‚ğo‚·ƒgƒŠƒK[
+        showSaveConfirm = true; // ç¢ºèªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å‡ºã™ãƒˆãƒªã‚¬ãƒ¼
         ImGui::OpenPopup("Import Json");
     }
 
     ImGui::SameLine();
-    ImGui::Text(u8"ƒpƒ^[ƒ“ %d/%d", patternIndex, maxPattern);
+    ImGui::Text(u8"ãƒ‘ã‚¿ãƒ¼ãƒ³ %d/%d", patternIndex, maxPattern);
     ImGui::SameLine();
 
     if (ImGui::ArrowButton("##right", ImGuiDir_Right)) {
         patternIndex++;
         if (patternIndex > maxPattern) patternIndex = 1;
-        showSaveConfirm = true; // Šm”FƒEƒBƒ“ƒhƒE‚ğo‚·ƒgƒŠƒK[
+        showSaveConfirm = true; // ç¢ºèªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å‡ºã™ãƒˆãƒªã‚¬ãƒ¼
         ImGui::OpenPopup("Import Json");
     }
 
-    // ƒXƒNƒ[ƒ‹‰Â”\‚ÈƒŠƒXƒg—Ìˆæ
+    // ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«å¯èƒ½ãªãƒªã‚¹ãƒˆé ˜åŸŸ
     ImGui::BeginChild("list", ImVec2(200, 300), true);
     for (int i = 0; i < static_cast<int>(m_gameObjects.size()); ++i) {
         char label[32];
-        sprintf(label, u8"ƒIƒuƒWƒFƒNƒg %d", i);
+        sprintf(label, u8"ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ %d", i);
         if (ImGui::Selectable(label, m_selectedIndex == i)) {
             m_selectedIndex = i;
             selectedObject = m_gameObjects[i];
@@ -147,33 +147,33 @@ void GUIManager::Update()
     ImGui::EndChild();
 
     //=======================================================
-    //”í—Ş‘Î‰‚ÌƒIƒuƒWƒFƒNƒg¶¬
+    //æ•°ç¨®é¡å¯¾å¿œã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
     //=======================================================
 
     if (!selectedModelPath.empty()) {
-        ImGui::Text(u8"‘I‘ğ’†‚Ìƒ‚ƒfƒ‹: %s", selectedModelPath.c_str());
+        ImGui::Text(u8"é¸æŠä¸­ã®ãƒ¢ãƒ‡ãƒ«: %s", selectedModelPath.c_str());
     }
     else
     {
-        ImGui::Text(u8"¶¬‚·‚éƒ‚ƒfƒ‹‚ª‘I‘ğ‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+        ImGui::Text(u8"ç”Ÿæˆã™ã‚‹ãƒ¢ãƒ‡ãƒ«ãŒé¸æŠã•ã‚Œã¦ã„ã¾ã›ã‚“");
     }
     if (!modelFiles.empty()) {
-        ImGui::Text(u8"ƒ‚ƒfƒ‹ƒtƒ@ƒCƒ‹ˆê——:");
+        ImGui::Text(u8"ãƒ¢ãƒ‡ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§:");
 
-        ImGui::BeginChild("ModelList", ImVec2(300, 100), true);  // © •300A‚‚³100‚ÌƒXƒNƒ[ƒ‹‰Â”\‚ÈqƒEƒBƒ“ƒhƒE
+        ImGui::BeginChild("ModelList", ImVec2(300, 100), true);  // â† å¹…300ã€é«˜ã•100ã®ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«å¯èƒ½ãªå­ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 
         for (int i = 0; i < modelFiles.size(); ++i) {
             if (ImGui::Selectable(modelFiles[i].c_str(), selected == i)) {
                 selected = i;
-                selectedModelPath = gameobjectpath + modelFiles[i]; // ƒtƒ‹ƒpƒX‚Å•Û‘¶
+                selectedModelPath = gameobjectpath + modelFiles[i]; // ãƒ•ãƒ«ãƒ‘ã‚¹ã§ä¿å­˜
             }
         }
 
         ImGui::EndChild();
 
-        // ¥ ƒ‚ƒfƒ‹¶¬ƒ{ƒ^ƒ“‚ğ’Ç‰Á
-        if (ImGui::Button(u8"‚±‚Ìƒ‚ƒfƒ‹‚ÅƒIƒuƒWƒFƒNƒg‚ğ¶¬")) {
-            // —á: GenericObject¶¬‚Ég‚¤
+        // â–¼ ãƒ¢ãƒ‡ãƒ«ç”Ÿæˆãƒœã‚¿ãƒ³ã‚’è¿½åŠ 
+        if (ImGui::Button(u8"ã“ã®ãƒ¢ãƒ‡ãƒ«ã§ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆ")) {
+            // ä¾‹: GenericObjectç”Ÿæˆã«ä½¿ã†
             if (!selectedModelPath.empty())
             {
                 GameObject* newObj = CGenericObject::Create(selectedModelPath);
@@ -189,21 +189,21 @@ void GUIManager::Update()
     }
     else {
 
-        ImGui::Text("ƒ‚ƒfƒ‹ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+        ImGui::Text("ãƒ¢ãƒ‡ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
     }
 
-    //ƒf[ƒ^‘‚«o‚µ
-    if (ImGui::Button(u8"ƒZ[ƒu")) {
+    //ãƒ‡ãƒ¼ã‚¿æ›¸ãå‡ºã—
+    if (ImGui::Button(u8"ã‚»ãƒ¼ãƒ–")) {
 
-        showSaveConfirm = true; // Šm”FƒEƒBƒ“ƒhƒE‚ğo‚·ƒgƒŠƒK[
+        showSaveConfirm = true; // ç¢ºèªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å‡ºã™ãƒˆãƒªã‚¬ãƒ¼
         ImGui::OpenPopup("Save Confirmation");
     }
 
-    //ƒZ[ƒuƒ|ƒbƒvƒAƒbƒv
+    //ã‚»ãƒ¼ãƒ–æ™‚ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—
     if (ImGui::BeginPopupModal("Save Confirmation", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text(u8"ƒZ[ƒu‚µ‚Ü‚·‚©?");
+        ImGui::Text(u8"ã‚»ãƒ¼ãƒ–ã—ã¾ã™ã‹?");
         ImGui::Separator();
-        ImGui::Text(u8"ƒtƒ@ƒCƒ‹‚Ì–¼‘O\n%s", filename.c_str());
+        ImGui::Text(u8"ãƒ•ã‚¡ã‚¤ãƒ«ã®åå‰\n%s", filename.c_str());
 
 
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
@@ -227,7 +227,7 @@ void GUIManager::Update()
             }
 
             std::ofstream out(filename);
-            out << jsonOutput.dump(4); // 4‚ÍƒCƒ“ƒfƒ“ƒg•
+            out << jsonOutput.dump(4); // 4ã¯ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆå¹…
             out.close();
 
             ImGui::CloseCurrentPopup();
@@ -236,7 +236,7 @@ void GUIManager::Update()
 
         ImGui::SameLine();
 
-        //ƒZ[ƒu‚µ‚È‚¢
+        //ã‚»ãƒ¼ãƒ–ã—ãªã„
         if (ImGui::Button("No", ImVec2(120, 0))) {
             ImGui::CloseCurrentPopup();
             showSaveConfirm = false;
@@ -245,17 +245,17 @@ void GUIManager::Update()
     }
 
 
-    //Json“Ç‚İ‚İ
-    if (ImGui::Button(u8"ƒ[ƒh")) {
+    //Jsonèª­ã¿è¾¼ã¿
+    if (ImGui::Button(u8"ãƒ­ãƒ¼ãƒ‰")) {
 
-        showSaveConfirm = true; // Šm”FƒEƒBƒ“ƒhƒE‚ğo‚·ƒgƒŠƒK[
+        showSaveConfirm = true; // ç¢ºèªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å‡ºã™ãƒˆãƒªã‚¬ãƒ¼
         ImGui::OpenPopup("Import Json");
     }
 
-    //“Ç‚İ‚İƒ|ƒbƒvƒAƒbƒv
+    //èª­ã¿è¾¼ã¿æ™‚ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—
     if (ImGui::BeginPopupModal("Import Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text(u8"Json‚ğ“Ç‚İ‚İ‚Ü‚·‚©?");
-        ImGui::InputInt(u8"ƒpƒ^[ƒ“”Ô†‚ğw’è", &patternIndex);
+        ImGui::Text(u8"Jsonã‚’èª­ã¿è¾¼ã¿ã¾ã™ã‹?");
+        ImGui::InputInt(u8"ãƒ‘ã‚¿ãƒ¼ãƒ³ç•ªå·ã‚’æŒ‡å®š", &patternIndex);
         ImGui::Separator();
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
 
@@ -265,24 +265,24 @@ void GUIManager::Update()
                 in >> jsonInput;
                 in.close();
 
-                // Šù‘¶ƒIƒuƒWƒFƒNƒg‚Ìíœ
+                // æ—¢å­˜ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å‰Šé™¤
                 for (auto* obj : m_gameObjects) {
                     //delete obj;
                     obj->Uninit();
                     obj = nullptr;
                 }
-                m_selectedIndex = -1; // ‘I‘ğ‚ğƒŠƒZƒbƒg
-                m_gameObjects.clear(); // Šù‘¶ƒIƒuƒWƒFƒNƒg‚ğíœi•K—v‚É‰‚¶‚Äj
+                m_selectedIndex = -1; // é¸æŠã‚’ãƒªã‚»ãƒƒãƒˆ
+                m_gameObjects.clear(); // æ—¢å­˜ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å‰Šé™¤ï¼ˆå¿…è¦ã«å¿œã˜ã¦ï¼‰
 
                 for (const auto& objData : jsonInput) {
                     GameObject* newObj = new CGenericObject;
-                    newObj->Loadjson(objData); // GameObject‚ªˆ—‚ğ’S“–
+                    newObj->Loadjson(objData); // GameObjectãŒå‡¦ç†ã‚’æ‹…å½“
                     m_gameObjects.push_back(newObj);
-                    newObj->Init();     // ƒ‚ƒfƒ‹ƒpƒX‚ªİ’è‚³‚ê‚½Œã‚É‰Šú‰»
-                    newObj->Load();     // •K—v‚È‚ç Load ‚à–¾¦“I‚É
+                    newObj->Init();     // ãƒ¢ãƒ‡ãƒ«ãƒ‘ã‚¹ãŒè¨­å®šã•ã‚ŒãŸå¾Œã«åˆæœŸåŒ–
+                    newObj->Load();     // å¿…è¦ãªã‚‰ Load ã‚‚æ˜ç¤ºçš„ã«
                 }
 
-                m_selectedIndex = m_gameObjects.empty() ? -1 : 0; // ‘I‘ğƒŠƒZƒbƒg
+                m_selectedIndex = m_gameObjects.empty() ? -1 : 0; // é¸æŠãƒªã‚»ãƒƒãƒˆ
             }
 
             ImGui::CloseCurrentPopup();
@@ -291,7 +291,7 @@ void GUIManager::Update()
         
         ImGui::SameLine();
 
-        //“Ç‚İ‚İ‚ğs‚í‚È‚¢
+        //èª­ã¿è¾¼ã¿ã‚’è¡Œã‚ãªã„
         if (ImGui::Button("No", ImVec2(120, 0))) {
             ImGui::CloseCurrentPopup();
             showSaveConfirm = false;
@@ -300,13 +300,13 @@ void GUIManager::Update()
         ImGui::EndPopup();
     }
 
-    //ƒIƒuƒWƒFƒNƒgíœ
-    if (ImGui::Button(u8"‘I‘ğ’†‚ÌƒIƒuƒWƒFƒNƒgíœ")) {
+    //ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå‰Šé™¤
+    if (ImGui::Button(u8"é¸æŠä¸­ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå‰Šé™¤")) {
         if (m_selectedIndex >= 0 && m_selectedIndex < static_cast<int>(m_gameObjects.size())) {
-            m_gameObjects[m_selectedIndex]->Uninit(); // ƒƒ‚ƒŠ‚ğ‰ğ•ú
-            m_gameObjects.erase(m_gameObjects.begin() + m_selectedIndex); // ƒŠƒXƒg‚©‚çíœ
+            m_gameObjects[m_selectedIndex]->Uninit(); // ãƒ¡ãƒ¢ãƒªã‚’è§£æ”¾
+            m_gameObjects.erase(m_gameObjects.begin() + m_selectedIndex); // ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤
 
-            // ƒCƒ“ƒfƒbƒNƒX‚ğ’²®
+            // ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’èª¿æ•´
             if (m_gameObjects.empty()) {
                 m_selectedIndex = -1;
             }
@@ -317,15 +317,15 @@ void GUIManager::Update()
     }
 
 
-    //ƒ‚ƒfƒ‹·‚µ‘Ö‚¦
-    if (ImGui::Button(u8"ƒ‚ƒfƒ‹‚ğ·‚µ‘Ö‚¦"))
+    //ãƒ¢ãƒ‡ãƒ«å·®ã—æ›¿ãˆ
+    if (ImGui::Button(u8"ãƒ¢ãƒ‡ãƒ«ã‚’å·®ã—æ›¿ãˆ"))
     {
         confirmedSave = true;
         ImGui::OpenPopup("Change Model");
     }
     if (ImGui::BeginPopupModal("Change Model", NULL, ImGuiWindowFlags_AlwaysAutoResize))
     {
-        ImGui::Text(u8"•ÏXŒã‚Ìƒ‚ƒfƒ‹ƒpƒX‚ğ‘I‚ñ‚Å‚­‚¾‚³‚¢");
+        ImGui::Text(u8"å¤‰æ›´å¾Œã®ãƒ¢ãƒ‡ãƒ«ãƒ‘ã‚¹ã‚’é¸ã‚“ã§ãã ã•ã„");
         ImGui::Separator();
         for (int i = 0; i < modelFiles.size(); ++i) {
             if (ImGui::Selectable(modelFiles[i].c_str(), selected == i, ImGuiSelectableFlags_DontClosePopups)) {
@@ -334,7 +334,7 @@ void GUIManager::Update()
             }
         }
 
-        if (ImGui::Button(u8"Šm’è")) {
+        if (ImGui::Button(u8"ç¢ºå®š")) {
             if (auto generic = dynamic_cast<CGenericObject*>(selectedObject)) {
                 generic->ChangeModel(selectedModelPath);
             }
@@ -343,7 +343,7 @@ void GUIManager::Update()
         }
 
         ImGui::SameLine();
-        if (ImGui::Button(u8"ƒLƒƒƒ“ƒZƒ‹")) {
+        if (ImGui::Button(u8"ã‚­ãƒ£ãƒ³ã‚»ãƒ«")) {
             ImGui::CloseCurrentPopup();
         }
 
@@ -353,15 +353,15 @@ void GUIManager::Update()
     ImGui::End();
 
     //==================================================================
-    // --- ‘I‘ğ‚³‚ê‚½ƒIƒuƒWƒFƒNƒg‚Ìƒpƒ‰ƒ[ƒ^‘€ìƒEƒBƒ“ƒhƒE ---
+    // --- é¸æŠã•ã‚ŒãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ“ä½œã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ ---
     //==================================================================
-    ImGui::Begin(u8"ƒIƒuƒWƒFƒNƒg‚Ìƒpƒ‰ƒ[ƒ^");
+    ImGui::Begin(u8"ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿");
 
     if (m_selectedIndex >= 0 && m_selectedIndex < m_gameObjects.size()) {
 
-        // –îˆóƒIƒuƒWƒFƒNƒg¶¬
+        // çŸ¢å°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
         GameObject* obj = m_gameObjects[m_selectedIndex];
-        GameObject::GameObjectType type = obj->GetObjectType(); // ƒ^ƒCƒvæ“¾
+        GameObject::GameObjectType type = obj->GetObjectType(); // ã‚¿ã‚¤ãƒ—å–å¾—
         int currentType = static_cast<int>(type);
         const char* typeItems[] = { "SafeZone", "Obstacle" };
 
@@ -380,11 +380,11 @@ void GUIManager::Update()
         }
         if (ImGui::DragFloat3("Pos{x,y,z}", (float*)&pos, 0.1f)) {
 
-            // X‚Ì”ÍˆÍ§ŒÀ
+            // Xã®ç¯„å›²åˆ¶é™
             if (pos.x < -POS_X_MAX) pos.x = -POS_X_MAX;
             if (pos.x > POS_X_MAX) pos.x = POS_X_MAX;
 
-            // Y‚Ì”ÍˆÍ§ŒÀ
+            // Yã®ç¯„å›²åˆ¶é™
             if (pos.y < -POS_Y_MAX) pos.y = -POS_Y_MAX;
             if (pos.y > POS_Y_MAX) pos.y = POS_Y_MAX;
 
@@ -400,44 +400,44 @@ void GUIManager::Update()
             obj->SetScale(scale);
         }
 
-        m_arrowObject->SetPos(pos);  // Œ´“_‚Æ‚µ‚Ä”z’u
+        m_arrowObject->SetPos(pos);  // åŸç‚¹ã¨ã—ã¦é…ç½®
         m_arrowObject->SetVisible(true);
     }
     else {
-        ImGui::Text(u8"‘I‘ğ‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+        ImGui::Text(u8"é¸æŠã•ã‚Œã¦ã„ã¾ã›ã‚“");
         m_arrowObject->SetVisible(false);
     }
 
     ImGui::End();
 
 
-    //•`‰æˆ—ŒÄ‚Ño‚µ
+    //æç”»å‡¦ç†å‘¼ã³å‡ºã—
     for (auto obj : m_gameObjects)
     {
         if (!obj)
         {
             if (obj == selectedObject)
             {
-                // ƒAƒEƒgƒ‰ƒCƒ“•`‰æ
+                // ã‚¢ã‚¦ãƒˆãƒ©ã‚¤ãƒ³æç”»
                 obj->DrawOutline();
 
-                // ƒƒCƒ„[ƒtƒŒ[ƒ€—LŒø‰»
+                // ãƒ¯ã‚¤ãƒ¤ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ æœ‰åŠ¹åŒ–
                 CManager::GetRenderer()->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
-                obj->Draw(); // ’Êí•`‰æiƒ‚[ƒh‚ªƒƒCƒ„[ƒtƒŒ[ƒ€‚É‚È‚Á‚Ä‚éj
+                obj->Draw(); // é€šå¸¸æç”»ï¼ˆãƒ¢ãƒ¼ãƒ‰ãŒãƒ¯ã‚¤ãƒ¤ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ã«ãªã£ã¦ã‚‹ï¼‰
 
-                // Œ³‚É–ß‚·
+                // å…ƒã«æˆ»ã™
                 CManager::GetRenderer()->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
             }
             else
             {
-                obj->Draw(); // ’Êí•`‰æ
+                obj->Draw(); // é€šå¸¸æç”»
             }
         }
         
     }
 
-    //–îˆóƒIƒuƒWƒFƒNƒg‚Ì•\¦‚ğs‚¤‚©”Û‚©
+    //çŸ¢å°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è¡¨ç¤ºã‚’è¡Œã†ã‹å¦ã‹
     if (m_arrowObject && m_arrowObject->IsVisible())
     {
         m_arrowObject->Draw();
@@ -446,7 +446,7 @@ void GUIManager::Update()
 
 }
 
-//ƒtƒŒ[ƒ€I—¹
+//ãƒ•ãƒ¬ãƒ¼ãƒ çµ‚äº†
 void GUIManager::EndFrame(IDirect3DDevice9* device)
 {
     if (!m_Initialized)
@@ -460,7 +460,7 @@ void GUIManager::EndFrame(IDirect3DDevice9* device)
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-//ƒEƒBƒ“ƒhƒEƒvƒƒV[ƒWƒƒ
+//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 bool GUIManager::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     if (!m_Initialized)
