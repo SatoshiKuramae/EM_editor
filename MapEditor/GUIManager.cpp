@@ -30,7 +30,7 @@ bool GUIManager::Initialize(HWND hwnd, IDirect3DDevice9* device)
 {
     if (m_Initialized)
         return true;
-
+    patternIndex = 1;
     // ImGuiコンテキストの作成
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -94,6 +94,9 @@ void GUIManager::BeginFrame()
 //更新処理
 void GUIManager::Update() 
 {
+    //JSONファイルの保存先のパスと名前
+    std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+
     if (!m_Initialized)
         return;
 
@@ -146,6 +149,7 @@ void GUIManager::Update()
     //=======================================================
     //数種類対応のオブジェクト生成
     //=======================================================
+
     if (!selectedModelPath.empty()) {
         ImGui::Text(u8"選択中のモデル: %s", selectedModelPath.c_str());
     }
@@ -246,16 +250,15 @@ void GUIManager::Update()
 
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Import Json");
-
     }
 
     //読み込み時ポップアップ
     if (ImGui::BeginPopupModal("Import Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text(u8"Jsonを読み込みますか?");
+        ImGui::InputInt(u8"パターン番号を指定", &patternIndex);
         ImGui::Separator();
-        ImGui::Text(u8"ファイルの名前\n%s", filename.c_str());
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
-            
+
             std::ifstream in(filename);
             if (in) {
                 nlohmann::json jsonInput;
@@ -322,14 +325,12 @@ void GUIManager::Update()
     }
     if (ImGui::BeginPopupModal("Change Model", NULL, ImGuiWindowFlags_AlwaysAutoResize))
     {
-        
-
         ImGui::Text(u8"変更後のモデルパスを選んでください");
         ImGui::Separator();
         for (int i = 0; i < modelFiles.size(); ++i) {
             if (ImGui::Selectable(modelFiles[i].c_str(), selected == i, ImGuiSelectableFlags_DontClosePopups)) {
                 selected = i;
-                selectedModelPath = "data\\model\\" + modelFiles[i];
+                selectedModelPath = gameobjectpath + modelFiles[i];
             }
         }
 

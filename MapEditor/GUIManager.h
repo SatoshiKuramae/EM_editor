@@ -47,7 +47,7 @@ public:
 
 	void SetSelectedObject(CObjectX* obj);
 private:
-	int patternIndex = 1;
+	int patternIndex;
 	const int maxPattern = NUM_PATTERN; // パターン数（必要に応じて増やせる）
 	bool m_Initialized;
 	bool showSaveConfirm = false;
@@ -56,8 +56,7 @@ private:
 	std::string gameobjectpath = ("Data\\gameobject\\");
 	//指定フォルダ内のファイル名を取得する
 	std::vector<std::string> modelFiles = GetXFileNamesInDirectory(gameobjectpath, "x");
-	//JSONファイルの保存先のパスと名前
-	std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+	
 	nlohmann::json jsonOutput;
 	int selected = 0;
 	std::string selectedModelPath; // 選ばれたモデルのパス
