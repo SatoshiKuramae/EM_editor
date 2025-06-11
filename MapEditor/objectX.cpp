@@ -1,4 +1,4 @@
-//===============================================================================
+ï»¿//===============================================================================
 //
 // objectX.cpp
 // 
@@ -7,35 +7,35 @@
 #include "objectX.h"
 #include "manager.h"
 #include "player.h"
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CObjectX::CObjectX()
 {
 
 }
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CObjectX::~CObjectX()
 {
 
 }
 
-//‰Šú‰»ˆ—
+//åˆæœŸåŒ–å‡¦ç†
 HRESULT CObjectX::Init()
 {
-	m_scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	//m_scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 	return S_OK;
 }
 
-//I—¹ˆ—
+//çµ‚äº†å‡¦ç†
 void CObjectX::Uninit()
 {
-	//ƒƒbƒVƒ…‚Ì”jŠü
+	//ãƒ¡ãƒƒã‚·ãƒ¥ã®ç ´æ£„
 	if (CObjectX::m_pMesh != nullptr)
 	{
 		CObjectX::m_pMesh->Release();
 		CObjectX::m_pMesh = NULL;
 	}
 
-	//ƒ}ƒeƒŠƒAƒ‹‚Ì”jŠü
+	//ãƒãƒ†ãƒªã‚¢ãƒ«ã®ç ´æ£„
 	if (CObjectX::m_pBuffMat != NULL)
 	{
 		CObjectX::m_pBuffMat->Release();
@@ -45,71 +45,71 @@ void CObjectX::Uninit()
 	Release();
 }
 
-//XVˆ—
+//æ›´æ–°å‡¦ç†
 void CObjectX::Update()
 {
 	
 }
 
-//•`‰æˆ—
+//æç”»å‡¦ç†
 void CObjectX::Draw()
 {
-	//ƒfƒoƒCƒX‚Ìæ“¾
+	//ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
-	D3DXMATRIX mtxRot, mtxTrans, mtxScale;		//ŒvZ—pƒ}ƒgƒŠƒbƒNƒX
-	D3DMATERIAL9 matDef;						//Œ»İ‚Ìƒ}ƒeƒŠƒAƒ‹•Û‘¶—p
+	D3DXMATRIX mtxRot, mtxTrans, mtxScale;		//è¨ˆç®—ç”¨ãƒãƒˆãƒªãƒƒã‚¯ã‚¹
+	D3DMATERIAL9 matDef;						//ç¾åœ¨ã®ãƒãƒ†ãƒªã‚¢ãƒ«ä¿å­˜ç”¨
 
-	//ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®åˆæœŸåŒ–
 	D3DXMatrixIdentity(&m_mtxWorld);
 
 	D3DXMatrixScaling(&mtxScale, m_scale.x, m_scale.y, m_scale.z);
 
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScale);
-	//Œü‚«‚ğ”½‰f
+	//å‘ãã‚’åæ˜ 
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
 
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
-	//ˆÊ’u‚ğ”½‰f
+	//ä½ç½®ã‚’åæ˜ 
 	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
 
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
-	//ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-	//Œ»İ‚Ìƒ}ƒeƒŠƒAƒ‹‚ğæ“¾
+	//ç¾åœ¨ã®ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’å–å¾—
 	pDevice->GetMaterial(&matDef);
 
 
 
 	for (int nCntMat = 0; nCntMat < (int)m_dwNumMat; nCntMat++)
 	{
-		//ƒ}ƒeƒŠƒAƒ‹ƒf[ƒ^‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+		//ãƒãƒ†ãƒªã‚¢ãƒ«ãƒ‡ãƒ¼ã‚¿ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
 		m_pMaterial = (D3DXMATERIAL*)m_pBuffMat->GetBufferPointer();
 
-		//ƒ}ƒeƒŠƒAƒ‹‚Ìİ’è
+		//ãƒãƒ†ãƒªã‚¢ãƒ«ã®è¨­å®š
 		pDevice->SetMaterial(&m_pMaterial[nCntMat].MatD3D);
 
 		if (m_pMaterial[nCntMat].pTextureFilename != nullptr)
 		{
-			//ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+			//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 			pDevice->SetTexture(0, m_pTexture[nCntMat]);
 		}
 
 		else
 		{
-			//ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+			//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 			pDevice->SetTexture(0, NULL);
 		}
 
 
-		//ƒ‚ƒfƒ‹iƒp[ƒcj‚Ì•`‰æ
+		//ãƒ¢ãƒ‡ãƒ«ï¼ˆãƒ‘ãƒ¼ãƒ„ï¼‰ã®æç”»
 		m_pMesh->DrawSubset(nCntMat);
 	}
 
-	//•Û‘¶‚µ‚Ä‚¢‚½ƒ}ƒeƒŠƒAƒ‹‚ğ–ß‚·
+	//ä¿å­˜ã—ã¦ã„ãŸãƒãƒ†ãƒªã‚¢ãƒ«ã‚’æˆ»ã™
 	pDevice->SetMaterial(&matDef);
 }
 
@@ -119,10 +119,10 @@ void CObjectX::DrawOutline()
 
 	D3DXMATRIX mtxRot, mtxTrans, mtxScale, mtxWorld;
 	D3DMATERIAL9 outlineMaterial = {};
-	outlineMaterial.Diffuse = D3DXCOLOR(0, 0, 0, 1);  // •
+	outlineMaterial.Diffuse = D3DXCOLOR(0, 0, 0, 1);  // é»’
 	outlineMaterial.Ambient = outlineMaterial.Diffuse;
 
-	// ’Êí‚æ‚è‚¿‚å‚Á‚Æ‚¾‚¯Šg‘å
+	// é€šå¸¸ã‚ˆã‚Šã¡ã‚‡ã£ã¨ã ã‘æ‹¡å¤§
 	const float outlineScale = 1.5;
 
 	D3DXMatrixIdentity(&mtxWorld);
@@ -138,9 +138,9 @@ void CObjectX::DrawOutline()
 
 	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
-	// ƒ‰ƒXƒ^ƒ‰ƒCƒUİ’è•ÏXiƒƒCƒ„[ƒtƒŒ[ƒ€ or ƒJƒŠƒ“ƒO–³Œøj
-	pDevice->SetRenderState(D3DRS_ZENABLE, FALSE); // Zƒoƒbƒtƒ@–³Œø‚ÅƒAƒEƒgƒ‰ƒCƒ“‚ªã‚É
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW); // — –Ê‚ğ•`‰æiƒAƒEƒgƒ‰ƒCƒ“—pj
+	// ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶è¨­å®šå¤‰æ›´ï¼ˆãƒ¯ã‚¤ãƒ¤ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ  or ã‚«ãƒªãƒ³ã‚°ç„¡åŠ¹ï¼‰
+	pDevice->SetRenderState(D3DRS_ZENABLE, FALSE); // Zãƒãƒƒãƒ•ã‚¡ç„¡åŠ¹ã§ã‚¢ã‚¦ãƒˆãƒ©ã‚¤ãƒ³ãŒä¸Šã«
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW); // è£é¢ã‚’æç”»ï¼ˆã‚¢ã‚¦ãƒˆãƒ©ã‚¤ãƒ³ç”¨ï¼‰
 
 	pDevice->SetMaterial(&outlineMaterial);
 	pDevice->SetTexture(0, NULL);
@@ -150,17 +150,17 @@ void CObjectX::DrawOutline()
 		m_pMesh->DrawSubset(i);
 	}
 
-	// –ß‚·
+	// æˆ»ã™
 	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW); // ’Êí‚ÌƒJƒŠƒ“ƒO‚É–ß‚·
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW); // é€šå¸¸ã®ã‚«ãƒªãƒ³ã‚°ã«æˆ»ã™
 }
-//ƒ[ƒhˆ—
+//ãƒ­ãƒ¼ãƒ‰å‡¦ç†
 void CObjectX::Load()
 {
 
 }
 
-////”Xæ“¾
+////è«¸ã€…å–å¾—
 //void CObjectX::Setpos(D3DXVECTOR3 pos)
 //{
 //	m_pos = pos;

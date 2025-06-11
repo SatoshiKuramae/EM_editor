@@ -68,6 +68,7 @@ GameObject* GameObject::Loadjson(const json& objData)
 {
     this->Init();
 
+	//JSONに書き出されたデータ名と同じになるように
     if (objData.contains("Move")) {
         auto m = objData["Move"];
         this->SetMove(D3DXVECTOR3(m[0], m[1], m[2]));
