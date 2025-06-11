@@ -44,7 +44,6 @@ GameObject::~GameObject()
 
 HRESULT GameObject::Init()
 {
-    
     CObjectX::Init();
 
     return S_OK;
@@ -54,7 +53,7 @@ HRESULT GameObject::Init()
 
 void GameObject::Update()
 {
-    // CObjectX の基本更新 + GameObject 独自処理
+    // CObjectX の基本更新
     CObjectX::Update();
 }
 
@@ -81,12 +80,12 @@ GameObject* GameObject::Loadjson(const json& objData)
         auto p = objData["Pos"];
         this->SetPos(D3DXVECTOR3(p[0], p[1], p[2]));
     }
-    if (objData.contains("rotation")) {
-        auto r = objData["rotation"];
-        this->SetRot(D3DXVECTOR3(r[0], r[1], r[2]));
+    if (objData.contains("Rot")) {
+        auto r = objData["Rot"];
+        this->SetLogicRotation(D3DXVECTOR3(r[0], r[1], r[2]));
     }
-    if (objData.contains("scale")) {
-        auto s = objData["scale"];
+    if (objData.contains("Scale")) {
+        auto s = objData["Scale"];
         this->SetScale(D3DXVECTOR3(s[0], s[1], s[2]));
     }
     if (objData.contains("SummonFrame")) {
@@ -240,7 +239,7 @@ CGenericObject* CGenericObject::Create(const std::string& modelPath)
     obj->Init();
     obj->SetMove(D3DXVECTOR3(0, 0, 0));
     obj->SetPos(D3DXVECTOR3(0, 0, 0));
-    obj->SetRot(D3DXVECTOR3(0, 0, 0));
+    obj->SetLogicRotation(D3DXVECTOR3(0, 0, 0));
     obj->SetScale(D3DXVECTOR3(1, 1, 1));
     obj->SetSummonCount(0);
     
