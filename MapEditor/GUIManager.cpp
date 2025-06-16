@@ -66,14 +66,6 @@ void GUIManager::Shutdown()
 {
     if (!m_Initialized)
         return;
-
-    // 所有している GameObject をすべて削除
-    /*for (auto* obj : m_gameObjects) {
-        delete obj;
-    }
-    m_gameObjects.clear();
-    m_selectedIndex = -1;*/
-
     ImGui_ImplDX9_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
@@ -96,6 +88,16 @@ void GUIManager::Update()
 {
     //JSONファイルの保存先のパスと名前
     std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
+	static std::string warningMessage = "";
+
+	if (patternIndex < 1)
+	{
+		patternIndex = maxPattern;
+	}
+	else if (patternIndex > maxPattern)
+	{
+		patternIndex = 1;
+	}
 
     if (!m_Initialized)
         return;
@@ -117,7 +119,6 @@ void GUIManager::Update()
     //パターンを変更
     if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
         patternIndex--;
-        if (patternIndex < 1) patternIndex = maxPattern;
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Import Json");
     }
@@ -128,7 +129,7 @@ void GUIManager::Update()
 
     if (ImGui::ArrowButton("##right", ImGuiDir_Right)) {
         patternIndex++;
-        if (patternIndex > maxPattern) patternIndex = 1;
+
         showSaveConfirm = true; // 確認ウィンドウを出すトリガー
         ImGui::OpenPopup("Import Json");
     }
@@ -146,10 +147,11 @@ void GUIManager::Update()
 
     ImGui::EndChild();
 
+	ImGui::Text(u8"レベル:%d\n", m_currentLevel);
+
     //=======================================================
     //数種類対応のオブジェクト生成
     //=======================================================
-
     if (!selectedModelPath.empty()) {
         ImGui::Text(u8"選択中のモデル: %s", selectedModelPath.c_str());
     }
@@ -204,15 +206,19 @@ void GUIManager::Update()
         ImGui::Text(u8"セーブしますか?");
         ImGui::Separator();
         ImGui::Text(u8"ファイルの名前\n%s", filename.c_str());
-
+		ImGui::InputInt(u8"このパターンのレベルを指定", &m_currentLevel);
 
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
-            
+
+			nlohmann::json jsonOutput;
+			jsonOutput["Level"] = m_currentLevel;  // レベル番号を格納
+			nlohmann::json objectList = nlohmann::json::array();
 
             for (auto* obj : m_gameObjects) {
                 D3DXVECTOR3 pos = obj->GetPos();
                 D3DXVECTOR3 move = obj->GetMove();
                 D3DXVECTOR3 rot = obj->GetLogicRotation();
+				D3DXVECTOR3 rotation = obj->GetRot();
                 D3DXVECTOR3 scale = obj->GetScale();
                 int summonsnt = obj->GetSummonCount();
                 nlohmann::json objData;
@@ -220,12 +226,14 @@ void GUIManager::Update()
                 objData["Name"] = obj->GetTypeString();
                 objData["Pos"] = { pos.x, pos.y, pos.z };
                 objData["Rot"] = { rot.x, rot.y, rot.z };
+				objData["Rotation"] = { rotation.x, rotation.y, rotation.z };
                 objData["Scale"] = { scale.x, scale.y, scale.z };
                 objData["SummonFrame"] = summonsnt;
                 objData["ModelName"] = obj->GetModelPath();;
-                jsonOutput.push_back(objData);
+                
+				objectList.push_back(objData); // ← こっちに追加する
             }
-
+			jsonOutput["Objects"] = objectList;
             std::ofstream out(filename);
             out << jsonOutput.dump(4); // 4はインデント幅
             out.close();
@@ -256,6 +264,8 @@ void GUIManager::Update()
     if (ImGui::BeginPopupModal("Import Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text(u8"Jsonを読み込みますか?");
         ImGui::InputInt(u8"パターン番号を指定", &patternIndex);
+		
+
         ImGui::Separator();
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
 
@@ -271,10 +281,23 @@ void GUIManager::Update()
                     obj->Uninit();
                     obj = nullptr;
                 }
-                m_selectedIndex = -1; // 選択をリセット
-                m_gameObjects.clear(); // 既存オブジェクトを削除（必要に応じて）
 
-                for (const auto& objData : jsonInput) {
+				m_gameObjects.clear(); // 既存オブジェクトを削除（必要に応じて）
+                m_selectedIndex = -1; // 選択をリセット
+                
+				if (jsonInput.contains("Level") && !jsonInput["Level"].is_null()) {
+					int level = jsonInput["Level"].get<int>();
+					std::cout << "読み込んだレベル: " << level << std::endl;
+					m_currentLevel = level;
+				}
+				else {
+					std::cout << "[警告] 'Level' の情報が見つからないか null でした。m_currentLevel は変更されません。\n";
+					warningMessage = "警告: Level 情報が無効です";
+				}
+				ImGui::TextColored(ImVec4(1, 0, 0, 1), "%s", warningMessage.c_str());
+				const auto& objects = jsonInput["Objects"];
+
+                for (const auto& objData : objects) {
                     GameObject* newObj = new CGenericObject;
                     newObj->Loadjson(objData); // GameObjectが処理を担当
                     m_gameObjects.push_back(newObj);
@@ -363,43 +386,72 @@ void GUIManager::Update()
         GameObject* obj = m_gameObjects[m_selectedIndex];
         GameObject::GameObjectType type = obj->GetObjectType(); // タイプ取得
         int currentType = static_cast<int>(type);
+
         const char* typeItems[] = { "SafeZone", "Obstacle" };
 
         D3DXVECTOR3 pos = obj->GetPos();
         D3DXVECTOR3 rot = obj->GetLogicRotation();
+		D3DXVECTOR3 rotation = obj->GetRot();
         D3DXVECTOR3 scale = obj->GetScale();
         D3DXVECTOR3 move = obj->GetMove();
+		D3DXVECTOR2 posXY = { pos.x, pos.y };   // X, Y だけ抽出
+		D3DXVECTOR2 moveXY = { pos.x, pos.y };
+		zAxisOffsetPos = pos.z;
+		zAxisOffsetMove = move.z;
+
         int summonframe = obj->GetSummonCount();
-
-
-        if (ImGui::DragFloat3("Move{x,y,z}", (float*)&move, 0.1f)) {
+		
+        if (ImGui::DragFloat2("Move{x,y}", (float*)&moveXY, 0.1f)) {
+			move.x = moveXY[0];
+			move.y = moveXY[1];
             obj->SetMove(move);
         }
         if (ImGui::Combo("Name", &currentType, typeItems, IM_ARRAYSIZE(typeItems))) {
             obj->SetObjectType(static_cast<GameObject::GameObjectType>(currentType));
         }
-        if (ImGui::DragFloat3("Pos{x,y,z}", (float*)&pos, 0.1f)) {
+        if (ImGui::DragFloat2("Pos{x,y}", (float*)&posXY, 0.1f)) {
+			
+			if (posXY[0] < -POS_X_MAX) posXY[0] = -POS_X_MAX;
+			if (posXY[0] > POS_X_MAX)  posXY[0] = POS_X_MAX;
+			if (posXY[1] < -POS_Y_MAX) posXY[1] = -POS_Y_MAX;
+			if (posXY[1] > POS_Y_MAX)  posXY[1] = POS_Y_MAX;
 
-            // Xの範囲制限
-            if (pos.x < -POS_X_MAX) pos.x = -POS_X_MAX;
-            if (pos.x > POS_X_MAX) pos.x = POS_X_MAX;
-
-            // Yの範囲制限
-            if (pos.y < -POS_Y_MAX) pos.y = -POS_Y_MAX;
-            if (pos.y > POS_Y_MAX) pos.y = POS_Y_MAX;
+			// pos.z は変更せずにそのまま保持
+			pos.x = posXY[0];
+			pos.y = posXY[1];
 
             obj->SetPos(pos);
         }
         if (ImGui::DragInt("SummonFrame", &summonframe, 1)) {
             obj->SetSummonCount(summonframe);
         }
-        if (ImGui::DragFloat3("Rotation", (float*)&rot, 0.1f)) {
+        if (ImGui::DragFloat3(u8"Rot 回転量", (float*)&rot, 0.1f)) {
             obj->SetLogicRotation(rot);
         }
+		if (ImGui::DragFloat3(u8"Rotation 向き", (float*)&rotation, 0.1f)) {
+			obj->SetRot(rotation);
+		}
         if (ImGui::DragFloat3("Scale", (float*)&scale, 0.1f)) {
             obj->SetScale(scale);
         }
-
+		if (ImGui::DragFloat(u8"位置の一括変更｛Z｝", &zAxisOffsetPos, 0.1f, -1000.0f, 1000.0f, "%.3f")) {
+			
+			for (auto* obj : m_gameObjects) {
+				if (obj) {
+					AdjustObjectZPos(obj, zAxisOffsetPos);
+				}
+			}
+			//zAxisOffsetPos = 0.0f;
+		}
+		if (ImGui::DragFloat(u8"移動値の一括変更｛Z｝", &zAxisOffsetMove, 0.1f, -1000.0f, 1000.0f, "%.3f")) {
+			
+			for (auto* obj : m_gameObjects) {
+				if (obj) {
+					AdjustObjectZMove(obj, zAxisOffsetMove);
+				}
+			}
+			//zAxisOffsetMove = 0.0f;
+		}
         m_arrowObject->SetPos(pos);  // 原点として配置
         m_arrowObject->SetVisible(true);
     }
@@ -442,8 +494,6 @@ void GUIManager::Update()
     {
         m_arrowObject->Draw();
     }
-
-
 }
 
 //フレーム終了
@@ -471,4 +521,23 @@ bool GUIManager::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void GUIManager::SetSelectedObject(CObjectX* obj) {
     selectedObject = obj;
+}
+
+void GUIManager::AdjustObjectZPos(GameObject* obj, float offset)
+{
+	D3DXVECTOR3 pos = obj->GetPos();
+
+	pos.z = offset;
+
+	obj->SetPos(pos);
+}
+
+
+void GUIManager::AdjustObjectZMove(GameObject* obj, float offset)
+{
+	D3DXVECTOR3 move = obj->GetMove();
+
+	move.z = offset;
+
+	obj->SetMove(move);
 }

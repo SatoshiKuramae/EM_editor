@@ -63,44 +63,88 @@ void GameObject::Draw()
     CObjectX::Draw();
 }
 
-
+//ファイル読み込み
 GameObject* GameObject::Loadjson(const json& objData)
 {
     this->Init();
 
 	//JSONに書き出されたデータ名と同じになるように
-    if (objData.contains("Move")) {
-        auto m = objData["Move"];
-        this->SetMove(D3DXVECTOR3(m[0], m[1], m[2]));
-    }
-    if (objData.contains("Name")) {
-        std::string typeStr = objData["Name"];
-        this->SetObjectType(GameObject::FromTypeString(typeStr));
-    }
-    if (objData.contains("Pos")) {
-        auto p = objData["Pos"];
-        this->SetPos(D3DXVECTOR3(p[0], p[1], p[2]));
-    }
-    if (objData.contains("Rot")) {
-        auto r = objData["Rot"];
-        this->SetLogicRotation(D3DXVECTOR3(r[0], r[1], r[2]));
-    }
-    if (objData.contains("Scale")) {
-        auto s = objData["Scale"];
-        this->SetScale(D3DXVECTOR3(s[0], s[1], s[2]));
-    }
-    if (objData.contains("SummonFrame")) {
-        int summonframe = objData["SummonFrame"];
-        this->SetSummonCount(summonframe);
-    }
-    if (objData.contains("ModelName")) {
-        std::string path = objData["ModelName"];
-        this->SetModelPath(path);  // メンバ変数に格納（m_modelPath など）
-    }
+	if (objData.contains("Move") && objData["Move"].is_array() && objData["Move"].size() == 3) {
+		auto m = objData["Move"];
+		this->SetMove(D3DXVECTOR3(m[0], m[1], m[2]));
+	}
+	else {
+		std::cout << "[警告] Move が存在しないため、(0,0,0) を設定します\n";
+		this->SetMove(D3DXVECTOR3(0, 0, 0));
+	}
+
+	if (objData.contains("Name")) {
+		std::string typeStr = objData["Name"];
+		this->SetObjectType(GameObject::FromTypeString(typeStr));
+	}
+	else {
+		std::cout << "[警告] Name が存在しないため、デフォルトタイプを設定します\n";
+		this->SetObjectType(GameObject::FromTypeString("Default"));  // 適切な初期型に
+	}
+
+	if (objData.contains("Pos") && objData["Pos"].is_array() && objData["Pos"].size() == 3) {
+		auto p = objData["Pos"];
+		this->SetPos(D3DXVECTOR3(p[0], p[1], p[2]));
+	}
+	else {
+		std::cout << "[警告] Pos が存在しないため、(0,0,0) を設定します\n";
+		this->SetPos(D3DXVECTOR3(0, 0, 0));
+	}
+
+	if (objData.contains("Rot") && objData["Rot"].is_array() && objData["Rot"].size() == 3) {
+		auto r = objData["Rot"];
+		this->SetLogicRotation(D3DXVECTOR3(r[0], r[1], r[2]));
+	}
+	else {
+		std::cout << "[警告] Rot が存在しないため、(0,0,0) を設定します\n";
+		this->SetLogicRotation(D3DXVECTOR3(0, 0, 0));
+	}
+
+	if (objData.contains("Rotation") && objData["Rotation"].is_array() && objData["Rotation"].size() == 3) {
+		auto ro = objData["Rotation"];
+		this->SetRot(D3DXVECTOR3(ro[0], ro[1], ro[2]));
+	}
+	else {
+		std::cout << "[警告] Rotation が存在しないため、(0,0,0) を設定します\n";
+		this->SetRot(D3DXVECTOR3(0, 0, 0));
+	}
+
+	if (objData.contains("Scale") && objData["Scale"].is_array() && objData["Scale"].size() == 3) {
+		auto s = objData["Scale"];
+		this->SetScale(D3DXVECTOR3(s[0], s[1], s[2]));
+	}
+	else {
+		std::cout << "[警告] Scale が存在しないため、(1,1,1) を設定します\n";
+		this->SetScale(D3DXVECTOR3(1, 1, 1));
+	}
+
+	if (objData.contains("SummonFrame")) {
+		int summonframe = objData["SummonFrame"];
+		this->SetSummonCount(summonframe);
+	}
+	else {
+		std::cout << "[警告] SummonFrame が存在しないため、0 を設定します\n";
+		this->SetSummonCount(0);
+	}
+
+	if (objData.contains("ModelName")) {
+		std::string path = objData["ModelName"];
+		this->SetModelPath(path);
+	}
+	else {
+		std::cout << "[警告] ModelName が存在しないため、空文字を設定します\n";
+		this->SetModelPath("");
+	}
 
     return this;
 }
 
+//オブジェクトの種類取得
 const char* GameObject::GetTypeString() {
     switch (m_type) {
     case GameObjectType::SafeZone: return "SafeZone";
@@ -109,6 +153,7 @@ const char* GameObject::GetTypeString() {
     }
 }
 
+//
 GameObject::GameObjectType GameObject::FromTypeString(const std::string& str) {
     if (str == "SafeZone") return GameObjectType::SafeZone;
     if (str == "Obstacle") return GameObjectType::Obstacle;
@@ -241,6 +286,7 @@ CGenericObject* CGenericObject::Create(const std::string& modelPath)
     obj->SetMove(D3DXVECTOR3(0, 0, 0));
     obj->SetPos(D3DXVECTOR3(0, 0, 0));
     obj->SetLogicRotation(D3DXVECTOR3(0, 0, 0));
+	obj->SetRot(D3DXVECTOR3(0, 0, 0));
     obj->SetScale(D3DXVECTOR3(1, 1, 1));
     obj->SetSummonCount(0);
     

@@ -1,4 +1,4 @@
-//============================================================
+ï»¿//============================================================
 //
 //GUImanager.h
 //
@@ -19,51 +19,57 @@ constexpr double POS_X_MAX = 260.0f;
 constexpr double POS_Y_MAX = 135.0f;
 constexpr int NUM_PATTERN = 50;
 
-//GUIƒ}ƒl[ƒWƒƒ[ƒNƒ‰ƒX
+//GUIãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚¯ãƒ©ã‚¹
 class GUIManager
 {
 public:
 
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	GUIManager();
-	//ƒfƒXƒgƒ‰ƒNƒ^
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~GUIManager();
 
-	//‰Šú‰»AƒVƒƒƒbƒgƒ_ƒEƒ“
+	//åˆæœŸåŒ–ã€ã‚·ãƒ£ãƒƒãƒˆãƒ€ã‚¦ãƒ³
 	bool Initialize(HWND hwnd, IDirect3DDevice9* device);
 	void Shutdown();
 
-	//–ˆƒtƒŒ[ƒ€XV‚·‚é‚à‚Ì
+	//æ¯ãƒ•ãƒ¬ãƒ¼ãƒ æ›´æ–°ã™ã‚‹ã‚‚ã®
 	void BeginFrame();
-	void Update();        // ‚±‚±‚É•`‰æˆ—‚ğ‚Ü‚Æ‚ß‚é
+	void Update();        // ã“ã“ã«æç”»å‡¦ç†ã‚’ã¾ã¨ã‚ã‚‹
 	void EndFrame(IDirect3DDevice9* device);
 	//void SetObjectList(std::vector<GameObject*>& objectList);
 
-	// WndProcˆ—
+	// WndProcå‡¦ç†
 	bool WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-	// ‰Šú‰»ƒ`ƒFƒbƒN—p
+	// åˆæœŸåŒ–ãƒã‚§ãƒƒã‚¯ç”¨
 	bool IsInitialized() const { return m_Initialized; }
 
 	void SetSelectedObject(CObjectX* obj);
+
+	void AdjustObjectZPos(GameObject* obj, float offset);
+	void AdjustObjectZMove(GameObject* obj, float offset);
 private:
+	int m_currentLevel = 1;
 	int patternIndex;
-	const int maxPattern = NUM_PATTERN; // ƒpƒ^[ƒ“”i•K—v‚É‰‚¶‚Ä‘‚â‚¹‚éj
+	const int maxPattern = NUM_PATTERN; // ãƒ‘ã‚¿ãƒ¼ãƒ³æ•°ï¼ˆå¿…è¦ã«å¿œã˜ã¦å¢—ã‚„ã›ã‚‹ï¼‰
 	bool m_Initialized;
 	bool showSaveConfirm = false;
 	bool confirmedSave = false;
-	//”z’u‚·‚éƒQ[ƒ€ƒIƒuƒWƒFƒNƒgƒ‚ƒfƒ‹‚ÌƒpƒX
+	float zAxisOffsetPos = 0.0f;
+	float zAxisOffsetMove = 0.0f;
+	//é…ç½®ã™ã‚‹ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒ¢ãƒ‡ãƒ«ã®ãƒ‘ã‚¹
 	std::string gameobjectpath = ("Data\\gameobject\\");
-	//w’èƒtƒHƒ‹ƒ_“à‚Ìƒtƒ@ƒCƒ‹–¼‚ğæ“¾‚·‚é
+	//æŒ‡å®šãƒ•ã‚©ãƒ«ãƒ€å†…ã®ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å–å¾—ã™ã‚‹
 	std::vector<std::string> modelFiles = GetXFileNamesInDirectory(gameobjectpath, "x");
 	
 	nlohmann::json jsonOutput;
 	int selected = 0;
-	std::string selectedModelPath; // ‘I‚Î‚ê‚½ƒ‚ƒfƒ‹‚ÌƒpƒX
+	std::string selectedModelPath; // é¸ã°ã‚ŒãŸãƒ¢ãƒ‡ãƒ«ã®ãƒ‘ã‚¹
 	std::vector<GameObject*> m_gameObjects;
 	int m_selectedIndex = -1;
 	CObjectX* selectedObject = nullptr;	
-	ArrowObject* m_arrowObject = nullptr;	//–îˆóƒIƒuƒWƒFƒNƒg‚Ìƒ|ƒCƒ“ƒ^
+	ArrowObject* m_arrowObject = nullptr;	//çŸ¢å°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
 };
 
 #endif

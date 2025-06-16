@@ -21,7 +21,6 @@ CObjectX::~CObjectX()
 //初期化処理
 HRESULT CObjectX::Init()
 {
-	//m_scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 	return S_OK;
 }
 
@@ -113,6 +112,7 @@ void CObjectX::Draw()
 	pDevice->SetMaterial(&matDef);
 }
 
+//アウトラインの表示をやろうとしてるよﾎﾞｯｼｬｧｧｧﾝ
 void CObjectX::DrawOutline()
 {
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
