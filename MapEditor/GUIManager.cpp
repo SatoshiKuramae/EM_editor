@@ -55,9 +55,12 @@ bool GUIManager::Initialize(HWND hwnd, IDirect3DDevice9* device)
 
     m_Initialized = true;
 
-    m_arrowObject = new ArrowObject();
-    m_arrowObject->Init();
-    m_arrowObject->SetVisible(false);
+	m_arrowObject = new ArrowObject();
+	m_arrowObject_offset = new ArrowObject();
+	m_arrowObject->Init();
+	m_arrowObject_offset->Init();
+	m_arrowObject->SetVisible(false);
+	m_arrowObject_offset->SetVisible(false);
     return true;
 }
 
@@ -82,6 +85,7 @@ void GUIManager::BeginFrame()
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 }
+
 
 //更新処理
 void GUIManager::Update() 
@@ -178,14 +182,23 @@ void GUIManager::Update()
             // 例: GenericObject生成に使う
             if (!selectedModelPath.empty())
             {
-                GameObject* newObj = CGenericObject::Create(selectedModelPath);
-                newObj->Load();
-                if (newObj)
-                {
-                    m_gameObjects.push_back(newObj);
-                    m_selectedIndex = m_gameObjects.size() - 1;
-                    selectedObject = newObj;
-                }
+				GameObject* newObj = nullptr;
+
+				if (IsHoleObject(selectedModelPath)) {
+					newObj = new HoleObject();  // ← 穴あき用クラス（CGenericObjectを継承）
+				}
+				else {
+					newObj = CGenericObject::Create(selectedModelPath);
+				}
+
+				if (newObj) {
+					newObj->SetModelPath(selectedModelPath);
+					newObj->Init();
+					newObj->Load();
+					m_gameObjects.push_back(newObj);
+					m_selectedIndex = m_gameObjects.size() - 1;
+					selectedObject = newObj;
+				}
             }
         }
     }
@@ -230,7 +243,16 @@ void GUIManager::Update()
                 objData["Scale"] = { scale.x, scale.y, scale.z };
                 objData["SummonFrame"] = summonsnt;
                 objData["ModelName"] = obj->GetModelPath();;
-                
+
+				//穴あきオブジェクトはオフセット情報を書き出す
+				if (selectedObject) {
+					if (HoleObject* hole = dynamic_cast<HoleObject*>(obj)) {
+						D3DXVECTOR3 offset = hole->GetHoleOffset();
+						objData["HoleOffset"] = { offset.x, offset.y, offset.z };
+					}
+				}
+				
+
 				objectList.push_back(objData); // ← こっちに追加する
             }
 			jsonOutput["Objects"] = objectList;
@@ -298,11 +320,29 @@ void GUIManager::Update()
 				const auto& objects = jsonInput["Objects"];
 
                 for (const auto& objData : objects) {
-                    GameObject* newObj = new CGenericObject;
-                    newObj->Loadjson(objData); // GameObjectが処理を担当
-                    m_gameObjects.push_back(newObj);
-                    newObj->Init();     // モデルパスが設定された後に初期化
-                    newObj->Load();     // 必要なら Load も明示的に
+					GameObject* newObj = nullptr;
+
+					// モデルパスを取得
+					std::string modelPath;
+					if (objData.contains("ModelName")) {
+						modelPath = objData["ModelName"];
+					}
+
+					// モデルパスに応じて穴あきオブジェクトか判定
+					if (IsHoleObject(modelPath)) {
+						newObj = new HoleObject();  // 穴あきオブジェクト用クラス
+					}
+					else {
+						newObj = new CGenericObject();
+					}
+
+					if (newObj) {
+						newObj->SetModelPath(modelPath);
+						newObj->Loadjson(objData);
+						m_gameObjects.push_back(newObj);
+						newObj->Init();     // モデルパスが設定された後に初期化
+						newObj->Load();
+					}
                 }
 
                 m_selectedIndex = m_gameObjects.empty() ? -1 : 0; // 選択リセット
@@ -382,7 +422,6 @@ void GUIManager::Update()
 
     if (m_selectedIndex >= 0 && m_selectedIndex < m_gameObjects.size()) {
 
-        // 矢印オブジェクト生成
         GameObject* obj = m_gameObjects[m_selectedIndex];
         GameObject::GameObjectType type = obj->GetObjectType(); // タイプ取得
         int currentType = static_cast<int>(type);
@@ -395,12 +434,13 @@ void GUIManager::Update()
         D3DXVECTOR3 scale = obj->GetScale();
         D3DXVECTOR3 move = obj->GetMove();
 		D3DXVECTOR2 posXY = { pos.x, pos.y };   // X, Y だけ抽出
-		D3DXVECTOR2 moveXY = { pos.x, pos.y };
+		D3DXVECTOR2 moveXY = { move.x, move.y };
 		zAxisOffsetPos = pos.z;
 		zAxisOffsetMove = move.z;
 
         int summonframe = obj->GetSummonCount();
-		
+
+		//パラメータ操作
         if (ImGui::DragFloat2("Move{x,y}", (float*)&moveXY, 0.1f)) {
 			move.x = moveXY[0];
 			move.y = moveXY[1];
@@ -441,7 +481,7 @@ void GUIManager::Update()
 					AdjustObjectZPos(obj, zAxisOffsetPos);
 				}
 			}
-			//zAxisOffsetPos = 0.0f;
+			
 		}
 		if (ImGui::DragFloat(u8"移動値の一括変更｛Z｝", &zAxisOffsetMove, 0.1f, -1000.0f, 1000.0f, "%.3f")) {
 			
@@ -450,14 +490,31 @@ void GUIManager::Update()
 					AdjustObjectZMove(obj, zAxisOffsetMove);
 				}
 			}
-			//zAxisOffsetMove = 0.0f;
 		}
+
+		
+		// HoleObject にキャスト可能ならオフセットを表示
+		if (auto* holeObj = dynamic_cast<HoleObject*>(selectedObject)) {
+			D3DXVECTOR3 basePos = holeObj->GetPos();
+			D3DXVECTOR3 offset = holeObj->GetHoleOffset();
+			D3DXVECTOR3 arrowPos = basePos + offset;
+
+			if (ImGui::DragFloat3(u8"穴のオフセット", (float*)&offset, 0.1f)) {
+				holeObj->SetHoleOffset(offset);
+			}
+			m_arrowObject_offset->SetPos(arrowPos);  // オフセットに配置
+			m_arrowObject_offset->SetVisible(true);
+		}
+		
+
+		//矢印オブジェクトの配置
         m_arrowObject->SetPos(pos);  // 原点として配置
-        m_arrowObject->SetVisible(true);
+		m_arrowObject->SetVisible(true);
     }
     else {
         ImGui::Text(u8"選択されていません");
         m_arrowObject->SetVisible(false);
+		m_arrowObject_offset->SetVisible(false);
     }
 
     ImGui::End();
@@ -540,4 +597,10 @@ void GUIManager::AdjustObjectZMove(GameObject* obj, float offset)
 	move.z = offset;
 
 	obj->SetMove(move);
+}
+
+
+bool GUIManager::IsHoleObject(const std::string& path)
+{
+	return path.find("hole") != std::string::npos;  // "hole" を含むモデルパスは穴あき扱い
 }

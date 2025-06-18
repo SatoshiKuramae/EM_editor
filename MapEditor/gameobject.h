@@ -1,4 +1,4 @@
-//============================================================
+ï»¿//============================================================
 //
 //gameobject.h
 //
@@ -11,10 +11,10 @@
 #include "pch.h"
 #define NUMTEXTURE (5)
 #define NUMOBJECTTYPE (5)
-#define JUMP_DEC (2.2f)		//d—Í
+#define JUMP_DEC (2.2f)		//é‡åŠ›
 
 
-using json = nlohmann::json; // È—ª‚µ‚È‚¢‚È‚ç nlohmann::json ‚ğ–ˆ‰ñg‚Á‚Ä‚àOK
+using json = nlohmann::json; // çœç•¥ã—ãªã„ãªã‚‰ nlohmann::json ã‚’æ¯å›ä½¿ã£ã¦ã‚‚OK
 
 class GameObject : public CObjectX {
 public:
@@ -42,41 +42,38 @@ public:
     void SetSummonCount(int summoncnt) { m_nSummonCnt = summoncnt; }
     int GetSummonCount()const { return m_nSummonCnt;}
 
-    //Œü‚«‚Å‚Í‚È‚­‰ñ“]—Ê‚ğ‘€ì‚·‚é‚©‚çeƒNƒ‰ƒX‚Ìrot‚¶‚á‚È‚­‚Ä“Æ©‚Ì”’l‚ª•K—v‚È‚ñ‚·‚æÎŞ¯¼¬§§§İ
+    //å‘ãã§ã¯ãªãå›è»¢é‡ã‚’æ“ä½œã™ã‚‹ã‹ã‚‰è¦ªã‚¯ãƒ©ã‚¹ã®rotã˜ã‚ƒãªãã¦ç‹¬è‡ªã®æ•°å€¤ãŒå¿…è¦ãªã‚“ã™ã‚ˆï¾ï¾ï½¯ï½¼ï½¬ï½§ï½§ï½§ï¾
     void SetLogicRotation(const D3DXVECTOR3& rot) { m_logicRotation = rot; }
-    //Œü‚«‚Å‚Í‚È‚­‰ñ“]—Ê‚ğ‘€ì‚·‚é‚©‚çeƒNƒ‰ƒX‚Ìrot‚¶‚á‚È‚­‚Ä“Æ©‚Ì”’l‚ª•K—v‚È‚ñ‚·‚æÎŞ¯¼¬§§§İ
+    //å‘ãã§ã¯ãªãå›è»¢é‡ã‚’æ“ä½œã™ã‚‹ã‹ã‚‰è¦ªã‚¯ãƒ©ã‚¹ã®rotã˜ã‚ƒãªãã¦ç‹¬è‡ªã®æ•°å€¤ãŒå¿…è¦ãªã‚“ã™ã‚ˆï¾ï¾ï½¯ï½¼ï½¬ï½§ï½§ï½§ï¾
     D3DXVECTOR3 GetLogicRotation() const { return m_logicRotation; }
 
-    // ƒ‚ƒfƒ‹·‚µ‘Ö‚¦ŠÖ”i”h¶ƒNƒ‰ƒX‚Å•K—v‚É‰‚¶‚ÄƒI[ƒo[ƒ‰ƒCƒhj
+    // ãƒ¢ãƒ‡ãƒ«å·®ã—æ›¿ãˆé–¢æ•°ï¼ˆæ´¾ç”Ÿã‚¯ãƒ©ã‚¹ã§å¿…è¦ã«å¿œã˜ã¦ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ï¼‰
     virtual void ChangeModel(const std::string& modelPath) {}
-    // ƒ‚ƒfƒ‹ƒpƒX‚ÌGetter/Setter
+    // ãƒ¢ãƒ‡ãƒ«ãƒ‘ã‚¹ã®Getter/Setter
     std::string GetModelPath() const { return m_modelPath; }
     void SetModelPath(const std::string& path) { m_modelPath = path; }
     
 protected:
-    std::string m_name;
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç”¨å¤‰æ•°
+    std::string m_name;				
     GameObjectType m_type;
     int m_nSummonCnt;
-    std::string m_modelPath;
-    D3DXVECTOR3 m_logicRotation;    //‰ñ“]—Ê
+    std::string m_modelPath;		//ãƒ¢ãƒ‡ãƒ«æƒ…å ±ã®ãƒ‘ã‚¹
+    D3DXVECTOR3 m_logicRotation;    //å›è»¢é‡
 };
 
-
-
-//í—Ş‚ğ‚à‚Á‚½ƒQ[ƒWƒIƒuƒWƒFƒNƒg@TODO ”z’u‚·‚éƒIƒuƒWƒF‚Éí—Ş‚ğ’Ç‰ÁA”z’uŒã‚Éí—Ş‚ğ•ÏX‚Å‚«‚é‚æ‚¤‚É‚·‚é‚Æ—Ç‚¢
+//ç¨®é¡ã‚’ã‚‚ã£ãŸã‚²ãƒ¼ã‚¸ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 class CGenericObject : public GameObject {
 public:
     CGenericObject() {};
-    ~CGenericObject() {};
-
-
+    virtual ~CGenericObject() {};
     HRESULT Init();
     void Load() override;
     void Draw() override;
     static CGenericObject* Create(const std::string& modelPath);
     void ChangeModel(const std::string& modelPath) override;
     void ReleaseModelResources();
-private:
+protected:
     LPD3DXMESH m_pMesh_Gn_Object = nullptr;
     LPD3DXBUFFER m_pBuffMat_Gn_Object = nullptr;
     DWORD m_dwNumMat_Gn_Object = 0;
@@ -84,7 +81,17 @@ private:
     LPDIRECT3DTEXTURE9 m_pTexture_Gn_Object[NUMTEXTURE] = { nullptr };
 };
 
-//–îˆóƒIƒuƒWƒFƒNƒg
+class HoleObject : public CGenericObject {
+	
+public:
+	void SetHoleOffset(D3DXVECTOR3 offset) { m_holeOffset = offset; }
+	D3DXVECTOR3 GetHoleOffset() const { return m_holeOffset; }
+
+private:
+	D3DXVECTOR3 m_holeOffset = { 0.0f,0.0f,0.0f };
+};
+
+//çŸ¢å°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 class ArrowObject : public GameObject
 {
 public:
@@ -95,11 +102,11 @@ public:
     void Load() override;
     void Draw() override;
     static ArrowObject* Create();
-    void SetVisible(bool visible) { m_isVisible = visible; }
+    void SetVisible(bool visible) { m_isVisible = visible; }	//å¯è¦–åŒ–ãƒ•ãƒ©ã‚°åˆ‡ã‚Šæ›¿ãˆ
     bool IsVisible() const { return m_isVisible; }
 
 private:
-    // ArrowObjectŒÅ—L‚ÌƒƒbƒVƒ…Aƒ}ƒeƒŠƒAƒ‹AƒeƒNƒXƒ`ƒƒ
+    // ArrowObjectå›ºæœ‰ã®ãƒ¡ãƒƒã‚·ãƒ¥ã€ãƒãƒ†ãƒªã‚¢ãƒ«ã€ãƒ†ã‚¯ã‚¹ãƒãƒ£
     LPD3DXMESH m_pMesh_arrow = nullptr;
     LPD3DXBUFFER m_pBuffMat_arrow = nullptr;
     DWORD m_dwNumMat_arrow = 0;

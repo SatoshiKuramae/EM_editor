@@ -49,6 +49,10 @@ public:
 
 	void AdjustObjectZPos(GameObject* obj, float offset);
 	void AdjustObjectZMove(GameObject* obj, float offset);
+
+	//パス名にholeが含まれているとき穴あきオブジェクトと判定する
+	bool IsHoleObject(const std::string& path);
+	
 private:
 	int m_currentLevel = 1;
 	int patternIndex;
@@ -70,6 +74,7 @@ private:
 	int m_selectedIndex = -1;
 	CObjectX* selectedObject = nullptr;	
 	ArrowObject* m_arrowObject = nullptr;	//矢印オブジェクトのポインタ
+	ArrowObject* m_arrowObject_offset = nullptr;	//穴のオフセットに配置する矢印オブジェクト
 };
 
 #endif

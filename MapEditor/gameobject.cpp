@@ -140,7 +140,17 @@ GameObject* GameObject::Loadjson(const json& objData)
 		std::cout << "[警告] ModelName が存在しないため、空文字を設定します\n";
 		this->SetModelPath("");
 	}
+	if (objData.contains("HoleOffset")) {
+		auto o = objData["HoleOffset"];
+		if (HoleObject* hole = dynamic_cast<HoleObject*>(this)) {
+			hole->SetHoleOffset(D3DXVECTOR3(o[0], o[1], o[2]));
+		}
+	}
+	else
+	{
+		std::cout << "[警告] HoleOffset が存在しないため、0 を設定します\n";
 
+	}
     return this;
 }
 
@@ -232,6 +242,7 @@ ArrowObject* ArrowObject::Create()
 //
 //===================================================================
 
+//初期化
 HRESULT CGenericObject::Init()
 {
     CObjectX::Init();
@@ -239,6 +250,7 @@ HRESULT CGenericObject::Init()
     return S_OK;
 }
 
+//ロード
 void CGenericObject::Load()
 {
     ReleaseModelResources();
@@ -271,6 +283,7 @@ void CGenericObject::Load()
 
 }
 
+//描画処理
 void CGenericObject::Draw()
 {
 
@@ -278,6 +291,7 @@ void CGenericObject::Draw()
     CObjectX::Draw();
 }
 
+//生成
 CGenericObject* CGenericObject::Create(const std::string& modelPath)
 {
     CGenericObject* obj = new CGenericObject();
@@ -293,11 +307,13 @@ CGenericObject* CGenericObject::Create(const std::string& modelPath)
     return obj;
 }
 
+//モデル差し替え
 void CGenericObject::ChangeModel(const std::string& modelPath) {
     SetModelPath(modelPath);  // モデルパス更新
     Load();                   // 再読み込み
 }
 
+//モデル情報の解放
 void CGenericObject::ReleaseModelResources() {
     if (m_pMesh) { m_pMesh->Release(); m_pMesh = nullptr; }
     if (m_pBuffMat) { m_pBuffMat->Release(); m_pBuffMat = nullptr; }
