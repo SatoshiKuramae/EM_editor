@@ -59,6 +59,7 @@ bool GUIManager::Initialize(HWND hwnd, IDirect3DDevice9* device)
 	m_arrowObject_offset = new ArrowObject();
 	m_arrowObject->Init();
 	m_arrowObject_offset->Init();
+	m_arrowObject_offset->SetScale(D3DXVECTOR3(0.5f, 0.5f, 0.5f));
 	m_arrowObject->SetVisible(false);
 	m_arrowObject_offset->SetVisible(false);
     return true;
@@ -502,8 +503,13 @@ void GUIManager::Update()
 			if (ImGui::DragFloat3(u8"穴のオフセット", (float*)&offset, 0.1f)) {
 				holeObj->SetHoleOffset(offset);
 			}
+			
 			m_arrowObject_offset->SetPos(arrowPos);  // オフセットに配置
 			m_arrowObject_offset->SetVisible(true);
+		}
+		else
+		{
+			m_arrowObject_offset->SetVisible(false);
 		}
 		
 
