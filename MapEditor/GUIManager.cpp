@@ -367,16 +367,29 @@ void GUIManager::Update()
     //オブジェクト削除
     if (ImGui::Button(u8"選択中のオブジェクト削除")) {
         if (m_selectedIndex >= 0 && m_selectedIndex < static_cast<int>(m_gameObjects.size())) {
-            m_gameObjects[m_selectedIndex]->Uninit(); // メモリを解放
-            m_gameObjects.erase(m_gameObjects.begin() + m_selectedIndex); // リストから削除
+			GameObject* target = m_gameObjects[m_selectedIndex];
 
-            // インデックスを調整
-            if (m_gameObjects.empty()) {
-                m_selectedIndex = -1;
-            }
-            else if (m_selectedIndex >= static_cast<int>(m_gameObjects.size())) {
-                m_selectedIndex = static_cast<int>(m_gameObjects.size()) - 1;
-            }
+			//削除対象を参照している他のポインタを無効化
+			if (selectedObject == target) {
+				selectedObject = nullptr;
+			}
+
+			if (m_arrowObject && m_arrowObject->IsVisible() == true) {
+				m_arrowObject->SetVisible(false);
+
+
+			}
+			target->Uninit();   // メモリ解放を含まないように注意
+
+			m_gameObjects.erase(m_gameObjects.begin() + m_selectedIndex);
+
+			// インデックス更新
+			if (m_gameObjects.empty()) {
+				m_selectedIndex = -1;
+			}
+			else if (m_selectedIndex >= static_cast<int>(m_gameObjects.size())) {
+				m_selectedIndex = static_cast<int>(m_gameObjects.size()) - 1;
+			}
         }
     }
 
