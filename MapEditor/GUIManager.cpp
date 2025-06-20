@@ -466,10 +466,10 @@ void GUIManager::Update()
         if (ImGui::DragInt("SummonFrame", &summonframe, 1)) {
             obj->SetSummonCount(summonframe);
         }
-        if (ImGui::DragFloat3(u8"Rot 回転量", (float*)&rot, 0.1f)) {
+        if (ImGui::DragFloat3(u8"Rot 回転量{X,Y,Z}", (float*)&rot, 0.1f)) {
             obj->SetLogicRotation(rot);
         }
-		if (ImGui::DragFloat3(u8"Rotation 向き", (float*)&rotation, 0.1f)) {
+		if (ImGui::DragFloat3(u8"Rotation 向き{X,Y,Z}", (float*)&rotation, 0.1f)) {
 			obj->SetRot(rotation);
 		}
         if (ImGui::DragFloat3("Scale", (float*)&scale, 0.1f)) {
@@ -482,7 +482,6 @@ void GUIManager::Update()
 					AdjustObjectZPos(obj, zAxisOffsetPos);
 				}
 			}
-			
 		}
 		if (ImGui::DragFloat(u8"移動値の一括変更｛Z｝", &zAxisOffsetMove, 0.1f, -1000.0f, 1000.0f, "%.3f")) {
 			
@@ -493,7 +492,6 @@ void GUIManager::Update()
 			}
 		}
 
-		
 		// HoleObject にキャスト可能ならオフセットを表示
 		if (auto* holeObj = dynamic_cast<HoleObject*>(selectedObject)) {
 			D3DXVECTOR3 basePos = holeObj->GetPos();
@@ -511,7 +509,6 @@ void GUIManager::Update()
 		{
 			m_arrowObject_offset->SetVisible(false);
 		}
-		
 
 		//矢印オブジェクトの配置
         m_arrowObject->SetPos(pos);  // 原点として配置

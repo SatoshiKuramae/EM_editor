@@ -1,23 +1,23 @@
-#include "camera.h"
+ï»¿#include "camera.h"
 #include "manager.h"
 #include"input.h"
 #include "Player.h"
 #include "imgui.h"
 #include <algorithm>
 #include <vector>
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CCamera::CCamera()
 {
 
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CCamera::~CCamera()
 {
 
 }
 
-//‰Šúİ’è
+//åˆæœŸè¨­å®š
 HRESULT CCamera::Init()
 {
 	m_TargetPosV.y = CAMERAPOS_V_Y;
@@ -30,62 +30,62 @@ HRESULT CCamera::Init()
 	return S_OK;
 }
 
-//ƒJƒƒ‰‚Ìİ’è
+//ã‚«ãƒ¡ãƒ©ã®è¨­å®š
 void CCamera::SetCamera()
 {
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
 
-	//ƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
+	//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®åˆæœŸåŒ–
 	D3DXMatrixIdentity(&m_mtxProjection);
 
-	//ƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ}ƒgƒŠƒbƒNƒX‚ğì¬
+	//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã‚’ä½œæˆ
 	D3DXMatrixPerspectiveFovLH(&m_mtxProjection, D3DXToRadian(45.0f),
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 10.0f, 3000.0f);
 
-	//ƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
 	pDevice->SetTransform(D3DTS_PROJECTION, &m_mtxProjection);
 
-	//ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
+	//ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®åˆæœŸåŒ–
 	D3DXMatrixIdentity(&m_mtxView);
 
-	//ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX‚Ìì¬
+	//ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®ä½œæˆ
 	D3DXMatrixLookAtLH(&m_mtxView, &m_posV, &m_posR, &m_vecU);
 
-	//ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	//ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
 	pDevice->SetTransform(D3DTS_VIEW, &m_mtxView);
 }
 
-//XVˆ—
+//æ›´æ–°å‡¦ç†
 void CCamera::Update()
 {
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
 	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
 
-	//ƒIƒuƒWƒFƒNƒg‚ÌˆÊ’u‚ÆƒXƒP[ƒ‹
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½ç½®ã¨ã‚¹ã‚±ãƒ¼ãƒ«
 
 	/*ImGui::DragFloat3("CameraPosV", &m_posV.x, 0.1f);
 	ImGui::DragFloat3("CameraPosR", &m_posR.x, 0.1f);
 	ImGui::DragFloat3("CameraRot", &m_rot.x, 0.1f);
 	ImGui::DragFloat3("Target", &m_TargetPosV.x, 0.1f);*/
 
-	// ƒ}ƒEƒXÀ•W‚ğæ“¾‚·‚é
+	// ãƒã‚¦ã‚¹åº§æ¨™ã‚’å–å¾—ã™ã‚‹
 	POINT currentPos;
 	static POINT prevPos = { 0, 0 };
 	GetCursorPos(&currentPos);
 
-	// ƒXƒNƒŠ[ƒ“À•W‚ğƒNƒ‰ƒCƒAƒ“ƒgÀ•W‚É•ÏŠ·‚·‚é
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‚’ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆåº§æ¨™ã«å¤‰æ›ã™ã‚‹
 	ScreenToClient(FindWindowA(CLASS_NAME, nullptr), &currentPos);
 
-	int deltaX = currentPos.x - prevPos.x; // ‰¡‚ÌˆÚ“®—Ê
-	int deltaY = currentPos.y - prevPos.y; // c‚ÌˆÚ“®—Ê
+	int deltaX = currentPos.x - prevPos.x; // æ¨ªã®ç§»å‹•é‡
+	int deltaY = currentPos.y - prevPos.y; // ç¸¦ã®ç§»å‹•é‡
 
-	prevPos = currentPos; // Ÿ‰ñ‚Ì‚½‚ß‚ÉŒ»İˆÊ’u‚ğ•Û‘¶
+	prevPos = currentPos; // æ¬¡å›ã®ãŸã‚ã«ç¾åœ¨ä½ç½®ã‚’ä¿å­˜
 
 	//if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
 	//{
-	//	// ¶ƒNƒŠƒbƒN‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é
+	//	// å·¦ã‚¯ãƒªãƒƒã‚¯ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹
 	//	if (m_rot.x < -1.25f)
 	//	{
 	//		m_rot.x = -1.25f;
@@ -140,10 +140,10 @@ void CCamera::Update()
 
 
 
-	//posR=’‹“_posV=‹“_vecU=‹“_‚ÌƒxƒNƒgƒ‹
+	//posR=æ³¨è¦–ç‚¹posV=è¦–ç‚¹vecU=è¦–ç‚¹ã®ãƒ™ã‚¯ãƒˆãƒ«
 
-	//‹“_‚ÌˆÚ“®
-	if (pKeyboard->GetKeyboardPress(DIK_C) == true)
+	//è¦–ç‚¹ã®ç§»å‹•
+	/*if (pKeyboard->GetKeyboardPress(DIK_C) == true)
 	{
 		m_rot.y += 0.1f;
 
@@ -156,19 +156,19 @@ void CCamera::Update()
 
 		m_posV.x = sinf(m_rot.y + D3DX_PI) * sqrtf(m_TargetPosV.z * m_TargetPosV.z + m_TargetPosV.y * m_TargetPosV.y) / 2 + CCamera::m_posR.x;
 		m_posV.z = cosf(m_rot.y + D3DX_PI) * sqrtf(m_TargetPosV.z * m_TargetPosV.z + m_TargetPosV.y * m_TargetPosV.y) / 2 + CCamera::m_posR.x;
-	}
+	}*/
 	if (pKeyboard->GetKeyboardPress(DIK_Y) == true)
 	{
-		m_rot.x += 2.0f;
+		m_posR.y += 2.0f;
 		m_posV.y += 2.0f;
 	}
 	if (pKeyboard->GetKeyboardPress(DIK_N) == true)
 	{
-		m_rot.x -= 2.0f;
+		m_posR.y -= 2.0f;
 		m_posV.y -= 2.0f;
 	}
 
-	//‰ñ“]‚Ì•â³
+	//å›è»¢ã®è£œæ­£
 	if (m_rot.y > D3DX_PI)
 	{
 		m_rot.y = -D3DX_PI;
@@ -178,7 +178,7 @@ void CCamera::Update()
 		m_rot.y = D3DX_PI;
 	}
 
-	//’‹“_‚Ü‚Å‚Ì‹——£‚ğ•Ï‚¦‚é
+	//æ³¨è¦–ç‚¹ã¾ã§ã®è·é›¢ã‚’å¤‰ãˆã‚‹
 	/*if (pKeyboard->GetKeyboardPress(DIK_Q) == true)
 	{
 		m_posV.z += 1.0f;
@@ -195,14 +195,14 @@ void CCamera::Update()
 		m_TargetPosV.x += 1.0f;
 	}*/
 
-	// –îˆóƒL[“ü—Í‚ÅˆÚ“®iƒJƒƒ‰‚ÌŒü‚«Šî€‚Å‘OŒã¶‰Ej
+	// çŸ¢å°ã‚­ãƒ¼å…¥åŠ›ã§ç§»å‹•ï¼ˆã‚«ãƒ¡ãƒ©ã®å‘ãåŸºæº–ã§å‰å¾Œå·¦å³ï¼‰
 	float moveSpeed = CAMERASPEED;
 
-	// ƒJƒƒ‰‚Ì‘O•ûŒüiXZ•½–Ê‚Å‰ñ“]‚ğ”½‰fj
+	// ã‚«ãƒ¡ãƒ©ã®å‰æ–¹å‘ï¼ˆXZå¹³é¢ã§å›è»¢ã‚’åæ˜ ï¼‰
 	D3DXVECTOR3 forward(sinf(m_rot.y), 0, cosf(m_rot.y));
 	D3DXVec3Normalize(&forward, &forward);
 
-	// ƒJƒƒ‰‚Ì‰E•ûŒüiforward‚Æã•ûŒü‚ÌƒNƒƒXj
+	// ã‚«ãƒ¡ãƒ©ã®å³æ–¹å‘ï¼ˆforwardã¨ä¸Šæ–¹å‘ã®ã‚¯ãƒ­ã‚¹ï¼‰
 	D3DXVECTOR3 right;
 	D3DXVec3Cross(&right, &m_vecU, &forward);
 	D3DXVec3Normalize(&right, &right);
@@ -224,31 +224,14 @@ void CCamera::Update()
 		m_posR -= right * moveSpeed;
 	}
 
-	if (m_flattery == true)
-	{
-		for (int i = 0; i < NUMOBJECT; i++)
-		{
-			//ƒIƒuƒWƒFƒNƒgæ“¾
-			CObject* pObj = CObject::GetObject(i, 3);
-			if (pObj != nullptr)
-			{
-				CPlayer* pPlayer = (CPlayer*)pObj;
-				pPlayer->GetPos();
-				m_posR.y = pPlayer->GetPos().y + 300.0f;
-				//í—Ş‚Ìæ“¾
-				CObject::TYPE type = pObj->GetType();
+	ImGui::Begin(u8"ãƒ†ã‚¹ãƒˆ");
+	ImGui::Text(u8"ã‚«ãƒ¡ãƒ©æƒ…å ±\nposR{%0.3f,%0.3f,%0.3f}", m_posR.x, m_posR.y, m_posR.z);
+	ImGui::Text(u8"posV{%0.3f,%0.3f,%0.3f}", m_posV.x, m_posV.y, m_posV.z);
 
-				if (type == CObject::TYPE::PLAYER)
-				{
-					m_posR.x = pPlayer->GetPos().x;
+	ImGui::DragFloat3(u8"m_posR:{X,Y,Z}", (float*)&m_posR, 0.1f);
+	ImGui::DragFloat3(u8"m_posV:{X,Y,Z}", (float*)&m_posV, 0.1f);
+	ImGui::End();
 
-					m_posV.x = sinf(m_rot.y + D3DX_PI) * sqrtf(2000.0f * 2000.0f + 2000.0f * 2000.0f) / 2 + pPlayer->GetPos().x;
-					m_posV.z = cosf(m_rot.y + D3DX_PI) * sqrtf(2000.0f * 2000.0f + 2000.0f * 2000.0f) / 2 + pPlayer->GetPos().z;
-
-				}
-			}
-		}
-	}
 	D3DXMatrixLookAtLH(&m_mtxView, &m_posV, &m_posR, &m_vecU);
 	pDevice->SetTransform(D3DTS_VIEW, &m_mtxView);
 }
@@ -258,7 +241,7 @@ void CCamera::Update()
 
 void CCamera::UpdateFromMouse(const MouseInput& mouse)
 {
-	// ‰EƒNƒŠƒbƒNƒhƒ‰ƒbƒO‚Å‰ñ“]
+	// å³ã‚¯ãƒªãƒƒã‚¯ãƒ‰ãƒ©ãƒƒã‚°ã§å›è»¢
 	if (mouse.rightButtonHeld)
 	{
 		float dx = mouse.deltaX * m_rot.x;
@@ -267,13 +250,13 @@ void CCamera::UpdateFromMouse(const MouseInput& mouse)
 		m_rot.x += dx;
 		m_rot.y += dy;
 
-		// ƒNƒ‰ƒ“ƒv(‘ã‘Ö)
+		// ã‚¯ãƒ©ãƒ³ãƒ—(ä»£æ›¿)
 		if (m_rot.y > 89.0f) m_rot.y = 89.0f;
 		if (m_rot.y < -89.0f) m_rot.y = -89.0f;
 		UpdateViewMatrix();
 	}
 
-	//// ƒzƒC[ƒ‹‚ÅƒY[ƒ€
+	//// ãƒ›ã‚¤ãƒ¼ãƒ«ã§ã‚ºãƒ¼ãƒ 
 	//if (mouse.wheelDelta != 0)
 	//{
 	//	m_Distance -= mouse.wheelDelta * zoomSpeed;
@@ -282,15 +265,15 @@ void CCamera::UpdateFromMouse(const MouseInput& mouse)
 	//	UpdateViewMatrix();
 	//}
 
-	//// ’†ƒNƒŠƒbƒN or Shift+¶ƒNƒŠƒbƒN‚Å•½sˆÚ“®
+	//// ä¸­ã‚¯ãƒªãƒƒã‚¯ or Shift+å·¦ã‚¯ãƒªãƒƒã‚¯ã§å¹³è¡Œç§»å‹•
 	//if (mouse.middleButtonHeld || (mouse.shiftHeld && mouse.leftButtonHeld))
 	//{
 	//	float panX = -mouse.deltaX * panSpeed;
 	//	float panY = mouse.deltaY * panSpeed;
 
-	//	// ƒJƒƒ‰‚Ì•ûŒü‚É‰‚¶‚Äƒpƒ“•ûŒü‚ğŒvZ
+	//	// ã‚«ãƒ¡ãƒ©ã®æ–¹å‘ã«å¿œã˜ã¦ãƒ‘ãƒ³æ–¹å‘ã‚’è¨ˆç®—
 	//	D3DXVECTOR3 right, up;
-	//	CalculateCameraBasis(right, up); // viewMatrix‚©‚çright/upƒxƒNƒgƒ‹’Šo
+	//	CalculateCameraBasis(right, up); // viewMatrixã‹ã‚‰right/upãƒ™ã‚¯ãƒˆãƒ«æŠ½å‡º
 	//	m_Target += right * panX + up * panY;
 
 	//	UpdateViewMatrix();
@@ -299,7 +282,7 @@ void CCamera::UpdateFromMouse(const MouseInput& mouse)
 
 void CCamera::UpdateViewMatrix()
 {
-	// ‹…–ÊÀ•WŒn‚ÅƒJƒƒ‰ˆÊ’u‚ğXV
+	// çƒé¢åº§æ¨™ç³»ã§ã‚«ãƒ¡ãƒ©ä½ç½®ã‚’æ›´æ–°
 	float radYaw = D3DXToRadian(m_rot.x);
 	float radPitch = D3DXToRadian(m_rot.y);
 	float m_Distance=100.0f;

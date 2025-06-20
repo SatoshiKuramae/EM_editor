@@ -163,7 +163,7 @@ const char* GameObject::GetTypeString() {
     }
 }
 
-//
+//読み込みデータと比較しGameObjectTypeを決める
 GameObject::GameObjectType GameObject::FromTypeString(const std::string& str) {
     if (str == "SafeZone") return GameObjectType::SafeZone;
     if (str == "Obstacle") return GameObjectType::Obstacle;
@@ -176,6 +176,7 @@ GameObject::GameObjectType GameObject::FromTypeString(const std::string& str) {
 //矢印オブジェクトクラス
 //
 //===================================================================
+//初期化
 HRESULT ArrowObject::Init()
 {
     Load();
@@ -185,6 +186,7 @@ HRESULT ArrowObject::Init()
     return S_OK;
 }
 
+//ロード
 void ArrowObject::Load()
 {
     CObject::SetType(TYPE::BLOCK);
@@ -214,6 +216,7 @@ void ArrowObject::Load()
 
 }
 
+//描画処理
 void ArrowObject::Draw()
 {
     if (!m_isVisible) {
@@ -224,6 +227,7 @@ void ArrowObject::Draw()
     CObjectX::Draw();
 }
 
+//生成
 ArrowObject* ArrowObject::Create()
 {
     ArrowObject* obj = new ArrowObject();
