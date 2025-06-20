@@ -224,9 +224,9 @@ void CCamera::Update()
 		m_posR -= right * moveSpeed;
 	}
 
-	ImGui::Begin(u8"テスト");
-	ImGui::Text(u8"カメラ情報\nposR{%0.3f,%0.3f,%0.3f}", m_posR.x, m_posR.y, m_posR.z);
-	ImGui::Text(u8"posV{%0.3f,%0.3f,%0.3f}", m_posV.x, m_posV.y, m_posV.z);
+	ImGui::Begin(u8"カメラ位置");
+	ImGui::Text(u8"m_posR（注視点）\nposR{%0.3f,%0.3f,%0.3f}", m_posR.x, m_posR.y, m_posR.z);
+	ImGui::Text(u8"posV（視点）{%0.3f,%0.3f,%0.3f}", m_posV.x, m_posV.y, m_posV.z);
 
 	ImGui::DragFloat3(u8"m_posR:{X,Y,Z}", (float*)&m_posR, 0.1f);
 	ImGui::DragFloat3(u8"m_posV:{X,Y,Z}", (float*)&m_posV, 0.1f);
