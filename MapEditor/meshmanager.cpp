@@ -1,4 +1,9 @@
-// MeshManager.cpp
+﻿//===============================================================================
+//
+//meshmanager.cpp
+//
+//Author Kuramaesatoshi
+//===============================================================================
 #include "MeshManager.h"
 
 std::map<std::string, LPD3DXMESH> MeshManager::s_meshes;

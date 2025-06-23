@@ -1,7 +1,8 @@
-//============================================================
+ï»¿//============================================================
 //
 //object2D.h
 //
+// AUther : SatoshiKuramae
 //============================================================
 #ifndef _OBJECT2D_H_
 #define _OBJECT2D_H_
@@ -9,15 +10,15 @@
 #include "object.h"
 #define TEX_X (0.1f)
 
-//2DƒIƒuƒWƒFƒNƒgƒNƒ‰ƒX
+//2Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¯ãƒ©ã‚¹
 class CObject2D : public CObject
 {
 public:
 	typedef struct
 	{
-		D3DXVECTOR3 pos;	//’¸“_î•ñ
-		float rhw;			//À•W•ÏŠ·—pŒW”
-		D3DCOLOR col;		//’¸“_ƒJƒ‰[
+		D3DXVECTOR3 pos;	//é ‚ç‚¹æƒ…å ±
+		float rhw;			//åº§æ¨™å¤‰æ›ç”¨ä¿‚æ•°
+		D3DCOLOR col;		//é ‚ç‚¹ã‚«ãƒ©ãƒ¼
 		D3DXVECTOR2 tex;
 	}VERTEX_2D;
 
@@ -29,7 +30,7 @@ public:
 	void Update() override;
 	void Draw() override;
 	static CObject2D* Create();
-	void BindTexture(LPDIRECT3DTEXTURE9 pTex,D3DXVECTOR2 fTexpos);		//ƒeƒNƒXƒ`ƒƒŠ„‚è“–‚Ä
+	void BindTexture(LPDIRECT3DTEXTURE9 pTex,D3DXVECTOR2 fTexpos);		//ãƒ†ã‚¯ã‚¹ãƒãƒ£å‰²ã‚Šå½“ã¦
 	
 	void SetAnim(D3DXVECTOR2 AnimCnt);
 	void SetParam(D3DXVECTOR3 fpos, float wide, float height);
@@ -47,15 +48,15 @@ public:
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }
 	
 protected:
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		//’¸“_ƒoƒbƒtƒ@
-	LPDIRECT3DTEXTURE9 m_pTexture;		//ƒeƒNƒXƒ`ƒƒ
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
+	LPDIRECT3DTEXTURE9 m_pTexture;		//ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
-	D3DXVECTOR3 m_pos;		//ˆÊ’u
-	D3DXVECTOR3 m_move;		//ˆÚ“®—Ê
-	D3DXVECTOR3 m_rot;		//Šp“x
-	D3DXVECTOR3 m_scale;	//Šg‘å—¦
-	float m_fAnglePolygon;			//‘ÎŠpü‚ÌŠp“x
-	float m_fLengthPolygon;			//‘ÎŠpü‚Ì’·‚³
+	D3DXVECTOR3 m_pos;		//ä½ç½®
+	D3DXVECTOR3 m_move;		//ç§»å‹•é‡
+	D3DXVECTOR3 m_rot;		//è§’åº¦
+	D3DXVECTOR3 m_scale;	//æ‹¡å¤§ç‡
+	float m_fAnglePolygon;			//å¯¾è§’ç·šã®è§’åº¦
+	float m_fLengthPolygon;			//å¯¾è§’ç·šã®é•·ã•
 	D3DXVECTOR2 m_texcnt;
 
 	float m_Texpos_x;

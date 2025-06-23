@@ -1,7 +1,8 @@
-//============================================================
+ï»¿//============================================================
 //
 //object.h
 //
+// Auther : SatoshiKuramae
 //============================================================
 #ifndef _OBJECT_H_
 #define _OBJECT_H_
@@ -22,7 +23,7 @@ public:
 		GAMEOBJECT,
 	};
 
-	CObject(int nPriority = 3);		//•`‰æ—Dæİ’è
+	CObject(int nPriority = 3);		//æç”»å„ªå…ˆè¨­å®š
 	virtual ~CObject();
 
 	virtual HRESULT Init() = 0;
@@ -31,11 +32,11 @@ public:
 	virtual void Draw() = 0;
 	static CObject* GetObject(int nIdx,int nPri);
 	
-	static void ReleaseAll();	//‘SƒIƒuƒWƒFƒNƒg‚Ì‰ğ•ú
-	static void UpdateAll();	//‘SƒIƒuƒWƒFƒNƒg‚ÌXV
-	static void DrawAll();		//‘SƒIƒuƒWƒFƒNƒg‚Ì•`‰æ
+	static void ReleaseAll();	//å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è§£æ”¾
+	static void UpdateAll();	//å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æ›´æ–°
+	static void DrawAll();		//å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æç”»
 	
-	//Œp³‚ğg‚¤‚½‚ß‚É‚±‚ê‚ç‚Ìˆ—‚ğƒpƒ‰ƒ[ƒ^‘€ìˆ—‚ğs‚¤
+	//ç¶™æ‰¿ã‚’ä½¿ã†ãŸã‚ã«ã“ã‚Œã‚‰ã®å‡¦ç†ã‚’ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ“ä½œå‡¦ç†ã‚’è¡Œã†
 	virtual D3DXVECTOR3 GetPos() const { return D3DXVECTOR3(0, 0, 0); }
 	virtual void SetPos(const D3DXVECTOR3&) {}
 
@@ -48,24 +49,24 @@ public:
 	virtual D3DXVECTOR3 GetMove() const { return D3DXVECTOR3(1, 1, 1); }
 	virtual void SetMove(const D3DXVECTOR3&) {}
 
-	// ƒIƒuƒWƒFƒNƒgƒ^ƒCƒvæ“¾
+	// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¿ã‚¤ãƒ—å–å¾—
 	TYPE GetType() { return m_type; }
 	void SetType(TYPE type) { m_type = type; }
 
 protected:
-	void Release();				//©•ª©g‚Ì‰ğ•ú
+	void Release();				//è‡ªåˆ†è‡ªèº«ã®è§£æ”¾
 private:
-	static CObject* m_apObject[MAX_PRIORITY][NUMOBJECT];	//PriorityÅ‘å”‚ÆƒIƒuƒWƒFƒNƒgÅ‘å”
-	static int m_nNumAll;					//ƒIƒuƒWƒFƒNƒg‘”
-	int m_nID;								//©•ª©g‚ÌID
-	int m_nPriority;						//•`‰æ—Dæ“x
-	TYPE m_type;							//ƒIƒuƒWƒFƒNƒgƒ^ƒCƒv
+	static CObject* m_apObject[MAX_PRIORITY][NUMOBJECT];	//Priorityæœ€å¤§æ•°ã¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæœ€å¤§æ•°
+	static int m_nNumAll;					//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç·æ•°
+	int m_nID;								//è‡ªåˆ†è‡ªèº«ã®ID
+	int m_nPriority;						//æç”»å„ªå…ˆåº¦
+	TYPE m_type;							//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¿ã‚¤ãƒ—
 
-	//ƒIƒuƒWƒFƒNƒgŠÇ—
-	static CObject* m_pTop;	//æ“ª‚ÌƒIƒuƒWƒFƒNƒg‚Ìƒ|ƒCƒ“ƒ^
-	static CObject* m_pCur;	//Œ»İiÅŒã”öj‚Ìƒ|ƒCƒ“ƒ^
-	CObject* m_Prev;		//‘O‚ÌƒIƒuƒWƒFƒNƒg‚Ìƒ|ƒCƒ“ƒ^
-	CObject* m_pNext;		//Ÿ‚ÌƒIƒuƒWƒFƒNƒg‚Ìƒ|ƒCƒ“ƒ^
-	bool m_bDeath;			//€–Sƒtƒ‰ƒO
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç®¡ç†
+	static CObject* m_pTop;	//å…ˆé ­ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
+	static CObject* m_pCur;	//ç¾åœ¨ï¼ˆæœ€å¾Œå°¾ï¼‰ã®ãƒã‚¤ãƒ³ã‚¿
+	CObject* m_Prev;		//å‰ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
+	CObject* m_pNext;		//æ¬¡ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
+	bool m_bDeath;			//æ­»äº¡ãƒ•ãƒ©ã‚°
 };
 #endif

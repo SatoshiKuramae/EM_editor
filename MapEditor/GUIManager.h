@@ -2,6 +2,7 @@
 //
 //GUImanager.h
 //
+// Auther : SatoshiKuramae
 //============================================================
 #ifndef _GUIMANAGER_H_
 #define _GUIMANAGER_H_

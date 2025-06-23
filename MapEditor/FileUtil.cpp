@@ -1,12 +1,13 @@
-//=================================================
+ï»¿//=================================================
 //
 //FileUtil.cpp
 //
+// Auther : SatoshiKuramae
 //=================================================
 #include "FileUtil.h"
 
 
-//w’è‚³‚ê‚½ƒtƒHƒ‹ƒ_“à‚Ì‚˜ƒtƒ@ƒCƒ‹–¼‚ğæ“¾‚·‚éˆ—
+//æŒ‡å®šã•ã‚ŒãŸãƒ•ã‚©ãƒ«ãƒ€å†…ã®ï½˜ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å–å¾—ã™ã‚‹å‡¦ç†
 std::vector<std::string> GetXFileNamesInDirectory(const std::string& folderPath, const std::string& extension) {
     std::vector<std::string> filenames;
     std::string searchPath = folderPath + "\\*" + extension;

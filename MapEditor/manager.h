@@ -1,7 +1,8 @@
-//============================================================
+ï»¿//============================================================
 //
 //manager.h
 //
+// AUther : SatoshiKuramae
 //============================================================
 #ifndef _MANAGER_H_
 #define _MANAGER_H_
@@ -11,11 +12,11 @@
 #include "renderer.h"
 #include "input.h"
 
-//‘O•ûéŒ¾
+//å‰æ–¹å®£è¨€
 class CCamera;
 class CLight;
 
-//ƒŒƒ“ƒ_ƒ‰[ƒNƒ‰ƒX
+//ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã‚¯ãƒ©ã‚¹
 class CManager
 {
 public:
@@ -32,10 +33,10 @@ public:
 	static CLight* GetLight();
 
 private:
-	static CRenderer* m_pRenderer;	//ƒŒƒ“ƒ_ƒ‰[
+	static CRenderer* m_pRenderer;	//ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼
 	static CInputKeyboard* m_pKeyboard;
-	static CCamera* m_pCamera;	//ƒrƒ…[î•ñ
-	static CLight* m_pLight;	//ƒ‰ƒCƒgî•ñ
+	static CCamera* m_pCamera;	//ãƒ“ãƒ¥ãƒ¼æƒ…å ±
+	static CLight* m_pLight;	//ãƒ©ã‚¤ãƒˆæƒ…å ±
 
 };
 

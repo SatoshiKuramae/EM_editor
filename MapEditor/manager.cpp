@@ -1,7 +1,8 @@
-//==============================================================
+ï»¿//==============================================================
 //
 // manager.cpp
 //
+// Auther : SatoshiKuramae
 //==============================================================
 
 #include<Windows.h>
@@ -23,7 +24,7 @@
 #include "gameobject.h"
 
 
-//Ã“Iƒƒ“ƒo‰Šú‰»
+//é™çš„ãƒ¡ãƒ³ãƒåˆæœŸåŒ–
 CRenderer* CManager::m_pRenderer = nullptr;
 CInputKeyboard* CManager::m_pKeyboard = nullptr;
 CCamera* CManager::m_pCamera = nullptr;
@@ -31,34 +32,34 @@ CLight* CManager::m_pLight = nullptr;
 
 
 GUIManager* g_pGuimanager = nullptr;
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CManager::CManager()
 {
 
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CManager::~CManager()
 {
 	
 }
 
-//‰Šú‰»
+//åˆæœŸåŒ–
 HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
-	//ƒŒƒ“ƒ_ƒ‰[‚Ì¶¬
+	//ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã®ç”Ÿæˆ
 	m_pRenderer = new CRenderer();
 	m_pRenderer->Init(hWnd, bWindow);
 
-	//ƒL[ƒ{[ƒh‚Ì¶¬
+	//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ç”Ÿæˆ
 	m_pKeyboard = new CInputKeyboard();
 	m_pKeyboard->Init(hInstance, hWnd);
 
-	//ƒJƒƒ‰¶¬
+	//ã‚«ãƒ¡ãƒ©ç”Ÿæˆ
 	m_pCamera = new CCamera();
 	m_pCamera->Init();
 
-	//ƒ‰ƒCƒg¶¬
+	//ãƒ©ã‚¤ãƒˆç”Ÿæˆ
 	m_pLight = new CLight();
 	m_pLight->Init();
 
@@ -67,12 +68,12 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	
 
-	//ƒ}ƒl[ƒWƒƒ[‚ğ‰Šú‰»
+	//ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’åˆæœŸåŒ–
 	if (!g_pGuimanager->Initialize(hWnd, GetRenderer()->GetDevice()))
 	{
 		return -1;
 	}
-	//ã‚©‚ç‡‚É•`‰æ‚³‚ê‚é
+	//ä¸Šã‹ã‚‰é †ã«æç”»ã•ã‚Œã‚‹
 
 
 
@@ -89,7 +90,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	return S_OK;
 }
 
-//I—¹ˆ—
+//çµ‚äº†å‡¦ç†
 void CManager::Uninit()
 {
 
@@ -109,7 +110,7 @@ void CManager::Uninit()
 	}
 }
 
-//XVˆ—
+//æ›´æ–°å‡¦ç†
 void CManager::Update()
 {
 	g_pGuimanager->BeginFrame();
@@ -123,7 +124,7 @@ void CManager::Update()
 	g_pGuimanager->EndFrame(GetRenderer()->GetDevice());
 }
 
-//•`‰æˆ—
+//æç”»å‡¦ç†
 void CManager::Draw()
 {
 	
@@ -131,25 +132,25 @@ void CManager::Draw()
 
 }
 
-//ƒŒƒ“ƒ_ƒ‰[æ“¾
+//ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼å–å¾—
 CRenderer* CManager::GetRenderer()
 {
 	return m_pRenderer;
 }
 
-//ƒL[ƒ{[ƒhæ“¾
+//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰å–å¾—
 CInputKeyboard* CManager::GetKeyboard()
 {
 	return m_pKeyboard;
 }
 
-//ƒJƒƒ‰‚Ìæ“¾
+//ã‚«ãƒ¡ãƒ©ã®å–å¾—
 CCamera* CManager::GetCamera()
 {
 	return m_pCamera;
 }
 
-//ƒ‰ƒCƒg‚Ìæ“¾
+//ãƒ©ã‚¤ãƒˆã®å–å¾—
 CLight* CManager::GetLight()
 {
 	return m_pLight;

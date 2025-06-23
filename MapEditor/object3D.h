@@ -1,7 +1,8 @@
-//============================================================
+Ôªø//============================================================
 //
-//object2D.h
+//object3D.h
 //
+// Auther : SatoshiKuramae
 //============================================================
 #ifndef _OBJECT3D_H_
 #define _OBJECT3D_H_
@@ -9,7 +10,7 @@
 #include "object.h"
 #define NUM_POLYGON (50)
 
-//3DÉIÉuÉWÉFÉNÉgÉNÉâÉX
+//3D„Ç™„Éñ„Ç∏„Çß„ÇØ„Éà„ÇØ„É©„Çπ
 class CObject3D : public CObject
 {
 public:
@@ -29,7 +30,7 @@ public:
 	void Uninit() override;
 	void Update() override;
 	void Draw() override;
-	void BindTexture(LPDIRECT3DTEXTURE9 pTex, D3DXVECTOR2 fTexpos);		//ÉeÉNÉXÉ`ÉÉäÑÇËìñÇƒ
+	void BindTexture(LPDIRECT3DTEXTURE9 pTex, D3DXVECTOR2 fTexpos);		//„ÉÜ„ÇØ„Çπ„ÉÅ„É£Ââ≤„ÇäÂΩì„Å¶
 	static CObject3D* Create();
 
 	D3DXVECTOR3 GetPos() const override { return m_pos; }
@@ -44,12 +45,12 @@ public:
 	D3DXVECTOR3 GetMove() const override { return m_move; }
 	void SetMove(const D3DXVECTOR3& move) override { m_move = move; }
 protected:
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		//í∏ì_ÉoÉbÉtÉ@
-	LPDIRECT3DTEXTURE9 m_pTexture;		//ÉeÉNÉXÉ`ÉÉ
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		//È†ÇÁÇπ„Éê„ÉÉ„Éï„Ç°
+	LPDIRECT3DTEXTURE9 m_pTexture;		//„ÉÜ„ÇØ„Çπ„ÉÅ„É£
 
-	D3DXVECTOR3 m_pos;		//à íu
-	D3DXVECTOR3 m_rot;		//äpìx
-	D3DXVECTOR3 m_scale;	//ägëÂó¶
+	D3DXVECTOR3 m_pos;		//‰ΩçÁΩÆ
+	D3DXVECTOR3 m_rot;		//ËßíÂ∫¶
+	D3DXVECTOR3 m_scale;	//Êã°Â§ßÁéá
 	D3DXVECTOR3 m_move;
 	D3DXMATRIX m_mtxWorld;
 	float m_NowTexpos_x;

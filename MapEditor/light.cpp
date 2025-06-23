@@ -1,23 +1,29 @@
+ï»¿//===============================================================================
+//
+//light.cpp
+//
+//Author Kuramaesatoshi
+//===============================================================================
 #include "light.h"
 #include "manager.h"
 #include "renderer.h"
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CLight::CLight()
 {
 	for (int i = 0; i < NUM_LIGHT; i++)
 	{
-		//ƒ‰ƒCƒgî•ñ‚ÌƒNƒŠƒA
+		//ãƒ©ã‚¤ãƒˆæƒ…å ±ã®ã‚¯ãƒªã‚¢
 		ZeroMemory(&m_Light[i], sizeof(D3DLIGHT9));
 	}
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CLight::~CLight()
 {
 
 }
 
-//‰Šúİ’è
+//åˆæœŸè¨­å®š
 HRESULT CLight::Init()
 {
 	LPDIRECT3DDEVICE9 pDevice;
@@ -25,47 +31,47 @@ HRESULT CLight::Init()
 
 	for (int i = 0; i < NUM_LIGHT; i++)
 	{
-		//ƒ‰ƒCƒg‚Ìí—Ş‚ğİ’è
+		//ãƒ©ã‚¤ãƒˆã®ç¨®é¡ã‚’è¨­å®š
 		m_Light[i].Type = D3DLIGHT_DIRECTIONAL;
 
-		//ƒ‰ƒCƒg‚ÌŠgUŒõ‚ğİ’è
+		//ãƒ©ã‚¤ãƒˆã®æ‹¡æ•£å…‰ã‚’è¨­å®š
 		m_Light[i].Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 		if (i == 0)
 		{
-			//ƒ‰ƒCƒg‚Ì•ûŒü‚ğİ’è
+			//ãƒ©ã‚¤ãƒˆã®æ–¹å‘ã‚’è¨­å®š
 			vecDir = D3DXVECTOR3(0.5f, -0.5f, -0.4f);
 		}
 		if (i == 1)
-		{//ƒ‰ƒCƒg‚Ì•ûŒü‚ğİ’è
+		{//ãƒ©ã‚¤ãƒˆã®æ–¹å‘ã‚’è¨­å®š
 			vecDir = D3DXVECTOR3(0.2f, -0.5f, -0.4f);
 		}
 		if (i == 2)
 		{
-			//ƒ‰ƒCƒg‚Ì•ûŒü‚ğİ’è
+			//ãƒ©ã‚¤ãƒˆã®æ–¹å‘ã‚’è¨­å®š
 			vecDir = D3DXVECTOR3(-0.3f, -0.5f, -0.4f);
 		}
 
 
-		D3DXVec3Normalize(&vecDir, &vecDir);	//ƒxƒNƒgƒ‹‚ğ³‹K‰»
+		D3DXVec3Normalize(&vecDir, &vecDir);	//ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–
 		m_Light[i].Direction = vecDir;
 
-		//ƒ‰ƒCƒg‚ğİ’è
+		//ãƒ©ã‚¤ãƒˆã‚’è¨­å®š
 		pDevice->SetLight(0, &m_Light[i]);
 
-		//ƒ‰ƒCƒg‚ğ—LŒø‚É‚·‚é
+		//ãƒ©ã‚¤ãƒˆã‚’æœ‰åŠ¹ã«ã™ã‚‹
 		pDevice->LightEnable(i, TRUE);
 	}
 	return S_OK;
 }
 
-//I—¹ˆ—
+//çµ‚äº†å‡¦ç†
 void CLight::Uninit()
 {
 
 }
 
-//XVˆ—
+//æ›´æ–°å‡¦ç†
 void CLight::Update()
 {
 

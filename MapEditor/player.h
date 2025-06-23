@@ -1,7 +1,8 @@
-//============================================================
+ï»¿//============================================================
 //
 //player.h
 //
+// Auther : SatoshiKuramae
 //============================================================
 #ifndef _CPlayer_H_
 #define _CPlayer_H_
@@ -9,9 +10,9 @@
 #include "objectX.h"
 #define PARTS_FILE	"data\\motion.txt"
 #define JUMP_INC (50.0f)
-#define JUMP_DEC (2.2f)		//d—Í
+#define JUMP_DEC (2.2f)		//é‡åŠ›
 
-//3DƒIƒuƒWƒFƒNƒgƒNƒ‰ƒX
+//3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¯ãƒ©ã‚¹
 class CPlayer : public CObjectX
 {
 public:
@@ -54,9 +55,9 @@ public:
 	static void Unload();
 	//D3DXVECTOR3 Collision(D3DXVECTOR3 pos);
 	static CPlayer* Create();
-	D3DXVECTOR3& GetPos() { return m_pos; }	//ˆÊ’uî•ñ‚È‚Ç‚ğæ“¾
+	D3DXVECTOR3& GetPos() { return m_pos; }	//ä½ç½®æƒ…å ±ãªã©ã‚’å–å¾—
 private:
-	LPDIRECT3DTEXTURE9 m_pTexture;		//ƒeƒNƒXƒ`ƒƒ
+	LPDIRECT3DTEXTURE9 m_pTexture;		//ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	D3DXMATRIX m_mtxWorld;
 	static D3DXVECTOR3 m_PosOld;
 };

@@ -1,26 +1,27 @@
-//==============================================================
+ï»¿//==============================================================
 //
-// manager.cpp
+// input.cpp
 //
+// Auther : SatoshiKuramae
 //==============================================================
 #include "input.h"
 
-//Ã“Iƒƒ“ƒo‰Šú‰»
+//é™çš„ãƒ¡ãƒ³ãƒåˆæœŸåŒ–
 LPDIRECTINPUT8 CInput::m_pInput = nullptr;
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^(CInput)
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿(CInput)
 CInput::CInput()
 {
 
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^(CInput)
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿(CInput)
 CInput::~CInput()
 {
 
 }
 
-//‰Šú‰»
+//åˆæœŸåŒ–
 HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 {
 	if (m_pInput == nullptr)
@@ -35,17 +36,17 @@ HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 	return S_OK;
 }
 
-//”jŠü
+//ç ´æ£„
 void CInput::Uninit()
 {
-	//“ü—ÍƒfƒoƒCƒXiƒL[ƒ{[ƒhj‚Ì”jŠü
+	//å…¥åŠ›ãƒ‡ãƒã‚¤ã‚¹ï¼ˆã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ï¼‰ã®ç ´æ£„
 	if (m_pDevice != nullptr)
 	{
-		m_pDevice->Unacquire();		//ƒL[ƒ{[ƒh‚Ö‚ÌƒAƒNƒZƒXŒ ‚ğ•úŠü
+		m_pDevice->Unacquire();		//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã¸ã®ã‚¢ã‚¯ã‚»ã‚¹æ¨©ã‚’æ”¾æ£„
 		m_pDevice->Release();
 		m_pDevice = nullptr;
 	}
-	//DirectInputƒIƒuƒWƒFƒNƒg‚Ì”jŠü
+	//DirectInputã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç ´æ£„
 	if (m_pInput != nullptr)
 	{
 		m_pInput->Release();
@@ -53,74 +54,74 @@ void CInput::Uninit()
 	}
 }
 
-//CInoutKeyboardÀ‘•
+//CInoutKeyboardå®Ÿè£…
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^(CInputKeyboard)
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿(CInputKeyboard)
 CInputKeyboard::CInputKeyboard()
 {
 
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^(CInputKeyboard)
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿(CInputKeyboard)
 CInputKeyboard::~CInputKeyboard()
 {
 
 }
 
-//‰Šú‰»
+//åˆæœŸåŒ–
 HRESULT CInputKeyboard::Init(HINSTANCE hInstance, HWND hWnd)
 {
 	CInput::Init(hInstance, hWnd);
 
-	//“ü—ÍƒfƒoƒCƒXiƒL[ƒ{[ƒhj‚Ì¶¬
+	//å…¥åŠ›ãƒ‡ãƒã‚¤ã‚¹ï¼ˆã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ï¼‰ã®ç”Ÿæˆ
 	if (FAILED(m_pInput->CreateDevice(GUID_SysKeyboard, &m_pDevice, NULL)))
 	{
 		return E_FAIL;
 	}
-	//ƒf[ƒ^ƒtƒH[ƒ}ƒbƒg‚ğİ’è
+	//ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã‚’è¨­å®š
 	if (FAILED(m_pDevice->SetDataFormat(&c_dfDIKeyboard)))
 	{
 		return E_FAIL;
 	}
-	//‹¦’²ƒ‚[ƒh‚ğİ’è
+	//å”èª¿ãƒ¢ãƒ¼ãƒ‰ã‚’è¨­å®š
 	if (FAILED((m_pDevice->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE))))
 	{
 		return E_FAIL;
 	}
-	//ƒL[ƒ{[ƒh‚Ö‚ÌƒAƒNƒZƒXŒ ‚ğŠl“¾
+	//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã¸ã®ã‚¢ã‚¯ã‚»ã‚¹æ¨©ã‚’ç²å¾—
 	m_pDevice->Unacquire();
 	return S_OK;
 
 }
 
-//”jŠü
+//ç ´æ£„
 void CInputKeyboard::Uninit()
 {
 	CInput::Uninit();
 }
 
-//XVˆ—
+//æ›´æ–°å‡¦ç†
 void CInputKeyboard::Update()
 {
 	BYTE aKeyState[MAX_KEY];
 	int nCntKey;
 
-	//“ü—ÍƒfƒoƒCƒX‚©‚çƒf[ƒ^‚ğæ“¾
+	//å…¥åŠ›ãƒ‡ãƒã‚¤ã‚¹ã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
 	if (SUCCEEDED(m_pDevice->GetDeviceState(sizeof(m_aKeyState), &aKeyState[0])))
 	{
 		for (nCntKey = 0; nCntKey < MAX_KEY; nCntKey++)
 		{
 			m_aKeyStateTrigger[nCntKey] = (m_aKeyState[nCntKey] ^ aKeyState[nCntKey]) & aKeyState[nCntKey];
-			m_aKeyState[nCntKey] = aKeyState[nCntKey];		//ƒL[ƒ{[ƒh‚ÌƒvƒŒƒXî•ñ‚ğ•Û‘¶
+			m_aKeyState[nCntKey] = aKeyState[nCntKey];		//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ãƒ—ãƒ¬ã‚¹æƒ…å ±ã‚’ä¿å­˜
 		}
 	}
 	else
 	{
-		m_pDevice->Acquire();	//ƒL[ƒ{[ƒh‚Ö‚ÌƒAƒNƒZƒXŒ ‚ğŠl“¾
+		m_pDevice->Acquire();	//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã¸ã®ã‚¢ã‚¯ã‚»ã‚¹æ¨©ã‚’ç²å¾—
 	}
 }
 
-//Šeí“ü—Íó‘Ô‚ÌŠÖ”
+//å„ç¨®å…¥åŠ›çŠ¶æ…‹ã®é–¢æ•°
 bool CInputKeyboard::GetKeyboardPress(int nKey)
 {
 	return ((m_aKeyState[nKey] & 0x80) != 0) ? true : false;
@@ -131,31 +132,31 @@ bool CInputKeyboard::GetKeyboardTrigger(int nKey)
 	return ((m_aKeyStateTrigger[nKey] & 0x80) != 0) ? true : false;
 }
 //================================================================================================================================
-//ƒpƒbƒh“ü—Íˆ—
+//ãƒ‘ãƒƒãƒ‰å…¥åŠ›å‡¦ç†
 //================================================================================================================================
-//‰Šú‰»
+//åˆæœŸåŒ–
 HRESULT CInputGamepad::InitJoypad()
 {
-	//ƒƒ‚ƒŠ‚ÌƒNƒŠƒA
+	//ãƒ¡ãƒ¢ãƒªã®ã‚¯ãƒªã‚¢
 	memset(&m_joyKeyState, 0, sizeof(XINPUT_STATE));
 
-	//ƒƒ‚ƒŠ‚ÌƒNƒŠƒA
+	//ãƒ¡ãƒ¢ãƒªã®ã‚¯ãƒªã‚¢
 	memset(&m_JoypadMotor, 0, sizeof(XINPUT_VIBRATION));
 
-	//XInput‚ÌƒXƒe[ƒg‚ğİ’è(—LŒø‚É‚·‚é)
+	//XInputã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’è¨­å®š(æœ‰åŠ¹ã«ã™ã‚‹)
 	XInputEnable(true);
 
 	return S_OK;
 }
 
-//I—¹ˆ—
+//çµ‚äº†å‡¦ç†
 void CInputGamepad::UninitJoypad()
 {
-	//XInput‚ÌƒXƒe[ƒg‚ğİ’è(–³Œø‚É‚·‚é)
+	//XInputã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’è¨­å®š(ç„¡åŠ¹ã«ã™ã‚‹)
 	XInputEnable(false);
 }
 
-// ƒXƒeƒBƒbƒN‚Ì“ü—Í‚ğ•ûŒüƒpƒbƒhƒtƒ‰ƒO‚É•ÏŠ·
+// ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›ã‚’æ–¹å‘ãƒ‘ãƒƒãƒ‰ãƒ•ãƒ©ã‚°ã«å¤‰æ›
 WORD CInputGamepad::GetJoypadStick(SHORT sThumbX, SHORT sThumbY, SHORT sDeadZone)
 {
 	WORD wButtons = 0;
@@ -181,62 +182,62 @@ WORD CInputGamepad::GetJoypadStick(SHORT sThumbX, SHORT sThumbY, SHORT sDeadZone
 	return wButtons;
 }
 
-//ƒWƒ‡ƒCƒpƒbƒh‚ÌXVˆ—
+//ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã®æ›´æ–°å‡¦ç†
 void CInputGamepad::UpdateJoypad()
 {
-	XINPUT_STATE joykeyState; //ƒWƒ‡ƒCƒpƒbƒh‚Ì“ü—Íî•ñ
+	XINPUT_STATE joykeyState; //ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã®å…¥åŠ›æƒ…å ±
 
-	//ƒWƒ‡ƒCƒpƒbƒh‚Ìó‘Ô‚ğæ“¾
+	//ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã®çŠ¶æ…‹ã‚’å–å¾—
 	if (XInputGetState(0, &joykeyState) == ERROR_SUCCESS)
 	{
 		WORD Button = joykeyState.Gamepad.wButtons;
 		WORD OldButton = m_joyKeyState.Gamepad.wButtons;
-		m_joyKeyStateTrigger.Gamepad.wButtons = Button & ~OldButton;    // ƒgƒŠƒK[ˆ—
-		m_ajoyKeyStateRelease.Gamepad.wButtons = ~Button & OldButton;    // ƒŠƒŠ[ƒXˆ—
+		m_joyKeyStateTrigger.Gamepad.wButtons = Button & ~OldButton;    // ãƒˆãƒªã‚¬ãƒ¼å‡¦ç†
+		m_ajoyKeyStateRelease.Gamepad.wButtons = ~Button & OldButton;    // ãƒªãƒªãƒ¼ã‚¹å‡¦ç†
 		joykeyState.Gamepad.wButtons |= GetJoypadStick(m_joyKeyState.Gamepad.sThumbLX, m_joyKeyState.Gamepad.sThumbLY, JOYPAD_DEADZONE);
 
-		// Œ»İ‚ÌŠÔ‚ğæ“¾‚·‚é
+		// ç¾åœ¨ã®æ™‚é–“ã‚’å–å¾—ã™ã‚‹
 		m_aJoypadCurrentTime.Gamepad.wButtons = timeGetTime();
 
 		if (joykeyState.Gamepad.wButtons && ((m_aJoypadCurrentTime.Gamepad.wButtons - m_aJoypadExecLastTime.Gamepad.wButtons) > SPEED_KEY))
 		{
-			// ÅŒã‚É^‚ğ•Ô‚µ‚½ŠÔ‚ğ•Û‘¶
+			// æœ€å¾Œã«çœŸã‚’è¿”ã—ãŸæ™‚é–“ã‚’ä¿å­˜
 			m_aJoypadExecLastTime.Gamepad.wButtons = m_aJoypadCurrentTime.Gamepad.wButtons;
 
-			// ƒL[ƒ{[ƒh‚ÌƒŠƒs[ƒgî•ñ‚ğ•Û‘¶
+			// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ãƒªãƒ”ãƒ¼ãƒˆæƒ…å ±ã‚’ä¿å­˜
 			/*m_joyKeyStateRepeat = joykeyState;*/
 		}
 		else
 		{
-			// ƒL[ƒ{[ƒh‚ÌƒŠƒs[ƒgî•ñ‚ğ•Û‘¶
+			// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ãƒªãƒ”ãƒ¼ãƒˆæƒ…å ±ã‚’ä¿å­˜
 		/*	m_joyKeyStateRepeat.Gamepad.wButtons = 0;*/
 		}
 
-		m_joyKeyState = joykeyState;                // ƒvƒŒƒXˆ—
+		m_joyKeyState = joykeyState;                // ãƒ—ãƒ¬ã‚¹å‡¦ç†
 	}
 }
 
-//ƒWƒ‡ƒCƒpƒbƒh‚ÌƒvƒŒƒXî•ñ‚ğæ“¾
+//ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã®ãƒ—ãƒ¬ã‚¹æƒ…å ±ã‚’å–å¾—
 bool CInputGamepad::GetJoypadPress(JOYKEY key)
 {
 	return (m_joyKeyState.Gamepad.wButtons & (0x01 << key)) ? true : false;
 }
 
-//ƒWƒ‡ƒCƒpƒbƒh‚ÌƒgƒŠƒK[î•ñ‚ğæ“¾
+//ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã®ãƒˆãƒªã‚¬ãƒ¼æƒ…å ±ã‚’å–å¾—
 bool CInputGamepad::GetJoypadTrigger(JOYKEY key)
 {
 	return (m_joyKeyStateTrigger.Gamepad.wButtons & (0x01 << key)) ? true : false;
 }
 
-//ƒXƒeƒBƒbƒN‚ÌXVˆ—
+//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æ›´æ–°å‡¦ç†
 void CInputGamepad::UpdateStick(void)
 {
-	//ƒL[ƒ{[ƒh‚Ìó‘Ô‚ğæ“¾
+	//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®çŠ¶æ…‹ã‚’å–å¾—
 	if (XInputGetState(0, &m_XInput) == ERROR_SUCCESS)
 	{
 		for (int nCntStick = 0; nCntStick < STICKTYPE_MAX; nCntStick++)
 		{
-			float fX, fY; //ƒXƒeƒBƒbƒN‚ÌX²AY²
+			float fX, fY; //ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®Xè»¸ã€Yè»¸
 
 			switch (nCntStick)
 			{
@@ -250,10 +251,10 @@ void CInputGamepad::UpdateStick(void)
 				break;
 			}
 
-			//Šp“x‚ğæ“¾
+			//è§’åº¦ã‚’å–å¾—
 			m_stick.afAngle[nCntStick] = FindAngle(D3DXVECTOR3(fX, fY, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f)) * -1;
 
-			//ƒXƒeƒBƒbƒN‚Ì“|‚µ‹ï‡‚ğæ“¾
+			//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å€’ã—å…·åˆã‚’å–å¾—
 			m_stick.afTplDiameter[nCntStick] = fabsf(fX);
 
 			if (m_stick.afTplDiameter[nCntStick] < fabsf(fY))
@@ -261,77 +262,77 @@ void CInputGamepad::UpdateStick(void)
 				m_stick.afTplDiameter[nCntStick] = fabsf(fY);
 			}
 
-			m_stick.afTplDiameter[nCntStick] /= 32768.0f; //“|‚µ‚Ä‚¢‚éó‘Ô‚Ì‰Šú’l
+			m_stick.afTplDiameter[nCntStick] /= 32768.0f; //å€’ã—ã¦ã„ã‚‹çŠ¶æ…‹ã®åˆæœŸå€¤
 
-			//•ûŒü“ü—Íƒtƒ‰ƒO‚ğ‰Šú‰»
+			//æ–¹å‘å…¥åŠ›ãƒ•ãƒ©ã‚°ã‚’åˆæœŸåŒ–
 			for (int nCntAngle = 0; nCntAngle < STICKANGLE_MAX; nCntAngle++)
 			{
 				m_bAngle[nCntStick][nCntAngle] = false;
 			}
 			if (m_stick.afTplDiameter[nCntStick] > 0.1f)
 			{
-				//Šp“x‚ªl•ªŠ„‚Åã‚ÉˆÊ’u‚·‚éAãƒtƒ‰ƒO‚ğ^‚É‚·‚é
+				//è§’åº¦ãŒå››åˆ†å‰²ã§ä¸Šã«ä½ç½®ã™ã‚‹æ™‚ã€ä¸Šãƒ•ãƒ©ã‚°ã‚’çœŸã«ã™ã‚‹
 				if ((m_stick.afAngle[nCntStick] < D3DX_PI * -0.75) || (m_stick.afAngle[nCntStick] > D3DX_PI * 0.75))
 				{
 					m_bAngle[nCntStick][STICKANGLE_UP] = true;
 				}
 
 
-				//Šp“x‚ªl•ªŠ„‚Å‰º‚ÉˆÊ’u‚·‚éA‰ºƒtƒ‰ƒO‚ğ^‚É‚·‚é
+				//è§’åº¦ãŒå››åˆ†å‰²ã§ä¸‹ã«ä½ç½®ã™ã‚‹æ™‚ã€ä¸‹ãƒ•ãƒ©ã‚°ã‚’çœŸã«ã™ã‚‹
 				else if ((m_stick.afAngle[nCntStick] > D3DX_PI * -0.25) && (m_stick.afAngle[nCntStick] < D3DX_PI * 0.25))
 				{
 					m_bAngle[nCntStick][STICKANGLE_DOWN] = true;
 				}
 
-				//Šp“x‚ªl•ªŠ„‚Å¶‚ÉˆÊ’u‚·‚éA¶ƒtƒ‰ƒO‚ğ^‚É‚·‚é
+				//è§’åº¦ãŒå››åˆ†å‰²ã§å·¦ã«ä½ç½®ã™ã‚‹æ™‚ã€å·¦ãƒ•ãƒ©ã‚°ã‚’çœŸã«ã™ã‚‹
 				else if ((m_stick.afAngle[nCntStick] > D3DX_PI * -0.75) && (m_stick.afAngle[nCntStick] < D3DX_PI * -0.25))
 				{
 					m_bAngle[nCntStick][STICKANGLE_LEFT] = true;
 				}
 
-				//Šp“x‚ªl•ªŠ„‚Å‰E‚ÉˆÊ’u‚·‚éA‰Eƒtƒ‰ƒO‚ğ^‚É‚·‚é
+				//è§’åº¦ãŒå››åˆ†å‰²ã§å³ã«ä½ç½®ã™ã‚‹æ™‚ã€å³ãƒ•ãƒ©ã‚°ã‚’çœŸã«ã™ã‚‹
 				else if ((m_stick.afAngle[nCntStick] > D3DX_PI * 0.25) && (m_stick.afAngle[nCntStick] < D3DX_PI * 0.75))
 				{
 					m_bAngle[nCntStick][STICKANGLE_RIGHT] = true;
 				}
 			}
-			//Šp“x‚É‰‚¶‚½“ü—Íˆ—
+			//è§’åº¦ã«å¿œã˜ãŸå…¥åŠ›å‡¦ç†
 			for (int nCntAngle = 0; nCntAngle < STICKANGLE_MAX; nCntAngle++)
 			{
-				//ƒXƒeƒBƒbƒN‚ÌƒgƒŠƒK[î•ñ‚ğ•Û‘¶
+				//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®ãƒˆãƒªã‚¬ãƒ¼æƒ…å ±ã‚’ä¿å­˜
 				m_stick.abAngleTrigger[nCntStick][nCntAngle] = (m_stick.abAnglePress[nCntStick][nCntAngle] ^ m_bAngle[nCntStick][nCntAngle]) & m_bAngle[nCntStick][nCntAngle];
 
-				//ƒXƒeƒBƒbƒN‚ÌƒŠƒŠ[ƒXî•ñ‚ğ•Û‘¶
+				//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®ãƒªãƒªãƒ¼ã‚¹æƒ…å ±ã‚’ä¿å­˜
 				m_stick.abAngleRelease[nCntStick][nCntAngle] = (m_stick.abAnglePress[nCntStick][nCntAngle] ^ m_bAngle[nCntStick][nCntAngle]) & ~m_bAngle[nCntStick][nCntAngle];
 
-				//Œ»İ‚ÌŠÔ‚ğæ“¾
+				//ç¾åœ¨ã®æ™‚é–“ã‚’å–å¾—
 				m_aStickCurrentTime[nCntStick][nCntAngle] = timeGetTime();
 
 				if (m_bAngle[nCntStick][nCntAngle] && ((m_aStickCurrentTime[nCntStick][nCntAngle] - m_aStickExecLastTime[nCntStick][nCntAngle]) > SPEED_KEY))
 				{
-					//ÅŒã‚É^‚ğ•Ô‚µ‚½ŠÔ‚ğ•Û‘¶
+					//æœ€å¾Œã«çœŸã‚’è¿”ã—ãŸæ™‚é–“ã‚’ä¿å­˜
 					m_aStickExecLastTime[nCntStick][nCntAngle] = m_aStickCurrentTime[nCntStick][nCntAngle];
 
-					//ƒXƒeƒBƒbƒN‚ÌƒŠƒs[ƒgî•ñ‚ğ•Û‘¶
+					//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®ãƒªãƒ”ãƒ¼ãƒˆæƒ…å ±ã‚’ä¿å­˜
 					m_stick.abAngleRepeat[nCntStick][nCntAngle] = m_bAngle[nCntStick][nCntAngle];
 				}
 				else
 				{
-					//ƒXƒeƒBƒbƒN‚ÌƒŠƒs[ƒgî•ñ‚ğ•Û‘¶
+					//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®ãƒªãƒ”ãƒ¼ãƒˆæƒ…å ±ã‚’ä¿å­˜
 					m_stick.abAngleRepeat[nCntStick][nCntAngle] = 0;
 				}
 
-				//ƒXƒeƒBƒbƒN‚ÌƒvƒŒƒXî•ñ‚ğ•Û‘¶
+				//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®ãƒ—ãƒ¬ã‚¹æƒ…å ±ã‚’ä¿å­˜
 				m_stick.abAnglePress[nCntStick][nCntAngle] = m_bAngle[nCntStick][nCntAngle];
 			}
 		}
 	}
 }
 
-//2“_‚ÌŠp“x‚ğ‹‚ß‚é
+//2ç‚¹ã®è§’åº¦ã‚’æ±‚ã‚ã‚‹
 float CInputGamepad::FindAngle(D3DXVECTOR3 pos, D3DXVECTOR3 TargetPos)
 {
-	float fAngle; //Šp“x
+	float fAngle; //è§’åº¦
 
 	fAngle = atan2f(TargetPos.y - pos.y, TargetPos.x - pos.x);
 
@@ -341,24 +342,24 @@ float CInputGamepad::FindAngle(D3DXVECTOR3 pos, D3DXVECTOR3 TargetPos)
 	return fAngle;
 }
 
-// ƒRƒ“ƒgƒ[ƒ‰[‚Ì“ü—Íî•ñ‚Ìæ“¾
+// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®å…¥åŠ›æƒ…å ±ã®å–å¾—
 XINPUT_STATE* CInputGamepad::GetXInputState(void)
 {
 	return &m_XInput;
 }
 
-// ƒXƒeƒBƒbƒN‚Ì“ü—Íî•ñ‚ğæ“¾
+// ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›æƒ…å ±ã‚’å–å¾—
 CInputGamepad::STICKINPUT CInputGamepad::GetStick(void)
 {
 	return m_stick;
 }
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CInputGamepad::CInputGamepad()
 {
 
 }
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CInputGamepad::~CInputGamepad()
 {
 

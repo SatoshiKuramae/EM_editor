@@ -1,10 +1,11 @@
-//=====================================================
+ï»¿//=====================================================
 //
 //FileUtil.h
 //
+//Auther : Satoshi Kuramae
 //=====================================================
 #pragma once
 #include "pch.h"
 
-//ˆø”‚É‚ÍƒtƒHƒ‹ƒ_‚ÌƒpƒXAƒtƒ@ƒCƒ‹‚Ìí—Ş‚Ì‡”Ô‚Å‘ã“ü
+//å¼•æ•°ã«ã¯ãƒ•ã‚©ãƒ«ãƒ€ã®ãƒ‘ã‚¹ã€ãƒ•ã‚¡ã‚¤ãƒ«ã®ç¨®é¡ã®é †ç•ªã§ä»£å…¥
 std::vector<std::string> GetXFileNamesInDirectory(const std::string& folderPath, const std::string& extension);

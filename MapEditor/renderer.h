@@ -1,7 +1,8 @@
-//============================================================
+ï»¿//============================================================
 //
 //renderer.h
 //
+// Auther : SatoshiKuramae
 //============================================================
 #ifndef _RENDERER_H_
 #define _RENDERER_H_
@@ -10,7 +11,7 @@
 #include <Windows.h>
 #include "grid.h"
 
-//ƒŒƒ“ƒ_ƒ‰[ƒNƒ‰ƒX
+//ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã‚¯ãƒ©ã‚¹
 class CRenderer
 {
 public:
@@ -20,7 +21,7 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
-	LPDIRECT3DDEVICE9 GetDevice();	//3DƒfƒoƒCƒX‚Ìæ“¾
+	LPDIRECT3DDEVICE9 GetDevice();	//3Dãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
 
 private:
 	LPDIRECT3D9 m_pD3D;

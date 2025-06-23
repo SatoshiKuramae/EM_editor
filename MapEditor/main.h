@@ -1,3 +1,9 @@
+ï»¿//===============================================================================
+//
+//main.h
+//
+//Author Kuramaesatoshi
+//===============================================================================
 #ifndef _MAIN_H_
 #define _MAIN_H_
 #include"d3dx9.h"
@@ -9,18 +15,18 @@
 
 
 #define MAX_NUM			(256)
-#define CLASS_NAME		"ƒ|ƒŠƒSƒ“•`‰æ"			//ƒEƒBƒ“ƒhƒEƒNƒ‰ƒX‚Ì–¼‘O
-#define WINDOW_NAME		"ƒ|ƒŠƒSƒ“•`‰æ"	//ƒEƒBƒ“ƒhƒE‚Ì–¼‘OiƒLƒƒƒvƒVƒ‡ƒ“‚É•\¦j
+#define CLASS_NAME		"ãƒãƒªã‚´ãƒ³æç”»"			//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹ã®åå‰
+#define WINDOW_NAME		"ãƒãƒªã‚´ãƒ³æç”»"	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®åå‰ï¼ˆã‚­ãƒ£ãƒ—ã‚·ãƒ§ãƒ³ã«è¡¨ç¤ºï¼‰
 
 
-//ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
-#pragma comment(lib,"d3d9.lib")		//•`‰æˆ—‚É•K—v
-#pragma	comment(lib,"d3dx9.lib")	//[d3d9.lib]‚ÌŠg’£ƒ‰ƒCƒuƒ‰ƒŠ
-#pragma comment(lib,"dxguid.lib")	//DirectXƒRƒ“ƒ|[ƒlƒ“ƒgg—p‚É•K—v
-#pragma comment(lib,"winmm.lib")	//ƒVƒXƒeƒ€æ“¾‚É•K—v
-#pragma comment(lib,"dinput8.lib")	//“ü—Íˆ—‚É•K—v
+//ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®ãƒªãƒ³ã‚¯
+#pragma comment(lib,"d3d9.lib")		//æç”»å‡¦ç†ã«å¿…è¦
+#pragma	comment(lib,"d3dx9.lib")	//[d3d9.lib]ã®æ‹¡å¼µãƒ©ã‚¤ãƒ–ãƒ©ãƒª
+#pragma comment(lib,"dxguid.lib")	//DirectXã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆä½¿ç”¨ã«å¿…è¦
+#pragma comment(lib,"winmm.lib")	//ã‚·ã‚¹ãƒ†ãƒ æ™‚åˆ»å–å¾—æ™‚ã«å¿…è¦
+#pragma comment(lib,"dinput8.lib")	//å…¥åŠ›å‡¦ç†ã«å¿…è¦
 
-//ƒ}ƒNƒ’è‹`
+//ãƒã‚¯ãƒ­å®šç¾©
 #define SCREEN_WIDTH (1280)
 #define SCREEN_HEIGHT (720)
 #define FVF_VERTEX_2D (D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1)

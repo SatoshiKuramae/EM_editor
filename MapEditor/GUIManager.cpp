@@ -2,6 +2,7 @@
 //
 // GUImanager.cpp
 //
+// Auther : SatoshiKuramae
 //==============================================================
 #include "GUImanager.h"
 #include "imgui.h"

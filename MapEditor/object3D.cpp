@@ -1,19 +1,26 @@
+ï»¿//===============================================================================
+//
+//object3D.cpp
+//
+//Author Kuramaesatoshi
+//===============================================================================
+
 #include "object3D.h"
 #include "main.h"
 #include "manager.h"
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CObject3D::CObject3D()
 {
 
 }
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CObject3D::~CObject3D()
 {
 
 }
 
-//‰Šú‰»
+//åˆæœŸåŒ–
 HRESULT CObject3D::Init()
 {
 	LPDIRECT3DDEVICE9 pDevice;
@@ -22,18 +29,18 @@ HRESULT CObject3D::Init()
 								* 4 * NUM_POLYGON, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, 
 								D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 
-	VERTEX_3D* pVtx; //’¸“_À•W‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	VERTEX_3D* pVtx; //é ‚ç‚¹åº§æ¨™ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 
-	//’¸“_ƒoƒbƒtƒ@‚ğƒƒbƒN‚µA’¸“_À•W‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒ­ãƒƒã‚¯ã—ã€é ‚ç‚¹åº§æ¨™ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	//’¸“_À•W‚Ìİ’è
+	//é ‚ç‚¹åº§æ¨™ã®è¨­å®š
 	pVtx[0].pos = D3DXVECTOR3(m_pos.x - 1000.0f, m_pos.y, m_pos.z + 1000.0f);
 	pVtx[1].pos = D3DXVECTOR3(m_pos.x + 1000.0f, m_pos.y, m_pos.z + 1000.0f);
 	pVtx[2].pos = D3DXVECTOR3(m_pos.x - 1000.0f, m_pos.y, m_pos.z - 1000.0f);
 	pVtx[3].pos = D3DXVECTOR3(m_pos.x + 1000.0f, m_pos.y, m_pos.z - 1000.0f);
 
-	//–@üƒxƒNƒgƒ‹‚Ìİ’è
+	//æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã®è¨­å®š
 	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -50,65 +57,65 @@ HRESULT CObject3D::Init()
 	pVtx[3].tex = D3DXVECTOR2((1.0f / m_NowTexpos_x), (1.0f / m_NowTexpos_y));
 
 
-	//’¸“_ƒoƒbƒtƒ@‚ğƒAƒ“ƒƒbƒN
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¢ãƒ³ãƒ­ãƒƒã‚¯
 	m_pVtxBuff->Unlock();
 
 	return S_OK;
 }
 
-//•`‰æˆ—
+//æç”»å‡¦ç†
 void CObject3D::Draw()
 {
-	//ƒfƒoƒCƒX‚Ìæ“¾
+	//ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
 
-	D3DXMATRIX mtxRot, mtxTrans;		//ŒvZ—pƒ}ƒgƒŠƒbƒNƒX
+	D3DXMATRIX mtxRot, mtxTrans;		//è¨ˆç®—ç”¨ãƒãƒˆãƒªãƒƒã‚¯ã‚¹
 
-	//ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®åˆæœŸåŒ–
 	D3DXMatrixIdentity(&m_mtxWorld);
 
-	//Œü‚«‚ğ”½‰f
+	//å‘ãã‚’åæ˜ 
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
 
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
-	//ˆÊ’u‚ğ”½‰f
+	//ä½ç½®ã‚’åæ˜ 
 	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
 
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
-	//ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-	//’¸“_ƒoƒbƒtƒ@‚ğƒf[ƒ^ƒXƒgƒŠ[ƒ€‚Éİ’è
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆãƒªãƒ¼ãƒ ã«è¨­å®š
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
 
-	//’¸“_ƒtƒH[ƒ}ƒbƒg‚Ìİ’è
+	//é ‚ç‚¹ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®è¨­å®š
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
-	//ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	pDevice->SetTexture(0, m_pTexture);
 
-	//ƒ|ƒŠƒSƒ“‚Ì•`‰æ
+	//ãƒãƒªã‚´ãƒ³ã®æç”»
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
-//XVˆ—
+//æ›´æ–°å‡¦ç†
 void CObject3D::Update()
 {
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
 
-	VERTEX_3D* pVtx; //’¸“_À•W‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	VERTEX_3D* pVtx; //é ‚ç‚¹åº§æ¨™ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 
-	//’¸“_ƒoƒbƒtƒ@‚ğƒƒbƒN‚µA’¸“_À•W‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒ­ãƒƒã‚¯ã—ã€é ‚ç‚¹åº§æ¨™ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	//’¸“_À•W‚Ìİ’è
+	//é ‚ç‚¹åº§æ¨™ã®è¨­å®š
 
 
-	//–@üƒxƒNƒgƒ‹‚Ìİ’è
+	//æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã®è¨­å®š
 	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -125,12 +132,12 @@ void CObject3D::Update()
 	pVtx[3].tex = D3DXVECTOR2((1.0f / m_NowTexpos_x), (1.0f / m_NowTexpos_y));
 
 
-	//’¸“_ƒoƒbƒtƒ@‚ğƒAƒ“ƒƒbƒN
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¢ãƒ³ãƒ­ãƒƒã‚¯
 	m_pVtxBuff->Unlock();
 
 }
 
-//I—¹ˆ—
+//çµ‚äº†å‡¦ç†
 void CObject3D::Uninit()
 {
 	if (m_pVtxBuff != NULL)
@@ -141,14 +148,14 @@ void CObject3D::Uninit()
 }
 
 
-//Object3D¶¬
+//Object3Dç”Ÿæˆ
 CObject3D* CObject3D::Create()
 {
 	CObject3D* pObject3D = new CObject3D;
 	pObject3D->Init();
 	return pObject3D;
 }
-//ƒeƒNƒXƒ`ƒƒİ’è
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
 void CObject3D::BindTexture(LPDIRECT3DTEXTURE9 pTex, D3DXVECTOR2 fTexpos)
 {
 	m_pTexture = pTex;

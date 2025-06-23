@@ -1,27 +1,28 @@
-//============================================================
+ï»¿//============================================================
 //
 //input.h
 //
+// AUther : SatoshiKuramae
 //============================================================
 #ifndef _INPUT_H_
 #define _INPUT_H_
 #include "main.h"
 #include "dinput.h"
-#include "d3dx9.h" //•`‰æˆ—‚É•K—v"
-#include "Xinput.h"//ƒWƒ‡ƒCƒpƒbƒh
+#include "d3dx9.h" //æç”»å‡¦ç†ã«å¿…è¦"
+#include "Xinput.h"//ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰
 #include "xaudio2.h"
 #define MAX_KEY (256)
 #define JOYPAD_DEADZONE (1)
 #define SPEED_KEY (1)
-//ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
-#pragma comment(lib, "d3d9.lib")		//•`‰æˆ—‚É•K—v
-#pragma	comment(lib, "d3dx9.lib")	//[d3d9.lib]‚ÌŠg’£ƒ‰ƒCƒuƒ‰ƒŠ
-#pragma comment(lib, "dxguid.lib")	//DirectXƒRƒ“ƒ|[ƒlƒ“ƒgg—p‚É•K—v
-#pragma comment(lib, "winmm.lib")	//ƒVƒXƒeƒ€æ“¾‚É•K—v
-#pragma comment(lib, "dinput8.lib")	//“ü—Íˆ—‚É•K—v
-#pragma comment(lib,"xinput.lib") //ƒWƒ‡ƒCƒpƒbƒh
+//ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®ãƒªãƒ³ã‚¯
+#pragma comment(lib, "d3d9.lib")		//æç”»å‡¦ç†ã«å¿…è¦
+#pragma	comment(lib, "d3dx9.lib")	//[d3d9.lib]ã®æ‹¡å¼µãƒ©ã‚¤ãƒ–ãƒ©ãƒª
+#pragma comment(lib, "dxguid.lib")	//DirectXã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆä½¿ç”¨ã«å¿…è¦
+#pragma comment(lib, "winmm.lib")	//ã‚·ã‚¹ãƒ†ãƒ æ™‚åˆ»å–å¾—æ™‚ã«å¿…è¦
+#pragma comment(lib, "dinput8.lib")	//å…¥åŠ›å‡¦ç†ã«å¿…è¦
+#pragma comment(lib,"xinput.lib") //ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰
 
-//“ü—ÍŠî’êƒNƒ‰ƒX
+//å…¥åŠ›åŸºåº•ã‚¯ãƒ©ã‚¹
 class CInput
 {
 public:
@@ -32,13 +33,13 @@ public:
 	virtual void Update() = 0;
 
 protected:
-	//‘S“ü—Íˆ—‚Å‹¤—L
+	//å…¨å…¥åŠ›å‡¦ç†ã§å…±æœ‰
 	static LPDIRECTINPUT8 m_pInput;
 	LPDIRECTINPUTDEVICE8 m_pDevice;
 
 };
 
-//ƒL[ƒ{[ƒh“ü—Í
+//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰å…¥åŠ›
 class CInputKeyboard :public CInput
 {
 public:
@@ -57,11 +58,11 @@ protected:
 
 };
 
-//ƒpƒbƒh“ü—Í
+//ãƒ‘ãƒƒãƒ‰å…¥åŠ›
 class CInputGamepad :public CInput
 {
 public:
-	//ƒL[‚Ìí—Ş
+	//ã‚­ãƒ¼ã®ç¨®é¡
 	typedef enum
 	{
 		JOYKEY_UP = 0,
@@ -83,33 +84,33 @@ public:
 		JOYKEY_MAX
 	}JOYKEY;
 
-	//ƒXƒeƒBƒbƒN‚Ì”Ô†
+	//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®ç•ªå·
 	typedef enum
 	{
-		STICKTYPE_LEFT = 0, // ¶ƒXƒeƒBƒbƒN
-		STICKTYPE_RIGHT, // ‰EƒXƒeƒBƒbƒN
+		STICKTYPE_LEFT = 0, // å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯
+		STICKTYPE_RIGHT, // å³ã‚¹ãƒ†ã‚£ãƒƒã‚¯
 		STICKTYPE_MAX
 	}STICKTYPE;
 
-	//ƒXƒeƒBƒbƒN‚Ì•ûŒü
+	//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æ–¹å‘
 	typedef enum
 	{
-		STICKANGLE_UP = 0, // ã
-		STICKANGLE_DOWN,   // ‰º
-		STICKANGLE_LEFT,   // ¶
-		STICKANGLE_RIGHT,  // ‰E
+		STICKANGLE_UP = 0, // ä¸Š
+		STICKANGLE_DOWN,   // ä¸‹
+		STICKANGLE_LEFT,   // å·¦
+		STICKANGLE_RIGHT,  // å³
 		STICKANGLE_MAX,
 	}STICKANGLE;
 
-	//ƒXƒeƒBƒbƒN‚Ì“ü—Íî•ñ
+	//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›æƒ…å ±
 	typedef struct
 	{
-		float afTplDiameter[STICKTYPE_MAX];                      // ƒXƒeƒBƒbƒN‚Ì“|‚µ‹ï‡
-		float afAngle[STICKTYPE_MAX];                            // ƒXƒeƒBƒbƒN‚ÌŠp“x
-		bool abAnglePress[STICKTYPE_MAX][STICKANGLE_MAX];        // ƒXƒeƒBƒbƒN‚Ì•ûŒüƒvƒŒƒXî•ñ
-		bool abAngleTrigger[STICKTYPE_MAX][STICKANGLE_MAX];      // ƒXƒeƒBƒbƒN‚Ì•ûŒüƒgƒŠƒK[î•ñ
-		bool abAngleRepeat[STICKTYPE_MAX][STICKANGLE_MAX];       // ƒXƒeƒBƒbƒN‚Ì•ûŒüƒŠƒs[ƒgî•ñ
-		bool abAngleRelease[STICKTYPE_MAX][STICKANGLE_MAX];      // ƒXƒeƒBƒbƒN‚Ì•ûŒüƒŠƒŠ[ƒXî•ñ
+		float afTplDiameter[STICKTYPE_MAX];                      // ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å€’ã—å…·åˆ
+		float afAngle[STICKTYPE_MAX];                            // ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®è§’åº¦
+		bool abAnglePress[STICKTYPE_MAX][STICKANGLE_MAX];        // ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æ–¹å‘ãƒ—ãƒ¬ã‚¹æƒ…å ±
+		bool abAngleTrigger[STICKTYPE_MAX][STICKANGLE_MAX];      // ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æ–¹å‘ãƒˆãƒªã‚¬ãƒ¼æƒ…å ±
+		bool abAngleRepeat[STICKTYPE_MAX][STICKANGLE_MAX];       // ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æ–¹å‘ãƒªãƒ”ãƒ¼ãƒˆæƒ…å ±
+		bool abAngleRelease[STICKTYPE_MAX][STICKANGLE_MAX];      // ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æ–¹å‘ãƒªãƒªãƒ¼ã‚¹æƒ…å ±
 	}STICKINPUT;
 
 	CInputGamepad();

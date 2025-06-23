@@ -1,4 +1,10 @@
-﻿#include "camera.h"
+﻿//===============================================================================
+//
+//camera.cpp
+//
+//Author Kuramaesatoshi
+//===============================================================================
+#include "camera.h"
 #include "manager.h"
 #include"input.h"
 #include "Player.h"
@@ -63,100 +69,25 @@ void CCamera::Update()
 	pDevice = CManager::GetRenderer()->GetDevice();
 	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
 
-	//オブジェクトの位置とスケール
-
-	/*ImGui::DragFloat3("CameraPosV", &m_posV.x, 0.1f);
-	ImGui::DragFloat3("CameraPosR", &m_posR.x, 0.1f);
-	ImGui::DragFloat3("CameraRot", &m_rot.x, 0.1f);
-	ImGui::DragFloat3("Target", &m_TargetPosV.x, 0.1f);*/
-
-	// マウス座標を取得する
-	POINT currentPos;
-	static POINT prevPos = { 0, 0 };
-	GetCursorPos(&currentPos);
-
-	// スクリーン座標をクライアント座標に変換する
-	ScreenToClient(FindWindowA(CLASS_NAME, nullptr), &currentPos);
-
-	int deltaX = currentPos.x - prevPos.x; // 横の移動量
-	int deltaY = currentPos.y - prevPos.y; // 縦の移動量
-
-	prevPos = currentPos; // 次回のために現在位置を保存
-
-	//if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
-	//{
-	//	// 左クリックが押されている
-	//	if (m_rot.x < -1.25f)
-	//	{
-	//		m_rot.x = -1.25f;
-	//	}
-	//	if (m_rot.x > 1.25f)
-	//	{
-	//		m_rot.x = 1.25f;
-	//	}
-	//	if (deltaY > 0)
-	//	{
-	//		m_rot.x += 0.05f;
-
-	//		m_posV.y = sinf(m_rot.x + D3DX_PI) * sqrtf(m_TargetPosV.x * m_TargetPosV.x + m_TargetPosV.z * m_TargetPosV.z) / 2 + CCamera::m_posR.y;
-	//		m_posV.z = cosf(m_rot.x + D3DX_PI) * sqrtf(m_TargetPosV.x * m_TargetPosV.x + m_TargetPosV.z * m_TargetPosV.z) / 2 + CCamera::m_posR.y;
-	//	}
-	//	else if (deltaY < 0)
-	//	{
-	//		m_rot.x -= 0.05f;
-
-	//		m_posV.y = sinf(m_rot.x + D3DX_PI) * sqrtf(m_TargetPosV.x * m_TargetPosV.x + m_TargetPosV.z * m_TargetPosV.z) / 2 + CCamera::m_posR.y;
-	//		m_posV.z = cosf(m_rot.x + D3DX_PI) * sqrtf(m_TargetPosV.x * m_TargetPosV.x + m_TargetPosV.z * m_TargetPosV.z) / 2 + CCamera::m_posR.y;
-	//	}
-	//	if (deltaX > 0)
-	//	{
-	//		m_rot.y += 0.05f;
-
-	//		m_posV.x = sinf(m_rot.y + D3DX_PI) * sqrtf(m_TargetPosV.z * m_TargetPosV.z + m_TargetPosV.y * m_TargetPosV.y) / 2 + CCamera::m_posR.x;
-	//		m_posV.z = cosf(m_rot.y + D3DX_PI) * sqrtf(m_TargetPosV.z * m_TargetPosV.z + m_TargetPosV.y * m_TargetPosV.y) / 2 + CCamera::m_posR.x;
-	//	}
-	//	else if (deltaX < 0)
-	//	{
-	//		m_rot.y -= 0.05f;
-
-	//		m_posV.x = sinf(m_rot.y + D3DX_PI) * sqrtf(m_TargetPosV.z * m_TargetPosV.z + m_TargetPosV.y * m_TargetPosV.y) / 2 + CCamera::m_posR.x;
-	//		m_posV.z = cosf(m_rot.y + D3DX_PI) * sqrtf(m_TargetPosV.z * m_TargetPosV.z + m_TargetPosV.y * m_TargetPosV.y) / 2 + CCamera::m_posR.x;
-	//	}
-	//	
-	//	
-	//}
 	
-	/*if (pKeyboard->GetKeyboardTrigger(DIK_RETURN) == true)
-	{
-		if (CCamera::m_flattery == false)
-		{
-			CCamera::m_flattery = true;
-		}
-		else
-		{
-			CCamera::m_flattery = false;
-		}
-	}*/
-
 
 
 	//posR=注視点posV=視点vecU=視点のベクトル
 
-	//視点の移動
-	/*if (pKeyboard->GetKeyboardPress(DIK_C) == true)
-	{
-		m_rot.y += 0.1f;
+	// 注視点と視点の差
+	D3DXVECTOR3 offset = m_posV - m_posR;
 
-		m_posV.x = sinf(m_rot.y + D3DX_PI) * sqrtf(m_TargetPosV.z * m_TargetPosV.z + m_TargetPosV.y * m_TargetPosV.y) / 2 + CCamera::m_posR.x;
-		m_posV.z = cosf(m_rot.y + D3DX_PI) * sqrtf(m_TargetPosV.z * m_TargetPosV.z + m_TargetPosV.y * m_TargetPosV.y) / 2 + CCamera::m_posR.x;
+	// 半径（XZ平面のみで算出）
+	float radius = sqrtf(offset.x * offset.x + offset.z * offset.z);
+
+	// 角度調整（入力による回転）
+	if (pKeyboard->GetKeyboardPress(DIK_C)) {
+		m_rot.y += 0.05f;
 	}
-	if (pKeyboard->GetKeyboardPress(DIK_Z) == true)
-	{
-		m_rot.y -= 0.1f;
+	if (pKeyboard->GetKeyboardPress(DIK_Z)) {
+		m_rot.y -= 0.05f;
+	}
 
-		m_posV.x = sinf(m_rot.y + D3DX_PI) * sqrtf(m_TargetPosV.z * m_TargetPosV.z + m_TargetPosV.y * m_TargetPosV.y) / 2 + CCamera::m_posR.x;
-		m_posV.z = cosf(m_rot.y + D3DX_PI) * sqrtf(m_TargetPosV.z * m_TargetPosV.z + m_TargetPosV.y * m_TargetPosV.y) / 2 + CCamera::m_posR.x;
-	}*/
 	if (pKeyboard->GetKeyboardPress(DIK_Y) == true)
 	{
 		m_posR.y += 2.0f;
@@ -167,6 +98,10 @@ void CCamera::Update()
 		m_posR.y -= 2.0f;
 		m_posV.y -= 2.0f;
 	}
+
+	// 回転後のカメラ位置を更新（XZ方向の円軌道）
+	m_posV.x = sinf(m_rot.y) * radius + m_posR.x;
+	m_posV.z = cosf(m_rot.y) * radius + m_posR.z;
 
 	//回転の補正
 	if (m_rot.y > D3DX_PI)
@@ -179,41 +114,40 @@ void CCamera::Update()
 	}
 
 	//注視点までの距離を変える
-	/*if (pKeyboard->GetKeyboardPress(DIK_Q) == true)
+	if (pKeyboard->GetKeyboardPress(DIK_Q) == true)
 	{
 		m_posV.z += 1.0f;
-		m_TargetPosV.z += 1.0f;
-		m_TargetPosV.y -= 1.0f;
-		m_TargetPosV.x -= 1.0f;
-	}
 
+	}
 	if (pKeyboard->GetKeyboardPress(DIK_E) == true)
 	{
 		m_posV.z -= 1.0f;
-		m_TargetPosV.z += 1.0f;
-		m_TargetPosV.y += 1.0f;
-		m_TargetPosV.x += 1.0f;
-	}*/
+	}
 
 	// 矢印キー入力で移動（カメラの向き基準で前後左右）
 	float moveSpeed = CAMERASPEED;
 
-	// カメラの前方向（XZ平面で回転を反映）
-	D3DXVECTOR3 forward(sinf(m_rot.y), 0, cosf(m_rot.y));
-	D3DXVec3Normalize(&forward, &forward);
+	//外積！？なにそれおいしいの？勉強してきます
 
-	// カメラの右方向（forwardと上方向のクロス）
+	// カメラの注視ベクトル
+	D3DXVECTOR3 look = m_posR - m_posV;
+	look.y = 0; // Y成分は無視して水平移動だけにする
+	D3DXVec3Normalize(&look, &look);
+
+	// 右方向ベクトル（lookベクトルとY軸の外積）
+	D3DXVECTOR3 up = { 0, 1, 0 };
 	D3DXVECTOR3 right;
-	D3DXVec3Cross(&right, &m_vecU, &forward);
+	D3DXVec3Cross(&right, &up, &look);
 	D3DXVec3Normalize(&right, &right);
 
+	// キー入力で移動
 	if (pKeyboard->GetKeyboardPress(DIK_UP)) {
-		m_posV += forward * moveSpeed;
-		m_posR += forward * moveSpeed;
+		m_posV += look * moveSpeed;
+		m_posR += look * moveSpeed;
 	}
 	if (pKeyboard->GetKeyboardPress(DIK_DOWN)) {
-		m_posV -= forward * moveSpeed;
-		m_posR -= forward * moveSpeed;
+		m_posV -= look * moveSpeed;
+		m_posR -= look * moveSpeed;
 	}
 	if (pKeyboard->GetKeyboardPress(DIK_RIGHT)) {
 		m_posV += right * moveSpeed;
@@ -224,21 +158,22 @@ void CCamera::Update()
 		m_posR -= right * moveSpeed;
 	}
 
-	ImGui::Begin(u8"カメラ位置");
-	ImGui::Text(u8"m_posR（注視点）\nposR{%0.3f,%0.3f,%0.3f}", m_posR.x, m_posR.y, m_posR.z);
-	ImGui::Text(u8"posV（視点）{%0.3f,%0.3f,%0.3f}", m_posV.x, m_posV.y, m_posV.z);
+
+	ImGui::Begin(u8"カメラ位置\n");
+	ImGui::Text(u8"m_posR（注視点）{%0.3f,%0.3f,%0.3f}", m_posR.x, m_posR.y, m_posR.z);
+	ImGui::Text(u8"m_posV（視点）{%0.3f,%0.3f,%0.3f}", m_posV.x, m_posV.y, m_posV.z);
 
 	ImGui::DragFloat3(u8"m_posR:{X,Y,Z}", (float*)&m_posR, 0.1f);
 	ImGui::DragFloat3(u8"m_posV:{X,Y,Z}", (float*)&m_posV, 0.1f);
 	ImGui::End();
 
+	
+
 	D3DXMatrixLookAtLH(&m_mtxView, &m_posV, &m_posR, &m_vecU);
 	pDevice->SetTransform(D3DTS_VIEW, &m_mtxView);
 }
 
-
-
-
+//マウス操作に対応させようとしてます
 void CCamera::UpdateFromMouse(const MouseInput& mouse)
 {
 	// 右クリックドラッグで回転

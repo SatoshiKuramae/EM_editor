@@ -1,4 +1,4 @@
-//============================================================
+ï»¿//============================================================
 //
 //object2D.cpp
 //
@@ -7,7 +7,7 @@
 #include "main.h"
 #include "object2D.h"
 #include "manager.h"
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CObject2D::CObject2D(int nPriority) :CObject(nPriority)
 {
 	m_pVtxBuff = nullptr;
@@ -16,68 +16,68 @@ CObject2D::CObject2D(int nPriority) :CObject(nPriority)
 	
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CObject2D::~CObject2D()
 {
 
 }
 
-//‰Šú‰»i’¸“_ƒoƒbƒtƒ@¶¬j
+//åˆæœŸåŒ–ï¼ˆé ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆï¼‰
 HRESULT CObject2D::Init()
 {
 	
-	//LPDIRECT3DDEVICE9 pDevice;
+	LPDIRECT3DDEVICE9 pDevice;
 
-	////ƒfƒoƒCƒX‚Ìæ“¾
-	//pDevice = CManager::GetRenderer()->GetDevice();
+	//ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
+	pDevice = CManager::GetRenderer()->GetDevice();
 
-	////’¸“_ƒoƒbƒtƒ@‚Ì¶¬
-	//pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 
-	//VERTEX_2D* pVtx;
-	////’¸“_ƒoƒbƒtƒ@‚ğƒƒbƒN‚µ’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
-	//m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-
-	////’¸“_À•W‚Ìİ’è
-	//pVtx[0].pos.x = m_pos.x + sinf(m_rot.z - (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
-	//pVtx[0].pos.y = m_pos.y + cosf(m_rot.z - (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
-	//pVtx[0].pos.z = 0.0f;
-
-	//pVtx[1].pos.x = m_pos.x + sinf(m_rot.z + (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
-	//pVtx[1].pos.y = m_pos.y + cosf(m_rot.z + (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
-	//pVtx[1].pos.z = 0.0f;
-
-	//pVtx[2].pos.x = m_pos.x - sinf(m_rot.z + (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
-	//pVtx[2].pos.y = m_pos.y - cosf(m_rot.z + (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
-	//pVtx[2].pos.z = 0.0f;
-
-	//pVtx[3].pos.x = m_pos.x - sinf(m_rot.z - (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
-	//pVtx[3].pos.y = m_pos.y - cosf(m_rot.z - (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
-	//pVtx[3].pos.z = 0.0f;
-
-	//pVtx[0].rhw = 1.0f;
-	//pVtx[1].rhw = 1.0f;
-	//pVtx[2].rhw = 1.0f;
-	//pVtx[3].rhw = 1.0f;
+	VERTEX_2D* pVtx;
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒ­ãƒƒã‚¯ã—é ‚ç‚¹æƒ…å ±ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 
-	//pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	//pVtx[1].tex = D3DXVECTOR2((1.0f / m_NowTexpos_x), 0.0f);
-	//pVtx[2].tex = D3DXVECTOR2(0.0f, (1.0f / m_NowTexpos_y));
-	//pVtx[3].tex = D3DXVECTOR2((1.0f / m_NowTexpos_x), (1.0f / m_NowTexpos_y));
+	//é ‚ç‚¹åº§æ¨™ã®è¨­å®š
+	pVtx[0].pos.x = m_pos.x + sinf(m_rot.z - (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
+	pVtx[0].pos.y = m_pos.y + cosf(m_rot.z - (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
+	pVtx[0].pos.z = 0.0f;
 
-	//pVtx[0].col = D3DCOLOR_RGBA(RED, GREEN, BLUE, A);
-	//pVtx[1].col = D3DCOLOR_RGBA(RED, GREEN, BLUE, A);
-	//pVtx[2].col = D3DCOLOR_RGBA(RED, GREEN, BLUE, A);
-	//pVtx[3].col = D3DCOLOR_RGBA(RED, GREEN, BLUE, A);
-	////’¸“_ƒoƒbƒtƒ@‚ğƒAƒ“ƒƒbƒN‚·‚é
-	//m_pVtxBuff->Unlock();
+	pVtx[1].pos.x = m_pos.x + sinf(m_rot.z + (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
+	pVtx[1].pos.y = m_pos.y + cosf(m_rot.z + (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
+	pVtx[1].pos.z = 0.0f;
+
+	pVtx[2].pos.x = m_pos.x - sinf(m_rot.z + (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
+	pVtx[2].pos.y = m_pos.y - cosf(m_rot.z + (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
+	pVtx[2].pos.z = 0.0f;
+
+	pVtx[3].pos.x = m_pos.x - sinf(m_rot.z - (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
+	pVtx[3].pos.y = m_pos.y - cosf(m_rot.z - (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
+	pVtx[3].pos.z = 0.0f;
+
+	pVtx[0].rhw = 1.0f;
+	pVtx[1].rhw = 1.0f;
+	pVtx[2].rhw = 1.0f;
+	pVtx[3].rhw = 1.0f;
+
+
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2((1.0f / m_NowTexpos_x), 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, (1.0f / m_NowTexpos_y));
+	pVtx[3].tex = D3DXVECTOR2((1.0f / m_NowTexpos_x), (1.0f / m_NowTexpos_y));
+
+	pVtx[0].col = D3DCOLOR_RGBA(RED, GREEN, BLUE, A);
+	pVtx[1].col = D3DCOLOR_RGBA(RED, GREEN, BLUE, A);
+	pVtx[2].col = D3DCOLOR_RGBA(RED, GREEN, BLUE, A);
+	pVtx[3].col = D3DCOLOR_RGBA(RED, GREEN, BLUE, A);
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¢ãƒ³ãƒ­ãƒƒã‚¯ã™ã‚‹
+	m_pVtxBuff->Unlock();
 
 	return S_OK;
 }
 
-//I—¹(’¸“_ƒoƒbƒtƒ@”jŠü)
+//çµ‚äº†(é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ç ´æ£„)
 void CObject2D::Uninit()
 {
 	if (m_pVtxBuff != NULL)
@@ -87,15 +87,15 @@ void CObject2D::Uninit()
 	}
 }
 
-//XVˆ—(’¸“_ƒoƒbƒtƒ@‚ÌXV)
+//æ›´æ–°å‡¦ç†(é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°)
 void CObject2D::Update()
 {
 
 	VERTEX_2D* pVtx;
-	//’¸“_ƒoƒbƒtƒ@‚ğƒƒbƒN‚µ’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒ­ãƒƒã‚¯ã—é ‚ç‚¹æƒ…å ±ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	//’¸“_À•W‚Ìİ’è
+	//é ‚ç‚¹åº§æ¨™ã®è¨­å®š
 
 	pVtx[0].pos.x = m_pos.x + sinf(m_rot.z - (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
 	pVtx[0].pos.y = m_pos.y + cosf(m_rot.z - (D3DX_PI - m_fAnglePolygon)) * m_fLengthPolygon;
@@ -119,27 +119,27 @@ void CObject2D::Update()
 	pVtx[2].tex = D3DXVECTOR2(0.0f, (1.0f / m_NowTexpos_y));
 	pVtx[3].tex = D3DXVECTOR2((1.0f / m_NowTexpos_x), (1.0f / m_NowTexpos_y));
 
-	//’¸“_ƒoƒbƒtƒ@‚ğƒAƒ“ƒƒbƒN‚·‚é
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¢ãƒ³ãƒ­ãƒƒã‚¯ã™ã‚‹
 	m_pVtxBuff->Unlock();
 }
 
-//•`‰æiƒ|ƒŠƒSƒ“•`‰æj
+//æç”»ï¼ˆãƒãƒªã‚´ãƒ³æç”»ï¼‰
 void CObject2D::Draw()
 {
-	//LPDIRECT3DDEVICE9 pDevice;
-	////ƒfƒoƒCƒX‚Ì“Ç‚İ‚İ
-	//pDevice = CManager::GetRenderer()->GetDevice();
-	////’¸“_ƒoƒbƒtƒ@‚ğƒf[ƒ^ƒXƒgƒŠ[ƒ€‚Éİ’è
-	//pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
-	////’¸“_ƒtƒH[ƒ}ƒbƒg‚Ìİ’è
-	//pDevice->SetFVF(FVF_VERTEX_2D);
-	////ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
-	//pDevice->SetTexture(0, m_pTexture);
-	////ƒ|ƒŠƒSƒ“‚Ì•`‰æ
-	//pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+	LPDIRECT3DDEVICE9 pDevice;
+	//ãƒ‡ãƒã‚¤ã‚¹ã®èª­ã¿è¾¼ã¿
+	pDevice = CManager::GetRenderer()->GetDevice();
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆãƒªãƒ¼ãƒ ã«è¨­å®š
+	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
+	//é ‚ç‚¹ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®è¨­å®š
+	pDevice->SetFVF(FVF_VERTEX_2D);
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
+	pDevice->SetTexture(0, m_pTexture);
+	//ãƒãƒªã‚´ãƒ³ã®æç”»
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
-//Object2D¶¬
+//Object2Dç”Ÿæˆ
 CObject2D* CObject2D::Create()
 {
 	CObject2D* pObject2D = new CObject2D;
@@ -147,7 +147,7 @@ CObject2D* CObject2D::Create()
 	return pObject2D;
 }
 
-//ƒeƒNƒXƒ`ƒƒİ’è
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
 void CObject2D::BindTexture(LPDIRECT3DTEXTURE9 pTex, D3DXVECTOR2 fTexpos)
 {
 	m_pTexture = pTex;
@@ -159,9 +159,9 @@ void CObject2D::BindTexture(LPDIRECT3DTEXTURE9 pTex, D3DXVECTOR2 fTexpos)
 void CObject2D::SetParam(D3DXVECTOR3 fpos, float wide, float height)
 {
 	m_pos = fpos;
-	//‘ÎŠpü‚Ì’·‚³‚ğZo
+	//å¯¾è§’ç·šã®é•·ã•ã‚’ç®—å‡º
 	m_fLengthPolygon = sqrtf(wide * wide + height * height) / 2.0f;
-	//‘ÎŠpü‚ÌŠp“x‚ğZo
+	//å¯¾è§’ç·šã®è§’åº¦ã‚’ç®—å‡º
 	m_fAnglePolygon = atan2f(wide, height);
 }
 

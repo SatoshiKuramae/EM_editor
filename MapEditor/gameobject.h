@@ -2,6 +2,7 @@
 //
 //gameobject.h
 //
+// AUther : SatoshiKuramae
 //============================================================
  
 #ifndef _CGAMEOBJECT_H_

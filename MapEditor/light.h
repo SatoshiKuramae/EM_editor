@@ -1,9 +1,15 @@
+ï»¿//===============================================================================
+//
+//light.h
+//
+//Author Kuramaesatoshi
+//===============================================================================
 #ifndef _LIGHT_H_
 #define _LIGHT_H_
 
 #include "main.h"
 #define NUM_LIGHT	(3)
-//ƒ‰ƒCƒg
+//ãƒ©ã‚¤ãƒˆ
 class CLight
 {
 public:
@@ -14,6 +20,6 @@ public:
 	void Update();
 private:
 	D3DLIGHT9 m_Light[NUM_LIGHT];
-	D3DXVECTOR3	vecDir;		//İ’è—p•ûŒüƒxƒNƒgƒ‹
+	D3DXVECTOR3	vecDir;		//è¨­å®šç”¨æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
 };
 #endif

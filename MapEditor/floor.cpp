@@ -1,21 +1,27 @@
+ï»¿//===============================================================================
+//
+//floor.h
+//
+//Author Kuramaesatoshi
+//===============================================================================
 #include "object3D.h"
 #include "main.h"
 #include "manager.h"
 #include "floor.h"
 
 LPDIRECT3DTEXTURE9 CFloor::m_pTexture = nullptr;
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CFloor::CFloor()
 {
 
 }
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CFloor::~CFloor()
 {
 
 }
 
-//‰Šú‰»
+//åˆæœŸåŒ–
 HRESULT CFloor::Init()
 {
 	CObject::SetType(TYPE::FLOOR);
@@ -23,25 +29,25 @@ HRESULT CFloor::Init()
 	;	return S_OK;
 }
 
-//•`‰æˆ—
+//æç”»å‡¦ç†
 void CFloor::Draw()
 {
 	CObject3D::Draw();
 }
 
-//XVˆ—
+//æ›´æ–°å‡¦ç†
 void CFloor::Update()
 {
 
 }
 
-//I—¹ˆ—
+//çµ‚äº†å‡¦ç†
 void CFloor::Uninit()
 {
 	CObject3D::Uninit();
 }
 
-//°‚Ì¶¬
+//åºŠã®ç”Ÿæˆ
 CFloor* CFloor::Create()
 {
 	CFloor* pObject3D = new CFloor;
@@ -52,22 +58,22 @@ CFloor* CFloor::Create()
 }
 
 
-//ƒ[ƒh
+//ãƒ­ãƒ¼ãƒ‰
 HRESULT CFloor::Load()
 {
 	LPDIRECT3DDEVICE9 pDevice;
 
-	//ƒfƒoƒCƒX‚Ìæ“¾
+	//ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
 	pDevice = CManager::GetRenderer()->GetDevice();
 	if (m_pTexture == nullptr)
 	{
-		//ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+		//ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 		D3DXCreateTextureFromFile(pDevice, "data\\texture\\block.png", &m_pTexture);
 	}
 	return S_OK;
 }
 
-//ƒAƒ“ƒ[ƒh
+//ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
 void CFloor::Unload()
 {
 	if (m_pTexture != nullptr)

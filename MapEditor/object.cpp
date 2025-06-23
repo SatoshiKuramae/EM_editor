@@ -1,18 +1,19 @@
-//============================================================
+ï»¿//============================================================
 //
 //object.cpp
 //
+// Auther : SatoshiKuramae
 //============================================================
 #include "object.h"
 #include "main.h"
 
 
-//Ã“Iƒƒ“ƒo‰Šú‰»
+//é™çš„ãƒ¡ãƒ³ãƒåˆæœŸåŒ–
 int CObject::m_nNumAll = 0;
 //bool CObject::m_bPause = false;
 CObject* CObject::m_apObject[MAX_PRIORITY][NUMOBJECT] = {};
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^i©•ª©g‚Ì“o˜^j
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ˆè‡ªåˆ†è‡ªèº«ã®ç™»éŒ²ï¼‰
 CObject::CObject(int nPriority)
 {
 	m_nPriority = nPriority;
@@ -21,15 +22,15 @@ CObject::CObject(int nPriority)
 	{
 		if (m_apObject[m_nPriority][i] == nullptr)
 		{
-			m_apObject[m_nPriority][i] = this;		//©•ª©g‚Ì‚ğ‘ã“ü
-			m_nID = i;					//©•ª©g‚ÌID‚ğ‘ã“ü
-			m_nNumAll++;				//‘”‚ğƒJƒEƒ“ƒgƒAƒbƒv
-			break;						//ƒ‹[ƒv‚ğ”²‚¯‚é
+			m_apObject[m_nPriority][i] = this;		//è‡ªåˆ†è‡ªèº«ã®ã‚’ä»£å…¥
+			m_nID = i;					//è‡ªåˆ†è‡ªèº«ã®IDã‚’ä»£å…¥
+			m_nNumAll++;				//ç·æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—
+			break;						//ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹
 		}
 	}
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CObject::~CObject()
 {
 	//for (int i = 0; i < MAX_PRIORITY; ++i) {
@@ -39,11 +40,11 @@ CObject::~CObject()
 	//}
 }
 
-//‘SƒIƒuƒWƒFƒNƒg‰ğ•ú
+//å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè§£æ”¾
 void CObject::ReleaseAll()
 {
-	//CObject* pObj = m_pTop;	//æ“ªæ“¾
-	////Å‘å”‚ª•s–¾‚È‚Ì‚Åwhile‚ğg—p
+	//CObject* pObj = m_pTop;	//å…ˆé ­å–å¾—
+	////æœ€å¤§æ•°ãŒä¸æ˜ãªã®ã§whileã‚’ä½¿ç”¨
 	//while (pObj != nullptr)
 	//{
 	//	CObject* pNext = pObj->m_pNext;
@@ -63,11 +64,11 @@ void CObject::ReleaseAll()
 
 }
 
-//‘SƒIƒuƒWƒFƒNƒgXV
+//å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ›´æ–°
 void CObject::UpdateAll()
 {
-	//CObject* pObj = m_pTop;	//æ“ªæ“¾
-	////Å‘å”‚ª•s–¾‚È‚Ì‚Åwhile‚ğg—p
+	//CObject* pObj = m_pTop;	//å…ˆé ­å–å¾—
+	////æœ€å¤§æ•°ãŒä¸æ˜ãªã®ã§whileã‚’ä½¿ç”¨
 	//while (pObj != nullptr)
 	//{
 	//	CObject* pNext = pObj->m_pNext;
@@ -90,11 +91,11 @@ void CObject::UpdateAll()
 	}
 }
 
-//‘SƒIƒuƒWƒFƒNƒg•`‰æ
+//å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»
 void CObject::DrawAll()
 {
-	//CObject* pObj = m_pTop;	//æ“ªæ“¾
-	////Å‘å”‚ª•s–¾‚È‚Ì‚Åwhile‚ğg—p
+	//CObject* pObj = m_pTop;	//å…ˆé ­å–å¾—
+	////æœ€å¤§æ•°ãŒä¸æ˜ãªã®ã§whileã‚’ä½¿ç”¨
 	//while (pObj != nullptr)
 	//{
 	//	CObject* pNext = pObj->m_pNext;
@@ -114,7 +115,7 @@ void CObject::DrawAll()
 	}
 }
 
-//©•ª©g‚Ì‰ğ•ú
+//è‡ªåˆ†è‡ªèº«ã®è§£æ”¾
 void CObject::Release()
 {
 	int nID = m_nID;
@@ -127,7 +128,7 @@ void CObject::Release()
 	}
 }
 
-//ƒIƒuƒWƒFƒNƒgæ“¾
+//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå–å¾—
 CObject* CObject::GetObject(int nIdx, int nPri)
 {
 	return m_apObject[nPri][nIdx];

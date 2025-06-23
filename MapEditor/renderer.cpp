@@ -2,6 +2,7 @@
 //
 // renderer.cpp
 //
+// Auther : SatoshiKuramae
 //==============================================================
 
 #include "renderer.h"

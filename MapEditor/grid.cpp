@@ -1,21 +1,27 @@
+ï»¿//===============================================================================
+//
+//grid.h
+//
+//Author Kuramaesatoshi
+//===============================================================================
 #include "Grid.h"
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CGrid::CGrid()
     : m_pLine(nullptr), m_gridSize(9), m_spacing(50.0f) {}
 
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CGrid::~CGrid() {
     Release();
 }
 
-//‰Šú‰»ˆ—
+//åˆæœŸåŒ–å‡¦ç†
 void CGrid::Init(LPDIRECT3DDEVICE9 device) {
     if (!device) return;
 
     D3DXCreateLine(device, &m_pLine);
 
-    // XZ•½–Ê‚ÉƒOƒŠƒbƒh‚ğ\’z
+    // XZå¹³é¢ã«ã‚°ãƒªãƒƒãƒ‰ã‚’æ§‹ç¯‰
     for (int i = -m_gridSize; i <= m_gridSize; ++i) {
         m_vertices.push_back(D3DXVECTOR3(i * m_spacing, 0, -m_gridSize * m_spacing));
         m_vertices.push_back(D3DXVECTOR3(i * m_spacing, 0, m_gridSize * m_spacing));
@@ -27,7 +33,7 @@ void CGrid::Init(LPDIRECT3DDEVICE9 device) {
     }
 }
 
-//•`‰æˆ—
+//æç”»å‡¦ç†
 void CGrid::Draw(const D3DXMATRIX& viewProj) {
     if (!m_pLine) return;
     
@@ -37,7 +43,7 @@ void CGrid::Draw(const D3DXMATRIX& viewProj) {
     m_pLine->End();
 }
 
-//‰ğ•ú
+//è§£æ”¾
 void CGrid::Release() {
     if (m_pLine) {
         m_pLine->Release();

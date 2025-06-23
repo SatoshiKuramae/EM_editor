@@ -1,15 +1,16 @@
-//============================================================
+Ôªø//===============================================================================
 //
-//object2D.h
+//floor.h
 //
-//============================================================
+//Author Kuramaesatoshi
+//===============================================================================
 #ifndef _FLOOR_H_
 #define _FLOOR_H_
 #include "main.h"
 #include "object3D.h"
 
 
-//2DÉIÉuÉWÉFÉNÉgÉNÉâÉX
+//2D„Ç™„Éñ„Ç∏„Çß„ÇØ„Éà„ÇØ„É©„Çπ
 class CFloor : public CObject3D
 {
 public:
@@ -35,7 +36,7 @@ public:
 
 
 protected:
-	static LPDIRECT3DTEXTURE9 m_pTexture;		//ÉeÉNÉXÉ`ÉÉ
+	static LPDIRECT3DTEXTURE9 m_pTexture;		//„ÉÜ„ÇØ„Çπ„ÉÅ„É£
 };
 #endif
 

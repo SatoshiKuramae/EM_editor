@@ -1,7 +1,8 @@
-//===============================================================================
+ï»¿//===============================================================================
 //
-//camera.cpp
-// 
+//camera.h
+//
+//Author Kuramaesatoshi
 //===============================================================================
 #ifndef _CAMERA_H_
 #define _CAMERA_H_
@@ -18,7 +19,7 @@ struct MouseInput {
 	bool shiftHeld;
 };
 
-//ƒJƒƒ‰
+//ã‚«ãƒ¡ãƒ©
 class CCamera
 {
 public:
@@ -27,27 +28,27 @@ public:
 	HRESULT Init();
 	void Uninit();
 	void Update();
-	void SetCamera();	//ƒJƒƒ‰‚Ìİ’è
+	void SetCamera();	//ã‚«ãƒ¡ãƒ©ã®è¨­å®š
 	void SetQuake(int quakeflame, float quakesize);
 	void UpdateFromMouse(const MouseInput& mouse);
 	void UpdateViewMatrix();
 
 	D3DXVECTOR3& GetRot() { return m_rot; }
 private:
-	D3DXVECTOR3 m_posV;				//‹“_
-	D3DXVECTOR3 m_posR;				//’‹“_
-	D3DXVECTOR3 m_vecU;				//ã•ûŒü
-	D3DXMATRIX m_mtxProjection;		//ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ
-	D3DXMATRIX m_mtxView;			//ƒrƒ…[s—ñ
-	D3DXVECTOR3 m_TargetPosV;		//–Ú“I‚Ì’‹“_
-	D3DXVECTOR3 m_rot;	//Œü‚«
-	bool m_flattery;		//ƒJƒƒ‰‚Ì’Ç]
+	D3DXVECTOR3 m_posV;				//è¦–ç‚¹
+	D3DXVECTOR3 m_posR;				//æ³¨è¦–ç‚¹
+	D3DXVECTOR3 m_vecU;				//ä¸Šæ–¹å‘
+	D3DXMATRIX m_mtxProjection;		//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—
+	D3DXMATRIX m_mtxView;			//ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—
+	D3DXVECTOR3 m_TargetPosV;		//ç›®çš„ã®æ³¨è¦–ç‚¹
+	D3DXVECTOR3 m_rot;	//å‘ã
+	bool m_flattery;		//ã‚«ãƒ¡ãƒ©ã®è¿½å¾“
 	int m_QuakeFlame;
 	float m_QuakeSize;
 	D3DXVECTOR3 m_AveragePlayer_pos;
 
-	static DIMOUSESTATE m_CurrentMouseState;		//!< ƒ}ƒEƒX‚ÌŒ»İ‚Ì“ü—Íî•ñ
-	static DIMOUSESTATE m_PrevMouseState;			//!< ƒ}ƒEƒX‚ÌˆêƒtƒŒ[ƒ€‘O‚Ì“ü—Íî•ñ
+	static DIMOUSESTATE m_CurrentMouseState;		//!< ãƒã‚¦ã‚¹ã®ç¾åœ¨ã®å…¥åŠ›æƒ…å ±
+	static DIMOUSESTATE m_PrevMouseState;			//!< ãƒã‚¦ã‚¹ã®ä¸€ãƒ•ãƒ¬ãƒ¼ãƒ å‰ã®å…¥åŠ›æƒ…å ±
 };
 
 
