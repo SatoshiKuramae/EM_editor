@@ -10,9 +10,10 @@
 #include "main.h"
 #include "objectX.h"
 #include "pch.h"
-#define NUMTEXTURE (5)
-#define NUMOBJECTTYPE (5)
-#define JUMP_DEC (2.2f)		//重力
+constexpr int NUMTEXTURE(5);
+constexpr int NUMOBJECTTYPE(5);
+constexpr double ARROWSCALE(1.0f);
+constexpr double ARROWSCALE_HOLE(0.5f);
 
 
 using json = nlohmann::json; // 省略しないなら nlohmann::json を毎回使ってもOK
@@ -88,8 +89,19 @@ public:
 	void SetHoleOffset(D3DXVECTOR3 offset) { m_holeOffset = offset; }
 	D3DXVECTOR3 GetHoleOffset() const { return m_holeOffset; }
 
+	void SetHoleRot(D3DXVECTOR3 rot) { m_holerot = rot; }
+	D3DXVECTOR3 GetHoleRot() const { return m_holerot; }
+
+	void SetHoleScale(D3DXVECTOR3 scale) { m_holescale = scale; }
+	D3DXVECTOR3 GetHoleScale() const { return m_holescale; }
+
+	void SetHoleVisibleObject(GameObject* obj) { m_visualObj = obj; }
+	GameObject* GetHoleVisibleObject() const { return m_visualObj; }
 private:
 	D3DXVECTOR3 m_holeOffset = { 0.0f,0.0f,0.0f };
+	D3DXVECTOR3 m_holerot = { 0.0f,0.0f,0.0f };
+	D3DXVECTOR3 m_holescale = { 1.0f, 1.0f,1.0f };
+	GameObject* m_visualObj = nullptr;
 };
 
 //矢印オブジェクト
@@ -102,7 +114,7 @@ public:
     HRESULT Init();
     void Load() override;
     void Draw() override;
-    static ArrowObject* Create();
+    static ArrowObject* Create(bool isoffset);		
     void SetVisible(bool visible) { m_isVisible = visible; }	//可視化フラグ切り替え
     bool IsVisible() const { return m_isVisible; }
 
@@ -114,5 +126,35 @@ private:
     D3DXMATERIAL* m_pMaterial_arrow = nullptr;
     LPDIRECT3DTEXTURE9 m_pTexture_arrow[NUMTEXTURE] = { nullptr };
     bool m_isVisible = false;
+};
+
+//穴可視化オブジェクト
+class HoleMarkerObject : public GameObject {
+public:
+	HoleMarkerObject() = default;
+	~HoleMarkerObject() override = default;
+
+	HRESULT Init() override;
+	void Draw() override;
+	void Load() override;
+	static HoleMarkerObject* Create(HoleObject* parent);
+	void SetVisible(bool visible) { m_isVisible = visible; }
+	bool IsVisible() const { return m_isVisible; }
+
+	void ApplyHoleParameters(HoleObject* holeObj) { m_parent = holeObj; }
+
+	
+
+
+private:
+	// ArrowObject固有のメッシュ、マテリアル、テクスチャ
+	LPD3DXMESH m_pMesh_Holemarker = nullptr;
+	LPD3DXBUFFER m_pBuffMat_Holemarker = nullptr;
+	DWORD m_dwNumMat_Holemarker = 0;
+	D3DXMATERIAL* m_pMaterial_Holemarker = nullptr;
+	LPDIRECT3DTEXTURE9 m_pTexture_Holemarker[NUMTEXTURE] = { nullptr };
+	bool m_isVisible = false;
+	HoleObject* m_parent = nullptr;
+	
 };
 #endif

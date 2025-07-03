@@ -113,47 +113,65 @@ void CObjectX::Draw()
 	pDevice->SetMaterial(&matDef);
 }
 
-//アウトラインの表示をやろうとしてるよﾎﾞｯｼｬｧｧｧﾝ
+//アウトラインの表示をやろうとしてるよ
 void CObjectX::DrawOutline()
 {
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	D3DXMATRIX mtxRot, mtxTrans, mtxScale, mtxWorld;
-	D3DMATERIAL9 outlineMaterial = {};
-	outlineMaterial.Diffuse = D3DXCOLOR(0, 0, 0, 1);  // 黒
-	outlineMaterial.Ambient = outlineMaterial.Diffuse;
+	// === 1. アウトライン描画 ===
+	D3DMATERIAL9 outlineMat = {};
+	outlineMat.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f); // 黒い縁
+	outlineMat.Ambient = outlineMat.Diffuse;
 
-	// 通常よりちょっとだけ拡大
-	const float outlineScale = 1.5;
+	// 現在のマテリアルや設定を退避
+	D3DMATERIAL9 prevMat;
+	pDevice->GetMaterial(&prevMat);
 
-	D3DXMatrixIdentity(&mtxWorld);
+	DWORD prevCull, prevZEnable, prevLighting;
+	pDevice->GetRenderState(D3DRS_CULLMODE, &prevCull);
+	pDevice->GetRenderState(D3DRS_ZENABLE, &prevZEnable);
+	pDevice->GetRenderState(D3DRS_LIGHTING, &prevLighting);
+
+	// ワールド行列（拡大版）
+	D3DXMATRIX mtxScale, mtxRot, mtxTrans, mtxWorld;
+	const float outlineScale = 2.0f; // 微妙に拡大
 
 	D3DXMatrixScaling(&mtxScale, m_scale.x * outlineScale, m_scale.y * outlineScale, m_scale.z * outlineScale);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxScale);
-
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
-
 	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTrans);
 
+	mtxWorld = mtxScale * mtxRot * mtxTrans;
 	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
-	// ラスタライザ設定変更（ワイヤーフレーム or カリング無効）
-	pDevice->SetRenderState(D3DRS_ZENABLE, FALSE); // Zバッファ無効でアウトラインが上に
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW); // 裏面を描画（アウトライン用）
-
-	pDevice->SetMaterial(&outlineMaterial);
+	// アウトライン用に設定変更
+	pDevice->SetRenderState(D3DRS_ZENABLE, FALSE);            // 奥行き無効
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);      // 裏面描画
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	pDevice->SetMaterial(&outlineMat);
 	pDevice->SetTexture(0, NULL);
 
-	for (DWORD i = 0; i < m_dwNumMat; ++i)
-	{
-		m_pMesh->DrawSubset(i);
+	if (m_pMesh) {
+		for (DWORD i = 0; i < m_dwNumMat; ++i) {
+			m_pMesh->DrawSubset(i); // アウトライン表示
+		}
 	}
 
-	// 戻す
-	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW); // 通常のカリングに戻す
+	// === 2. 通常描画 ===
+	D3DXMatrixScaling(&mtxScale, m_scale.x, m_scale.y, m_scale.z); // 元のサイズ
+	mtxWorld = mtxScale * mtxRot * mtxTrans;
+	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
+
+	pDevice->SetRenderState(D3DRS_ZENABLE, prevZEnable);
+	pDevice->SetRenderState(D3DRS_CULLMODE, prevCull);
+	pDevice->SetRenderState(D3DRS_LIGHTING, prevLighting);
+	pDevice->SetMaterial(&prevMat);
+
+	if (m_pMesh) {
+		for (DWORD i = 0; i < m_dwNumMat; ++i) {
+			m_pMesh->DrawSubset(i); // 通常表示
+		}
+	}
+
 }
 //ロード処理
 void CObjectX::Load()

@@ -8,8 +8,9 @@
 #define _CAMERA_H_
 
 #include "main.h"
-#define CAMERASPEED (1.0f)
-
+constexpr double CAMERASPEED(1.0f);
+constexpr double CAMERA_POSV_Y(-400.0f);
+constexpr double CAMERA_POSR_Y(400.0f);
 struct MouseInput {
 	float deltaX, deltaY;
 	float wheelDelta;

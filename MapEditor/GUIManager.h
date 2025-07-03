@@ -53,10 +53,34 @@ public:
 
 	//パス名にholeが含まれているとき穴あきオブジェクトと判定する
 	bool IsHoleObject(const std::string& path);
-	
+
+
+	//出力されるデータの端数を丸める処理
+	float RoundFloat(float value, int digits = 2) {
+		float factor = std::pow(10.0f, digits);
+		return std::round(value * factor) / factor;
+	}
+	//出力されるデータの端数を丸める処理
+	D3DXVECTOR3 RoundVec(D3DXVECTOR3 v, int digits = 2) {
+		return D3DXVECTOR3(
+			RoundFloat(v.x, digits),
+			RoundFloat(v.y, digits),
+			RoundFloat(v.z, digits)
+		);
+	}
+	double RoundedAsDouble(float value, int digits = 2) {
+		double factor = std::pow(10.0, digits);
+		return std::round(static_cast<double>(value) * factor) / factor;
+	}
 private:
 	int m_currentLevel = 1;
-	int patternIndex;
+
+	static const char* tagOptions[];
+
+	int currentTagIndex = 0;  // 0: None（初期）
+	std::string m_stageTag = "None";  // 実際に保存されるタグ
+
+	int patternIndex;					//今選択しているパターンインデックス
 	const int maxPattern = NUM_PATTERN; // パターン数（必要に応じて増やせる）
 	bool m_Initialized;
 	bool showSaveConfirm = false;
@@ -76,6 +100,7 @@ private:
 	CObjectX* selectedObject = nullptr;	
 	ArrowObject* m_arrowObject = nullptr;	//矢印オブジェクトのポインタ
 	ArrowObject* m_arrowObject_offset = nullptr;	//穴のオフセットに配置する矢印オブジェクト
+	HoleMarkerObject* m_holemarker = nullptr;		//穴の位置を可視化するオブジェクト
 };
 
 #endif

@@ -147,10 +147,21 @@ GameObject* GameObject::Loadjson(const json& objData)
 			hole->SetHoleOffset(D3DXVECTOR3(o[0], o[1], o[2]));
 		}
 	}
+	else if (objData.contains("HoleRot")) {
+		auto o = objData["HoleRot"];
+		if (HoleObject* hole = dynamic_cast<HoleObject*>(this)) {
+			hole->SetHoleRot(D3DXVECTOR3(o[0], o[1], o[2]));
+		}
+	}
+	else if (objData.contains("HoleScale")) {
+		auto o = objData["HoleOffset"];
+		if (HoleObject* hole = dynamic_cast<HoleObject*>(this)) {
+			hole->SetHoleScale(D3DXVECTOR3(o[0], o[1], o[2]));
+		}
+	}
 	else
 	{
 		std::cout << "[警告] HoleOffset が存在しないため、0 を設定します\n";
-
 	}
     return this;
 }
@@ -229,14 +240,23 @@ void ArrowObject::Draw()
 }
 
 //生成
-ArrowObject* ArrowObject::Create()
+//引数のisoffsetは穴の位置に配置する矢印オブジェクトか判定する
+ArrowObject* ArrowObject::Create(bool isoffset)
 {
     ArrowObject* obj = new ArrowObject();
     obj->Init();
     obj->SetMove(D3DXVECTOR3(0, 0, 0));
     obj->SetPos(D3DXVECTOR3(0, 0, 0));
     obj->SetRot(D3DXVECTOR3(0, 0, 0));
-    obj->SetScale(D3DXVECTOR3(1, 1, 1));
+
+	if (isoffset) {
+		obj->SetScale(D3DXVECTOR3(ARROWSCALE_HOLE, ARROWSCALE_HOLE, ARROWSCALE_HOLE));
+	}
+	else
+	{
+		obj->SetScale(D3DXVECTOR3(ARROWSCALE, ARROWSCALE, ARROWSCALE));
+	}
+	obj->SetVisible(false);
     obj->SetSummonCount(0);
     return obj;
 }
@@ -325,4 +345,77 @@ void CGenericObject::ReleaseModelResources() {
     for (int i = 0; i < NUMTEXTURE; ++i) {
         if (m_pTexture[i]) { m_pTexture[i]->Release(); m_pTexture[i] = nullptr; }
     }
+}
+
+
+//================================================================
+//
+//穴の位置を可視化するオブジェクト
+//
+//================================================================
+
+//初期化
+HRESULT HoleMarkerObject::Init()
+{
+	Load();
+
+	CObjectX::Init();
+
+	return S_OK;
+}
+
+//ロード
+void HoleMarkerObject::Load()
+{
+	CObject::SetType(TYPE::BLOCK);
+	LPDIRECT3DDEVICE9 pDevice;
+	pDevice = CManager::GetRenderer()->GetDevice();
+
+	//Xファイルの読み込み
+	D3DXLoadMeshFromX("data\\model\\Cylynder_000.x",
+		D3DXMESH_SYSTEMMEM, pDevice,
+		NULL,
+		&m_pBuffMat_Holemarker,
+		NULL,
+		&m_dwNumMat_Holemarker,
+		&m_pMesh_Holemarker);
+
+	// モデルのテクスチャファイル
+	m_pMaterial_Holemarker = (D3DXMATERIAL*)m_pBuffMat_Holemarker->GetBufferPointer();
+	for (DWORD i = 0; i < m_dwNumMat_Holemarker; ++i)
+	{
+		if (m_pMaterial_Holemarker[i].pTextureFilename)
+		{
+			D3DXCreateTextureFromFile(pDevice, m_pMaterial_Holemarker[i].pTextureFilename, &m_pTexture_Holemarker[i]);
+		}
+	}
+	// BindMesh呼び出し
+	BindMesh(m_pMesh_Holemarker, m_pBuffMat_Holemarker, m_dwNumMat_Holemarker, m_pMaterial_Holemarker, m_pTexture_Holemarker);
+
+}
+
+//描画処理
+void HoleMarkerObject::Draw()
+{
+	if (!m_isVisible) {
+		return;  // 非表示なら描画しない
+	}
+
+	// 通常の描画処理
+	CObjectX::Draw();
+}
+
+//生成
+
+HoleMarkerObject* HoleMarkerObject::Create(HoleObject* parent)
+{
+	HoleMarkerObject* obj = new HoleMarkerObject();
+	obj->Init();
+	obj->SetMove(D3DXVECTOR3(0, 0, 0));
+	obj->SetPos(D3DXVECTOR3(0, 0, 0));
+	obj->SetRot(D3DXVECTOR3(0, 0, 0));
+	obj->SetScale(D3DXVECTOR3(1, 1, 1));
+	obj->SetVisible(false);
+	obj->SetSummonCount(0);
+	return obj;
 }

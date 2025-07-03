@@ -11,8 +11,9 @@
 #include "object.h"
 #include "gameobject.h"
 
+using ordered_json = nlohmann::ordered_json;//追加順を保持する時に使う
 using json = nlohmann::json; // 省略しないなら nlohmann::json を毎回使ってもOK
-
+const char* GUIManager::tagOptions[] = { "Nomal", "Leaf", "Smork" };  // 定義
 
 //コンストラクタ
 GUIManager::GUIManager()
@@ -56,13 +57,12 @@ bool GUIManager::Initialize(HWND hwnd, IDirect3DDevice9* device)
 
     m_Initialized = true;
 
-	m_arrowObject = new ArrowObject();
-	m_arrowObject_offset = new ArrowObject();
-	m_arrowObject->Init();
-	m_arrowObject_offset->Init();
-	m_arrowObject_offset->SetScale(D3DXVECTOR3(0.5f, 0.5f, 0.5f));
-	m_arrowObject->SetVisible(false);
-	m_arrowObject_offset->SetVisible(false);
+	//矢印オブジェクト生成(m_arrowObjectとm_arrowObject_offsetの初期化と生成を一括で行う)
+	//ArrowObject* m_arrowObject;
+	//m_arrowObject->Create();  // これを呼ぶ前に new してない → クラッシュ
+
+	m_arrowObject = ArrowObject::Create(false);
+	m_arrowObject_offset = ArrowObject::Create(true);
     return true;
 }
 
@@ -225,42 +225,46 @@ void GUIManager::Update()
 
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
 
-			nlohmann::json jsonOutput;
-			jsonOutput["Level"] = m_currentLevel;  // レベル番号を格納
-			nlohmann::json objectList = nlohmann::json::array();
+			ordered_json jsonOutput;
+			jsonOutput["Level"] = m_currentLevel;
+			jsonOutput["Tag"] = m_stageTag;
+			ordered_json objectList = ordered_json::array();
 
             for (auto* obj : m_gameObjects) {
-                D3DXVECTOR3 pos = obj->GetPos();
-                D3DXVECTOR3 move = obj->GetMove();
-                D3DXVECTOR3 rot = obj->GetLogicRotation();
-				D3DXVECTOR3 rotation = obj->GetRot();
-                D3DXVECTOR3 scale = obj->GetScale();
-                int summonsnt = obj->GetSummonCount();
-                nlohmann::json objData;
-                objData["Move"] = { move.x, move.y, move.z };
-                objData["Name"] = obj->GetTypeString();
-                objData["Pos"] = { pos.x, pos.y, pos.z };
-                objData["Rot"] = { rot.x, rot.y, rot.z };
-				objData["Rotation"] = { rotation.x, rotation.y, rotation.z };
-                objData["Scale"] = { scale.x, scale.y, scale.z };
-                objData["SummonFrame"] = summonsnt;
-                objData["ModelName"] = obj->GetModelPath();;
+				D3DXVECTOR3 pos = RoundVec(obj->GetPos(),2);
+				D3DXVECTOR3 move = RoundVec(obj->GetMove(),2);
+				D3DXVECTOR3 rot = RoundVec(obj->GetLogicRotation(),2);
+				D3DXVECTOR3 rotation = RoundVec(obj->GetRot(), 2);
+				D3DXVECTOR3 scale = RoundVec(obj->GetScale(), 3);  // スケールは精度高め
+				int summonsnt = obj->GetSummonCount();
 
-				//穴あきオブジェクトはオフセット情報を書き出す
-				if (selectedObject) {
-					if (HoleObject* hole = dynamic_cast<HoleObject*>(obj)) {
-						D3DXVECTOR3 offset = hole->GetHoleOffset();
-						objData["HoleOffset"] = { offset.x, offset.y, offset.z };
-					}
+				//JSONに出力されるデータの端数はfloat型数値なので仕方なし
+				nlohmann::json objData;
+				objData["Move"] = { move.x, move.y, move.z };
+				objData["Name"] = obj->GetTypeString();
+				objData["Pos"] = { pos.x, pos.y, pos.z };
+				objData["Rot"] = { rot.x, rot.y, rot.z };
+				objData["Rotation"] = { rotation.x, rotation.y, rotation.z };
+				objData["Scale"] = { scale.x, scale.y, scale.z };
+				objData["SummonFrame"] = summonsnt;
+				objData["ModelName"] = obj->GetModelPath();
+
+				// 穴あきオブジェクトなら追加情報
+				if (HoleObject* hole = dynamic_cast<HoleObject*>(obj)) {
+					D3DXVECTOR3 offset = RoundVec(hole->GetHoleOffset());
+					D3DXVECTOR3 hrot = RoundVec(hole->GetHoleRot(), 2);
+					D3DXVECTOR3 hscale = RoundVec(hole->GetHoleScale(), 3);
+					objData["HoleOffset"] = { offset.x, offset.y, offset.z };
+					objData["HoleRot"] = { hrot.x, hrot.y, hrot.z };
+					objData["HoleScale"] = { hscale.x, hscale.y, hscale.z };
 				}
-				
 
 				objectList.push_back(objData); // ← こっちに追加する
             }
 			jsonOutput["Objects"] = objectList;
-            std::ofstream out(filename);
-            out << jsonOutput.dump(4); // 4はインデント幅
-            out.close();
+			std::ofstream out(filename);
+			out << std::fixed << std::setprecision(2) << jsonOutput.dump(4);
+			out.close();
 
             ImGui::CloseCurrentPopup();
             showSaveConfirm = false;
@@ -306,9 +310,10 @@ void GUIManager::Update()
                     obj = nullptr;
                 }
 
-				m_gameObjects.clear(); // 既存オブジェクトを削除（必要に応じて）
+				m_gameObjects.clear(); // 既存オブジェクトを削除
                 m_selectedIndex = -1; // 選択をリセット
-                
+
+				//レベル読み込み
 				if (jsonInput.contains("Level") && !jsonInput["Level"].is_null()) {
 					int level = jsonInput["Level"].get<int>();
 					std::cout << "読み込んだレベル: " << level << std::endl;
@@ -318,6 +323,19 @@ void GUIManager::Update()
 					std::cout << "[警告] 'Level' の情報が見つからないか null でした。m_currentLevel は変更されません。\n";
 					warningMessage = "警告: Level 情報が無効です";
 				}
+				//タグ読み込み
+				if (jsonInput.contains("Tag")) {
+					m_stageTag = jsonInput["Tag"].get<std::string>();
+
+					// インデックスも再設定しておくと UI と同期できる
+					for (int i = 0; i < IM_ARRAYSIZE(tagOptions); ++i) {
+						if (m_stageTag == tagOptions[i]) {
+							currentTagIndex = i;
+							break;
+						}
+					}
+				}
+
 				ImGui::TextColored(ImVec4(1, 0, 0, 1), "%s", warningMessage.c_str());
 				const auto& objects = jsonInput["Objects"];
 
@@ -332,10 +350,10 @@ void GUIManager::Update()
 
 					// モデルパスに応じて穴あきオブジェクトか判定
 					if (IsHoleObject(modelPath)) {
-						newObj = new HoleObject();  // 穴あきオブジェクト用クラス
+						newObj = new HoleObject();  // 穴あきオブジェクト
 					}
 					else {
-						newObj = new CGenericObject();
+						newObj = new CGenericObject();	//通常オブジェクト
 					}
 
 					if (newObj) {
@@ -370,6 +388,11 @@ void GUIManager::Update()
         if (m_selectedIndex >= 0 && m_selectedIndex < static_cast<int>(m_gameObjects.size())) {
 			GameObject* target = m_gameObjects[m_selectedIndex];
 
+			// 穴マーカーを非表示に
+			if (m_holemarker && target == dynamic_cast<HoleObject*>(target)) {
+				m_holemarker->SetVisible(false);
+			}
+
 			//削除対象を参照している他のポインタを無効化
 			if (selectedObject == target) {
 				selectedObject = nullptr;
@@ -377,8 +400,6 @@ void GUIManager::Update()
 
 			if (m_arrowObject && m_arrowObject->IsVisible() == true) {
 				m_arrowObject->SetVisible(false);
-
-
 			}
 			target->Uninit();   // メモリ解放を含まないように注意
 
@@ -465,11 +486,12 @@ void GUIManager::Update()
             obj->SetObjectType(static_cast<GameObject::GameObjectType>(currentType));
         }
         if (ImGui::DragFloat2("Pos{x,y}", (float*)&posXY, 0.1f)) {
-			
-			if (posXY[0] < -POS_X_MAX) posXY[0] = -POS_X_MAX;
+
+			//位置の制限を設けたが必要なし
+			/*if (posXY[0] < -POS_X_MAX) posXY[0] = -POS_X_MAX;
 			if (posXY[0] > POS_X_MAX)  posXY[0] = POS_X_MAX;
 			if (posXY[1] < -POS_Y_MAX) posXY[1] = -POS_Y_MAX;
-			if (posXY[1] > POS_Y_MAX)  posXY[1] = POS_Y_MAX;
+			if (posXY[1] > POS_Y_MAX)  posXY[1] = POS_Y_MAX;*/
 
 			// pos.z は変更せずにそのまま保持
 			pos.x = posXY[0];
@@ -508,66 +530,89 @@ void GUIManager::Update()
 
 		// HoleObject にキャスト可能ならオフセットを表示
 		if (auto* holeObj = dynamic_cast<HoleObject*>(selectedObject)) {
-			D3DXVECTOR3 basePos = holeObj->GetPos();
-			D3DXVECTOR3 offset = holeObj->GetHoleOffset();
-			D3DXVECTOR3 arrowPos = basePos + offset;
+			// マーカーが存在しなければ生成（最初だけ）
+			if (!m_holemarker) {
+				m_holemarker = HoleMarkerObject::Create(holeObj);
+				m_holemarker->Init();
+				m_holemarker->Load();
+			}
 
+			// 毎フレーム、holeObj に合わせて更新
+			D3DXVECTOR3 offset = holeObj->GetHoleOffset();
+			D3DXVECTOR3 holerot = holeObj->GetHoleRot();
+			D3DXVECTOR3 holescale = holeObj->GetHoleScale();
+			D3DXVECTOR3 worldPos = holeObj->GetPos() + offset;
+
+			m_holemarker->SetPos(worldPos);
+			m_holemarker->SetRot(holerot);
+			m_holemarker->SetScale(holescale);
+			m_holemarker->SetVisible(true);
+
+			// 必要なら holeObj に登録
+			holeObj->SetHoleVisibleObject(m_holemarker);
+
+			// ImGui 操作
 			if (ImGui::DragFloat3(u8"穴のオフセット", (float*)&offset, 0.1f)) {
 				holeObj->SetHoleOffset(offset);
 			}
-			
-			m_arrowObject_offset->SetPos(arrowPos);  // オフセットに配置
+			if (ImGui::DragFloat3(u8"穴の向き", (float*)&holerot, 0.1f)) {
+				holeObj->SetHoleRot(holerot);
+			}
+			if (ImGui::DragFloat3(u8"穴のスケール", (float*)&holescale, 0.1f)) {
+				holeObj->SetHoleScale(holescale);
+			}
+
+			// 矢印も更新
+			D3DXVECTOR3 arrowPos = holeObj->GetPos() + offset;
+			m_arrowObject_offset->SetPos(arrowPos);
 			m_arrowObject_offset->SetVisible(true);
 		}
-		else
-		{
-			m_arrowObject_offset->SetVisible(false);
+		else {
+			// HoleObject 以外が選ばれたら非表示に
+			if (m_holemarker && m_arrowObject_offset) {
+				m_holemarker->SetVisible(false);
+				m_arrowObject_offset->SetVisible(false);
+			}
 		}
 
 		//矢印オブジェクトの配置
         m_arrowObject->SetPos(pos);  // 原点として配置
 		m_arrowObject->SetVisible(true);
+
+		if (ImGui::Combo(u8"ステージタグ", &currentTagIndex, tagOptions, IM_ARRAYSIZE(tagOptions))) {
+			m_stageTag = tagOptions[currentTagIndex];
+		}
     }
     else {
         ImGui::Text(u8"選択されていません");
         m_arrowObject->SetVisible(false);
 		m_arrowObject_offset->SetVisible(false);
+
     }
 
     ImGui::End();
 
 
     //描画処理呼び出し
-    for (auto obj : m_gameObjects)
-    {
-        if (!obj)
-        {
-            if (obj == selectedObject)
-            {
-                // アウトライン描画
-                obj->DrawOutline();
+	for (auto obj : m_gameObjects)
+	{
+		if (!obj) continue;  // nullptr ならスキップ
 
-                // ワイヤーフレーム有効化
-                CManager::GetRenderer()->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
-                obj->Draw(); // 通常描画（モードがワイヤーフレームになってる）
-
-                // 元に戻す
-                CManager::GetRenderer()->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-            }
-            else
-            {
-                obj->Draw(); // 通常描画
-            }
-        }
-        
-    }
+		obj->Draw(); // 通常描画
+		
+	}
 
     //矢印オブジェクトの表示を行うか否か
     if (m_arrowObject && m_arrowObject->IsVisible())
     {
         m_arrowObject->Draw();
     }
+
+	if (m_holemarker && m_holemarker->IsVisible())
+	{
+		m_holemarker->Draw();
+	}
 }
 
 //フレーム終了
