@@ -23,7 +23,8 @@ public:
 
     enum class GameObjectType {
         SafeZone,
-        Obstacle
+        Obstacle,
+		HoleObstacle
     };
 
     GameObject();

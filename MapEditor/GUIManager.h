@@ -76,7 +76,7 @@ private:
 	int m_currentLevel = 1;
 
 	static const char* tagOptions[];
-
+	int AnticipationFrame = 0;
 	int currentTagIndex = 0;  // 0: None（初期）
 	std::string m_stageTag = "None";  // 実際に保存されるタグ
 

@@ -228,6 +228,7 @@ void GUIManager::Update()
 			ordered_json jsonOutput;
 			jsonOutput["Level"] = m_currentLevel;
 			jsonOutput["Tag"] = m_stageTag;
+			jsonOutput["AnticipationFrame"] = AnticipationFrame;
 			ordered_json objectList = ordered_json::array();
 
             for (auto* obj : m_gameObjects) {
@@ -335,7 +336,16 @@ void GUIManager::Update()
 						}
 					}
 				}
-
+				//見切りフレーム読み込み
+				if (jsonInput.contains("AnticipationFrame") && !jsonInput["AnticipationFrame"].is_null()) {
+					int Frame = jsonInput["AnticipationFrame"].get<int>();
+					AnticipationFrame = Frame;
+				}
+				else
+				{
+					//読み込めなかった場合60を代入
+					AnticipationFrame = 60;
+				}
 				ImGui::TextColored(ImVec4(1, 0, 0, 1), "%s", warningMessage.c_str());
 				const auto& objects = jsonInput["Objects"];
 
@@ -462,7 +472,7 @@ void GUIManager::Update()
         GameObject::GameObjectType type = obj->GetObjectType(); // タイプ取得
         int currentType = static_cast<int>(type);
 
-        const char* typeItems[] = { "SafeZone", "Obstacle" };
+        const char* typeItems[] = { "SafeZone", "Obstacle","HoleObstacle"};
 
         D3DXVECTOR3 pos = obj->GetPos();
         D3DXVECTOR3 rot = obj->GetLogicRotation();
@@ -579,8 +589,14 @@ void GUIManager::Update()
         m_arrowObject->SetPos(pos);  // 原点として配置
 		m_arrowObject->SetVisible(true);
 
+		
 		if (ImGui::Combo(u8"ステージタグ", &currentTagIndex, tagOptions, IM_ARRAYSIZE(tagOptions))) {
 			m_stageTag = tagOptions[currentTagIndex];
+		}
+	
+		if (ImGui::DragInt(u8"見切りフレーム", &AnticipationFrame, 1.0f))
+		{
+			if (AnticipationFrame < 0) AnticipationFrame = 0;
 		}
     }
     else {

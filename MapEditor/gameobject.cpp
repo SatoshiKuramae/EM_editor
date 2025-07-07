@@ -13,6 +13,8 @@
 //親クラス
 //
 //===================================================================
+
+//コンストラクタ
 GameObject::GameObject()
 {
     // 位置・スケールなど初期化
@@ -22,6 +24,7 @@ GameObject::GameObject()
     SetSummonCount(0);
 }
 
+//デストラクタ
 GameObject::~GameObject()
 {
     if (m_pMesh) {
@@ -43,6 +46,7 @@ GameObject::~GameObject()
     }
 }
 
+//初期化
 HRESULT GameObject::Init()
 {
     CObjectX::Init();
@@ -50,8 +54,7 @@ HRESULT GameObject::Init()
     return S_OK;
 }
 
-
-
+//更新処理
 void GameObject::Update()
 {
     // CObjectX の基本更新
@@ -146,17 +149,29 @@ GameObject* GameObject::Loadjson(const json& objData)
 		if (HoleObject* hole = dynamic_cast<HoleObject*>(this)) {
 			hole->SetHoleOffset(D3DXVECTOR3(o[0], o[1], o[2]));
 		}
+		else
+		{
+			hole->SetHoleOffset(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		}
 	}
 	else if (objData.contains("HoleRot")) {
 		auto o = objData["HoleRot"];
 		if (HoleObject* hole = dynamic_cast<HoleObject*>(this)) {
 			hole->SetHoleRot(D3DXVECTOR3(o[0], o[1], o[2]));
 		}
+		else
+		{
+			hole->SetHoleRot(D3DXVECTOR3(0.0f,0.0f,0.0f));
+		}
 	}
 	else if (objData.contains("HoleScale")) {
 		auto o = objData["HoleOffset"];
 		if (HoleObject* hole = dynamic_cast<HoleObject*>(this)) {
 			hole->SetHoleScale(D3DXVECTOR3(o[0], o[1], o[2]));
+		}
+		else
+		{
+			hole->SetHoleScale(D3DXVECTOR3(0.0f,0.0f,0.0f));
 		}
 	}
 	else
@@ -171,6 +186,7 @@ const char* GameObject::GetTypeString() {
     switch (m_type) {
     case GameObjectType::SafeZone: return "SafeZone";
     case GameObjectType::Obstacle: return "Obstacle";
+	case GameObjectType::HoleObstacle: return "HoleObstacle";
     default: return "Unknown";
     }
 }
@@ -179,6 +195,7 @@ const char* GameObject::GetTypeString() {
 GameObject::GameObjectType GameObject::FromTypeString(const std::string& str) {
     if (str == "SafeZone") return GameObjectType::SafeZone;
     if (str == "Obstacle") return GameObjectType::Obstacle;
+	if (str == "HoleObstacle") return GameObjectType::HoleObstacle;
     return GameObjectType::SafeZone; // デフォルト
 }
 
@@ -311,7 +328,6 @@ void CGenericObject::Load()
 //描画処理
 void CGenericObject::Draw()
 {
-
     // 通常の描画処理
     CObjectX::Draw();
 }
