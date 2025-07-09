@@ -84,9 +84,16 @@ protected:
     LPDIRECT3DTEXTURE9 m_pTexture_Gn_Object[NUMTEXTURE] = { nullptr };
 };
 
+//穴あきオブジェクトクラス
 class HoleObject : public CGenericObject {
 	
 public:
+	struct HoleMarkerData {
+		D3DXVECTOR3 offset = { 0.0f, 0.0f, 0.0f };
+		D3DXVECTOR3 rot = { 0.0f, 0.0f, 0.0f };
+		D3DXVECTOR3 scale = { 1.0f, 1.0f, 1.0f };
+	};
+
 	void SetHoleOffset(D3DXVECTOR3 offset) { m_holeOffset = offset; }
 	D3DXVECTOR3 GetHoleOffset() const { return m_holeOffset; }
 
@@ -103,6 +110,7 @@ private:
 	D3DXVECTOR3 m_holerot = { 0.0f,0.0f,0.0f };
 	D3DXVECTOR3 m_holescale = { 1.0f, 1.0f,1.0f };
 	GameObject* m_visualObj = nullptr;
+
 };
 
 //矢印オブジェクト
@@ -143,10 +151,6 @@ public:
 	bool IsVisible() const { return m_isVisible; }
 
 	void ApplyHoleParameters(HoleObject* holeObj) { m_parent = holeObj; }
-
-	
-
-
 private:
 	// ArrowObject固有のメッシュ、マテリアル、テクスチャ
 	LPD3DXMESH m_pMesh_Holemarker = nullptr;

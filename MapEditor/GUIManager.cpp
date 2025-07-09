@@ -217,29 +217,60 @@ void GUIManager::Update()
     }
 
     //セーブ時ポップアップ
-    if (ImGui::BeginPopupModal("Save Confirmation", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text(u8"セーブしますか?");
-        ImGui::Separator();
-        ImGui::Text(u8"ファイルの名前\n%s", filename.c_str());
+	static char fileInputBuffer[256]; // 初期パス（ユーザーが入力可能）
+
+	if (ImGui::BeginPopupModal("Save Confirmation", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text(u8"セーブしますか?");
+		ImGui::Separator();
+
+		// レベル番号指定
 		ImGui::InputInt(u8"このパターンのレベルを指定", &m_currentLevel);
 
-        if (ImGui::Button("Yes", ImVec2(120, 0))) {
+		// 自動生成ファイル名の参考表示
+		std::string autoFileName = "Data/JSON/pattern_" + std::to_string(m_currentLevel) + ".json";
+		ImGui::Text(u8"自動生成されるファイル名: %s", autoFileName.c_str());
 
+		// ファイル名の直接入力欄
+		ImGui::InputText(u8"ファイル名を指定", fileInputBuffer, IM_ARRAYSIZE(fileInputBuffer));
+
+		if (ImGui::Button("Yes", ImVec2(120, 0))) {
+			std::string saveFile;
+
+			if (std::strlen(fileInputBuffer) == 0) {
+				// 空なら自動生成名を使用
+				saveFile = autoFileName;
+			}
+			else {
+				// 入力がある場合 → Data/JSON/ を先頭に追加
+				saveFile = "Data/JSON/" + std::string(fileInputBuffer);
+
+				// 拡張子処理
+				if (saveFile.find(".json") == std::string::npos) {
+					saveFile += "_";
+					saveFile += std::to_string(m_currentLevel);
+					saveFile += ".json";
+				}
+				else {
+					size_t pos = saveFile.rfind(".json");
+					saveFile.insert(pos, "_" + std::to_string(m_currentLevel));
+				}
+			}
+
+
+			// JSON構築
 			ordered_json jsonOutput;
 			jsonOutput["Level"] = m_currentLevel;
 			jsonOutput["Tag"] = m_stageTag;
 			jsonOutput["AnticipationFrame"] = AnticipationFrame;
 			ordered_json objectList = ordered_json::array();
 
-            for (auto* obj : m_gameObjects) {
-				D3DXVECTOR3 pos = RoundVec(obj->GetPos(),2);
-				D3DXVECTOR3 move = RoundVec(obj->GetMove(),2);
-				D3DXVECTOR3 rot = RoundVec(obj->GetLogicRotation(),2);
+			for (auto* obj : m_gameObjects) {
+				D3DXVECTOR3 pos = RoundVec(obj->GetPos(), 2);
+				D3DXVECTOR3 move = RoundVec(obj->GetMove(), 2);
+				D3DXVECTOR3 rot = RoundVec(obj->GetLogicRotation(), 2);
 				D3DXVECTOR3 rotation = RoundVec(obj->GetRot(), 2);
-				D3DXVECTOR3 scale = RoundVec(obj->GetScale(), 3);  // スケールは精度高め
-				int summonsnt = obj->GetSummonCount();
+				D3DXVECTOR3 scale = RoundVec(obj->GetScale(), 3);
 
-				//JSONに出力されるデータの端数はfloat型数値なので仕方なし
 				nlohmann::json objData;
 				objData["Move"] = { move.x, move.y, move.z };
 				objData["Name"] = obj->GetTypeString();
@@ -247,10 +278,9 @@ void GUIManager::Update()
 				objData["Rot"] = { rot.x, rot.y, rot.z };
 				objData["Rotation"] = { rotation.x, rotation.y, rotation.z };
 				objData["Scale"] = { scale.x, scale.y, scale.z };
-				objData["SummonFrame"] = summonsnt;
+				objData["SummonFrame"] = obj->GetSummonCount();
 				objData["ModelName"] = obj->GetModelPath();
 
-				// 穴あきオブジェクトなら追加情報
 				if (HoleObject* hole = dynamic_cast<HoleObject*>(obj)) {
 					D3DXVECTOR3 offset = RoundVec(hole->GetHoleOffset());
 					D3DXVECTOR3 hrot = RoundVec(hole->GetHoleRot(), 2);
@@ -260,26 +290,29 @@ void GUIManager::Update()
 					objData["HoleScale"] = { hscale.x, hscale.y, hscale.z };
 				}
 
-				objectList.push_back(objData); // ← こっちに追加する
-            }
+				objectList.push_back(objData);
+			}
+
 			jsonOutput["Objects"] = objectList;
-			std::ofstream out(filename);
+
+			// 保存処理
+			std::ofstream out(saveFile);
 			out << std::fixed << std::setprecision(2) << jsonOutput.dump(4);
 			out.close();
 
-            ImGui::CloseCurrentPopup();
-            showSaveConfirm = false;
-        }
+			ImGui::CloseCurrentPopup();
+			showSaveConfirm = false;
+		}
 
-        ImGui::SameLine();
+		ImGui::SameLine();
 
-        //セーブしない
-        if (ImGui::Button("No", ImVec2(120, 0))) {
-            ImGui::CloseCurrentPopup();
-            showSaveConfirm = false;
-        }
-        ImGui::EndPopup();
-    }
+		if (ImGui::Button("No", ImVec2(120, 0))) {
+			ImGui::CloseCurrentPopup();
+			showSaveConfirm = false;
+		}
+
+		ImGui::EndPopup();
+	}
 
 
     //Json読み込み
