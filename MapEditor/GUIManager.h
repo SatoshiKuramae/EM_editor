@@ -19,7 +19,7 @@
 constexpr double POS_X_MAX = 260.0f;
 constexpr double POS_Y_MAX = 135.0f;
 constexpr int NUM_PATTERN = 50;
-
+constexpr int PATTERNFRAME = 60;
 //GUIマネージャークラス
 class GUIManager
 {
@@ -72,11 +72,12 @@ public:
 		double factor = std::pow(10.0, digits);
 		return std::round(static_cast<double>(value) * factor) / factor;
 	}
+
 private:
 	int m_currentLevel = 1;
 
 	static const char* tagOptions[];
-	int AnticipationFrame = 0;
+	int AnticipationFrame = PATTERNFRAME;		//初期値決めてね
 	int currentTagIndex = 0;  // 0: None（初期）
 	std::string m_stageTag = "None";  // 実際に保存されるタグ
 
@@ -87,14 +88,18 @@ private:
 	bool confirmedSave = false;
 	float zAxisOffsetPos = 0.0f;
 	float zAxisOffsetMove = 0.0f;
+
 	//配置するゲームオブジェクトモデルのパス
-	std::string gameobjectpath = ("Data\\gameobject\\");
+	std::string gameobjectpath = ("Data\\Model\\");
+	std::string jsonfilepath = ("Data\\JSON\\");
+	std::string m_loadedFileName;
 	//指定フォルダ内のファイル名を取得する
 	std::vector<std::string> modelFiles = GetXFileNamesInDirectory(gameobjectpath, "x");
-	
+	std::vector<std::string> jsonFiles = GetJsonFileList(jsonfilepath);
 	nlohmann::json jsonOutput;
 	int selected = 0;
 	std::string selectedModelPath; // 選ばれたモデルのパス
+	std::string selectedJsonPath; // 選ばれたJsonのパス
 	std::vector<GameObject*> m_gameObjects;
 	int m_selectedIndex = -1;
 	CObjectX* selectedObject = nullptr;	

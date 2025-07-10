@@ -45,9 +45,9 @@ public:
     void SetSummonCount(int summoncnt) { m_nSummonCnt = summoncnt; }
     int GetSummonCount()const { return m_nSummonCnt;}
 
-    //向きではなく回転量を操作するから親クラスのrotじゃなくて独自の数値が必要なんすよﾎﾞｯｼｬｧｧｧﾝ
+    //向きではなく回転量を操作するから親クラスのrotじゃなくて独自の数値が必要なんすよ
     void SetLogicRotation(const D3DXVECTOR3& rot) { m_logicRotation = rot; }
-    //向きではなく回転量を操作するから親クラスのrotじゃなくて独自の数値が必要なんすよﾎﾞｯｼｬｧｧｧﾝ
+    //向きではなく回転量を操作するから親クラスのrotじゃなくて独自の数値が必要なんすよ
     D3DXVECTOR3 GetLogicRotation() const { return m_logicRotation; }
 
     // モデル差し替え関数（派生クラスで必要に応じてオーバーライド）
@@ -55,10 +55,13 @@ public:
     // モデルパスのGetter/Setter
     std::string GetModelPath() const { return m_modelPath; }
     void SetModelPath(const std::string& path) { m_modelPath = path; }
-    
+
+	void SetModelTag(const std::string& tag) { m_modelTag = tag; }
+	std::string GetModelTag() const { return m_modelTag; }
 protected:
 	//オブジェクトのパラメータ用変数
-    std::string m_name;				
+    std::string m_name;
+	std::string m_modelTag;
     GameObjectType m_type;
     int m_nSummonCnt;
     std::string m_modelPath;		//モデル情報のパス

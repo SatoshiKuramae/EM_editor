@@ -144,6 +144,14 @@ GameObject* GameObject::Loadjson(const json& objData)
 		std::cout << "[警告] ModelName が存在しないため、空文字を設定します\n";
 		this->SetModelPath("");
 	}
+	if (objData.contains("ModelTag")) {
+		std::string path = objData["ModelTag"];
+		this->SetModelTag(path);
+	}
+	else {
+		std::cout << "[警告] ModelName が存在しないため、空文字を設定します\n";
+		this->SetModelTag("");
+	}
 	if (objData.contains("HoleOffset")) {
 		auto o = objData["HoleOffset"];
 		if (HoleObject* hole = dynamic_cast<HoleObject*>(this)) {
@@ -223,7 +231,7 @@ void ArrowObject::Load()
     pDevice = CManager::GetRenderer()->GetDevice();
 
     //Xファイルの読み込み
-    D3DXLoadMeshFromX("data\\model\\arrow.x",
+    D3DXLoadMeshFromX("data\\model\\Nodisplaymodel\\arrow.x",
         D3DXMESH_SYSTEMMEM, pDevice,
         NULL,
         &m_pBuffMat_arrow,
@@ -388,7 +396,7 @@ void HoleMarkerObject::Load()
 	pDevice = CManager::GetRenderer()->GetDevice();
 
 	//Xファイルの読み込み
-	D3DXLoadMeshFromX("data\\model\\Cylynder_000.x",
+	D3DXLoadMeshFromX("data\\model\\Nodisplaymodel\\Cylynder_000.x",
 		D3DXMESH_SYSTEMMEM, pDevice,
 		NULL,
 		&m_pBuffMat_Holemarker,

@@ -92,8 +92,6 @@ void GUIManager::BeginFrame()
 //更新処理
 void GUIManager::Update() 
 {
-    //JSONファイルの保存先のパスと名前
-    std::string filename = "data\\JSON\\gameobjects_pattern" + std::to_string(patternIndex) + ".json";
 	static std::string warningMessage = "";
 
 	if (patternIndex < 1)
@@ -224,14 +222,30 @@ void GUIManager::Update()
 		ImGui::Separator();
 
 		// レベル番号指定
-		ImGui::InputInt(u8"このパターンのレベルを指定", &m_currentLevel);
-
+		ImGui::InputInt(u8"セーブするパターン番号を指定", &m_currentLevel);
+		//m_loadedFileName
 		// 自動生成ファイル名の参考表示
-		std::string autoFileName = "Data/JSON/pattern_" + std::to_string(m_currentLevel) + ".json";
-		ImGui::Text(u8"自動生成されるファイル名: %s", autoFileName.c_str());
+		std::string autoFileName;
+		if (!m_loadedFileName.empty()) {
+			// 読み込んだファイル名があればそれを元に自動生成（レベル番号追加）
+			// すでに拡張子があるなら取り除いてから付ける
+			std::string baseName = m_loadedFileName;
+			size_t extPos = baseName.rfind(".json");
+			if (extPos != std::string::npos) {
+				baseName = baseName.substr(0, extPos);
+			}
+			autoFileName = "Data/JSON/" + baseName + ".json";
+		}
+		else {
+			// 読み込みがないならデフォルト名
+			autoFileName = "Data/JSON/pattern_" + std::to_string(m_currentLevel) + ".json";
+		}
+		
+		
+		ImGui::Text(u8"自動生成されるファイル名（空欄の場合この名前で出力します）\n: %s", autoFileName.c_str());
 
 		// ファイル名の直接入力欄
-		ImGui::InputText(u8"ファイル名を指定", fileInputBuffer, IM_ARRAYSIZE(fileInputBuffer));
+		ImGui::InputText(u8"ファイル名を指定(パスは自動追加されます)", fileInputBuffer, IM_ARRAYSIZE(fileInputBuffer));
 
 		if (ImGui::Button("Yes", ImVec2(120, 0))) {
 			std::string saveFile;
@@ -322,16 +336,27 @@ void GUIManager::Update()
         ImGui::OpenPopup("Import Json");
     }
 
+
     //読み込み時ポップアップ
     if (ImGui::BeginPopupModal("Import Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text(u8"Jsonを読み込みますか?");
-        ImGui::InputInt(u8"パターン番号を指定", &patternIndex);
+
+		// ファイル選択リスト（スクロール可能）
+		ImGui::BeginChild("FileList", ImVec2(400, 200), true);
+		for (int i = 0; i < jsonFiles.size(); ++i) {
+			std::string label = jsonFiles[i] + "##" + std::to_string(i);  // 表示名 + 内部ID
+			if (ImGui::Selectable(label.c_str(), selected == i)) {
+				selected = i;
+				selectedJsonPath = jsonfilepath + jsonFiles[i];
+			}
+		}
+		ImGui::EndChild();
 		
 
         ImGui::Separator();
         if (ImGui::Button("Yes", ImVec2(120, 0))) {
 
-            std::ifstream in(filename);
+            std::ifstream in(selectedJsonPath);
             if (in) {
                 nlohmann::json jsonInput;
                 in >> jsonInput;
@@ -377,7 +402,7 @@ void GUIManager::Update()
 				else
 				{
 					//読み込めなかった場合60を代入
-					AnticipationFrame = 60;
+					AnticipationFrame = PATTERNFRAME;
 				}
 				ImGui::TextColored(ImVec4(1, 0, 0, 1), "%s", warningMessage.c_str());
 				const auto& objects = jsonInput["Objects"];
@@ -410,6 +435,12 @@ void GUIManager::Update()
 
                 m_selectedIndex = m_gameObjects.empty() ? -1 : 0; // 選択リセット
             }
+
+			m_loadedFileName = selectedJsonPath;
+			size_t lastSlash = selectedJsonPath.find_last_of("/\\");
+			if (lastSlash != std::string::npos) {
+				m_loadedFileName = selectedJsonPath.substr(lastSlash + 1);
+			}
 
             ImGui::CloseCurrentPopup();
             showSaveConfirm = false;
@@ -476,13 +507,55 @@ void GUIManager::Update()
             }
         }
 
-        if (ImGui::Button(u8"確定")) {
-            if (auto generic = dynamic_cast<CGenericObject*>(selectedObject)) {
-                generic->ChangeModel(selectedModelPath);
-            }
+		//モデル情報のみの差し替えだと穴あきオブジェクトが生成できないので、位置等の情報を保存し、
+		//再度生成した後にSetpos等パラメータ設定を行う方式にしました
+		if (ImGui::Button(u8"確定")) {
+			// モデル差し替え先が穴あきオブジェクトであるか判定
+			bool isHole = IsHoleObject(selectedModelPath);
 
-            ImGui::CloseCurrentPopup();
-        }
+			// 現在のオブジェクトの位置やスケール等を保存
+			D3DXVECTOR3 pos = selectedObject->GetPos();
+			D3DXVECTOR3 rot = selectedObject->GetRot();
+			D3DXVECTOR3 scale = selectedObject->GetScale();
+
+			// 現在のインデックスを記録しておく
+			auto it = std::find(m_gameObjects.begin(), m_gameObjects.end(), selectedObject);
+			size_t index = (it != m_gameObjects.end()) ? std::distance(m_gameObjects.begin(), it) : m_gameObjects.size();
+
+			// 古いオブジェクトを削除
+			selectedObject->Uninit();
+			selectedObject = nullptr;
+			
+			// 新しいオブジェクトを生成（穴あき or 汎用）
+			GameObject* newObj = nullptr;
+			if (isHole) {
+				newObj = new HoleObject();
+			}
+			else {
+				newObj = new CGenericObject();
+			}
+
+			if (newObj) {
+				newObj->SetModelPath(selectedModelPath);
+				newObj->SetPos(pos);
+				newObj->SetRot(rot);
+				newObj->SetScale(scale);
+				newObj->Init();
+				newObj->Load();
+
+				// リストに差し替え
+				if (index < m_gameObjects.size()) {
+					m_gameObjects[index] = newObj;
+				}
+				else {
+					m_gameObjects.push_back(newObj);
+				}
+
+				selectedObject = newObj;
+			}
+
+			ImGui::CloseCurrentPopup();
+		}
 
         ImGui::SameLine();
         if (ImGui::Button(u8"キャンセル")) {
