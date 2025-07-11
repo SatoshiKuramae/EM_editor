@@ -435,7 +435,7 @@ void GUIManager::Update()
 						newObj->Init();     // モデルパスが設定された後に初期化
 						newObj->Load();
 					}
-                }
+				}
 
                 m_selectedIndex = m_gameObjects.empty() ? -1 : 0; // 選択リセット
             }
