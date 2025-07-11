@@ -222,54 +222,58 @@ void GUIManager::Update()
 		ImGui::Separator();
 
 		// レベル番号指定
-		ImGui::InputInt(u8"セーブするパターン番号を指定", &m_currentLevel);
-		//m_loadedFileName
+		ImGui::InputInt(u8"レベルを指定", &m_currentLevel);
+
 		// 自動生成ファイル名の参考表示
 		std::string autoFileName;
-		if (!m_loadedFileName.empty()) {
-			// 読み込んだファイル名があればそれを元に自動生成（レベル番号追加）
-			// すでに拡張子があるなら取り除いてから付ける
-			std::string baseName = m_loadedFileName;
-			size_t extPos = baseName.rfind(".json");
-			if (extPos != std::string::npos) {
-				baseName = baseName.substr(0, extPos);
+
+		ImGui::BeginChild("FileList", ImVec2(300, 100), true);
+		for (int i = 0; i < jsonFiles.size(); ++i) {
+			std::string label = jsonFiles[i] + "##" + std::to_string(i);
+			bool isSelected = (selectedJsonIndex == i);
+
+			if (ImGui::Selectable(label.c_str(), isSelected)) {
+				selectedJsonIndex = i;
+
+				// ファイル名だけ反映させる（保存処理はしない！）
+				autoFileName = jsonFiles[i];
+				std::strncpy(fileInputBuffer, autoFileName.c_str(), IM_ARRAYSIZE(fileInputBuffer));
+				fileInputBuffer[IM_ARRAYSIZE(fileInputBuffer) - 1] = '\0';
 			}
-			autoFileName = "Data/JSON/" + baseName + ".json";
+		}
+		ImGui::EndChild();
+
+		if (!m_loadedFileName.empty()) {
+			// 読み込んだファイルがあるならそれをそのまま使う
+			autoFileName = "Data/JSON/" + m_loadedFileName;
 		}
 		else {
-			// 読み込みがないならデフォルト名
-			autoFileName = "Data/JSON/pattern_" + std::to_string(m_currentLevel) + ".json";
+			// ない場合はデフォルト名
+			autoFileName = "Data/JSON/pattern.json";
 		}
-		
-		
+
 		ImGui::Text(u8"自動生成されるファイル名（空欄の場合この名前で出力します）\n: %s", autoFileName.c_str());
 
 		// ファイル名の直接入力欄
-		ImGui::InputText(u8"ファイル名を指定(パスは自動追加されます)", fileInputBuffer, IM_ARRAYSIZE(fileInputBuffer));
+		ImGui::InputText(u8"ファイル名を指定(パスは自動追加されます", fileInputBuffer, IM_ARRAYSIZE(fileInputBuffer));
 
 		if (ImGui::Button("Yes", ImVec2(120, 0))) {
 			std::string saveFile;
 
 			if (std::strlen(fileInputBuffer) == 0) {
-				// 空なら自動生成名を使用
-				saveFile = autoFileName;
+				saveFile = autoFileName;  // 自動生成名を使う
 			}
 			else {
-				// 入力がある場合 → Data/JSON/ を先頭に追加
-				saveFile = "Data/JSON/" + std::string(fileInputBuffer);
+				saveFile = std::string(fileInputBuffer);
 
-				// 拡張子処理
-				if (saveFile.find(".json") == std::string::npos) {
-					saveFile += "_";
-					saveFile += std::to_string(m_currentLevel);
+				// パスと拡張子を補完
+				if (saveFile.find("Data/JSON/") != 0)
+					saveFile = "Data/JSON/" + saveFile;
+				if (saveFile.length() < 5 || saveFile.substr(saveFile.length() - 5) != ".json")
 					saveFile += ".json";
-				}
-				else {
-					size_t pos = saveFile.rfind(".json");
-					saveFile.insert(pos, "_" + std::to_string(m_currentLevel));
-				}
 			}
 
+			
 
 			// JSON構築
 			ordered_json jsonOutput;
@@ -436,8 +440,10 @@ void GUIManager::Update()
                 m_selectedIndex = m_gameObjects.empty() ? -1 : 0; // 選択リセット
             }
 
+			//ファイル名のみ抽出
 			m_loadedFileName = selectedJsonPath;
 			size_t lastSlash = selectedJsonPath.find_last_of("/\\");
+
 			if (lastSlash != std::string::npos) {
 				m_loadedFileName = selectedJsonPath.substr(lastSlash + 1);
 			}

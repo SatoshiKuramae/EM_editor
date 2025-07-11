@@ -93,6 +93,8 @@ private:
 	std::string gameobjectpath = ("Data\\Model\\");
 	std::string jsonfilepath = ("Data\\JSON\\");
 	std::string m_loadedFileName;
+	char fileInputBuffer[128] = "";  // 直接入力用バッファ（GUIManagerのメンバーでOK）
+	int selectedJsonIndex = -1;      // リスト上で選ばれているファイル
 	//指定フォルダ内のファイル名を取得する
 	std::vector<std::string> modelFiles = GetXFileNamesInDirectory(gameobjectpath, "x");
 	std::vector<std::string> jsonFiles = GetJsonFileList(jsonfilepath);
