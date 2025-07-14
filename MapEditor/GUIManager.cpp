@@ -800,6 +800,5 @@ void GUIManager::SetObjParam()
 
 	}
 
-
 	ImGui::End();
 }
