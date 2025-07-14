@@ -340,7 +340,6 @@ void GUIManager::Update()
         ImGui::OpenPopup("Import Json");
     }
 
-
     //読み込み時ポップアップ
     if (ImGui::BeginPopupModal("Import Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text(u8"Jsonを読み込みますか?");
