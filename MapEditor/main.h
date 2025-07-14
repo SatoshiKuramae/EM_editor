@@ -15,8 +15,8 @@
 
 
 #define MAX_NUM			(256)
-#define CLASS_NAME		"ポリゴン描画"			//ウィンドウクラスの名前
-#define WINDOW_NAME		"ポリゴン描画"	//ウィンドウの名前（キャプションに表示）
+#define CLASS_NAME		"EditorTool"			//ウィンドウクラスの名前
+#define WINDOW_NAME		"EditorTool"	//ウィンドウの名前（キャプションに表示）
 
 
 //ライブラリのリンク
