@@ -576,11 +576,11 @@ void GUIManager::Update()
     //==================================================================
     // --- 選択されたオブジェクトのパラメータ操作ウィンドウ ---
     //==================================================================
-    ImGui::Begin(u8"オブジェクトのパラメータ");
+    
 
 	SetObjParam();
 
-    ImGui::End();
+    
 
 
     //描画処理呼び出し
@@ -659,6 +659,7 @@ bool GUIManager::IsHoleObject(const std::string& path)
 
 void GUIManager::SetObjParam()
 {
+	ImGui::Begin(u8"オブジェクトのパラメータ");
 	if (m_selectedIndex >= 0 && m_selectedIndex < m_gameObjects.size()) {
 
 		GameObject* obj = m_gameObjects[m_selectedIndex];
@@ -798,4 +799,7 @@ void GUIManager::SetObjParam()
 		m_arrowObject_offset->SetVisible(false);
 
 	}
+
+
+	ImGui::End();
 }
