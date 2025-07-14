@@ -53,7 +53,8 @@ public:
 
 	//パス名にholeが含まれているとき穴あきオブジェクトと判定する
 	bool IsHoleObject(const std::string& path);
-
+	//各UIごとの処理関数
+	void SetObjParam();
 
 	//出力されるデータの端数を丸める処理
 	float RoundFloat(float value, int digits = 2) {

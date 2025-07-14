@@ -578,145 +578,7 @@ void GUIManager::Update()
     //==================================================================
     ImGui::Begin(u8"オブジェクトのパラメータ");
 
-    if (m_selectedIndex >= 0 && m_selectedIndex < m_gameObjects.size()) {
-
-        GameObject* obj = m_gameObjects[m_selectedIndex];
-        GameObject::GameObjectType type = obj->GetObjectType(); // タイプ取得
-        int currentType = static_cast<int>(type);
-
-        const char* typeItems[] = { "SafeZone", "Obstacle","HoleObstacle"};
-
-        D3DXVECTOR3 pos = obj->GetPos();
-        D3DXVECTOR3 rot = obj->GetLogicRotation();
-		D3DXVECTOR3 rotation = obj->GetRot();
-        D3DXVECTOR3 scale = obj->GetScale();
-        D3DXVECTOR3 move = obj->GetMove();
-		D3DXVECTOR2 posXY = { pos.x, pos.y };   // X, Y だけ抽出
-		D3DXVECTOR2 moveXY = { move.x, move.y };
-		zAxisOffsetPos = pos.z;
-		zAxisOffsetMove = move.z;
-
-        int summonframe = obj->GetSummonCount();
-
-		//パラメータ操作
-        if (ImGui::DragFloat2("Move{x,y}", (float*)&moveXY, 0.1f)) {
-			move.x = moveXY[0];
-			move.y = moveXY[1];
-            obj->SetMove(move);
-        }
-        if (ImGui::Combo("Name", &currentType, typeItems, IM_ARRAYSIZE(typeItems))) {
-            obj->SetObjectType(static_cast<GameObject::GameObjectType>(currentType));
-        }
-        if (ImGui::DragFloat2("Pos{x,y}", (float*)&posXY, 0.1f)) {
-
-			//位置の制限を設けたが必要なし
-			/*if (posXY[0] < -POS_X_MAX) posXY[0] = -POS_X_MAX;
-			if (posXY[0] > POS_X_MAX)  posXY[0] = POS_X_MAX;
-			if (posXY[1] < -POS_Y_MAX) posXY[1] = -POS_Y_MAX;
-			if (posXY[1] > POS_Y_MAX)  posXY[1] = POS_Y_MAX;*/
-
-			// pos.z は変更せずにそのまま保持
-			pos.x = posXY[0];
-			pos.y = posXY[1];
-
-            obj->SetPos(pos);
-        }
-        if (ImGui::DragInt("SummonFrame", &summonframe, 1)) {
-            obj->SetSummonCount(summonframe);
-        }
-        if (ImGui::DragFloat3(u8"Rot 回転量{X,Y,Z}", (float*)&rot, 0.1f)) {
-            obj->SetLogicRotation(rot);
-        }
-		if (ImGui::DragFloat3(u8"Rotation 向き{X,Y,Z}", (float*)&rotation, 0.1f)) {
-			obj->SetRot(rotation);
-		}
-        if (ImGui::DragFloat3("Scale", (float*)&scale, 0.1f)) {
-            obj->SetScale(scale);
-        }
-		if (ImGui::DragFloat(u8"位置の一括変更｛Z｝", &zAxisOffsetPos, 0.1f, -1000.0f, 1000.0f, "%.3f")) {
-			
-			for (auto* obj : m_gameObjects) {
-				if (obj) {
-					AdjustObjectZPos(obj, zAxisOffsetPos);
-				}
-			}
-		}
-		if (ImGui::DragFloat(u8"移動値の一括変更｛Z｝", &zAxisOffsetMove, 0.1f, -1000.0f, 1000.0f, "%.3f")) {
-			
-			for (auto* obj : m_gameObjects) {
-				if (obj) {
-					AdjustObjectZMove(obj, zAxisOffsetMove);
-				}
-			}
-		}
-
-		// HoleObject にキャスト可能ならオフセットを表示
-		if (auto* holeObj = dynamic_cast<HoleObject*>(selectedObject)) {
-			// マーカーが存在しなければ生成（最初だけ）
-			if (!m_holemarker) {
-				m_holemarker = HoleMarkerObject::Create(holeObj);
-				m_holemarker->Init();
-				m_holemarker->Load();
-			}
-
-			// 毎フレーム、holeObj に合わせて更新
-			D3DXVECTOR3 offset = holeObj->GetHoleOffset();
-			D3DXVECTOR3 holerot = holeObj->GetHoleRot();
-			D3DXVECTOR3 holescale = holeObj->GetHoleScale();
-			D3DXVECTOR3 worldPos = holeObj->GetPos() + offset;
-
-			m_holemarker->SetPos(worldPos);
-			m_holemarker->SetRot(holerot);
-			m_holemarker->SetScale(holescale);
-			m_holemarker->SetVisible(true);
-
-			// 必要なら holeObj に登録
-			holeObj->SetHoleVisibleObject(m_holemarker);
-
-			// ImGui 操作
-			if (ImGui::DragFloat3(u8"穴のオフセット", (float*)&offset, 0.1f)) {
-				holeObj->SetHoleOffset(offset);
-			}
-			if (ImGui::DragFloat3(u8"穴の向き", (float*)&holerot, 0.1f)) {
-				holeObj->SetHoleRot(holerot);
-			}
-			if (ImGui::DragFloat3(u8"穴のスケール", (float*)&holescale, 0.1f)) {
-				holeObj->SetHoleScale(holescale);
-			}
-
-			// 矢印も更新
-			D3DXVECTOR3 arrowPos = holeObj->GetPos() + offset;
-			m_arrowObject_offset->SetPos(arrowPos);
-			m_arrowObject_offset->SetVisible(true);
-		}
-		else {
-			// HoleObject 以外が選ばれたら非表示に
-			if (m_holemarker && m_arrowObject_offset) {
-				m_holemarker->SetVisible(false);
-				m_arrowObject_offset->SetVisible(false);
-			}
-		}
-
-		//矢印オブジェクトの配置
-        m_arrowObject->SetPos(pos);  // 原点として配置
-		m_arrowObject->SetVisible(true);
-
-		
-		if (ImGui::Combo(u8"ステージタグ", &currentTagIndex, tagOptions, IM_ARRAYSIZE(tagOptions))) {
-			m_stageTag = tagOptions[currentTagIndex];
-		}
-	
-		if (ImGui::DragInt(u8"見切りフレーム", &AnticipationFrame, 1.0f))
-		{
-			if (AnticipationFrame < 0) AnticipationFrame = 0;
-		}
-    }
-    else {
-        ImGui::Text(u8"選択されていません");
-        m_arrowObject->SetVisible(false);
-		m_arrowObject_offset->SetVisible(false);
-
-    }
+	SetObjParam();
 
     ImGui::End();
 
@@ -793,4 +655,147 @@ void GUIManager::AdjustObjectZMove(GameObject* obj, float offset)
 bool GUIManager::IsHoleObject(const std::string& path)
 {
 	return path.find("hole") != std::string::npos;  // "hole" を含むモデルパスは穴あき扱い
+}
+
+void GUIManager::SetObjParam()
+{
+	if (m_selectedIndex >= 0 && m_selectedIndex < m_gameObjects.size()) {
+
+		GameObject* obj = m_gameObjects[m_selectedIndex];
+		GameObject::GameObjectType type = obj->GetObjectType(); // タイプ取得
+		int currentType = static_cast<int>(type);
+
+		const char* typeItems[] = { "SafeZone", "Obstacle","HoleObstacle" };
+
+		D3DXVECTOR3 pos = obj->GetPos();
+		D3DXVECTOR3 rot = obj->GetLogicRotation();
+		D3DXVECTOR3 rotation = obj->GetRot();
+		D3DXVECTOR3 scale = obj->GetScale();
+		D3DXVECTOR3 move = obj->GetMove();
+		D3DXVECTOR2 posXY = { pos.x, pos.y };   // X, Y だけ抽出
+		D3DXVECTOR2 moveXY = { move.x, move.y };
+		zAxisOffsetPos = pos.z;
+		zAxisOffsetMove = move.z;
+
+		int summonframe = obj->GetSummonCount();
+
+		//パラメータ操作
+		if (ImGui::DragFloat2("Move{x,y}", (float*)&moveXY, 0.1f)) {
+			move.x = moveXY[0];
+			move.y = moveXY[1];
+			obj->SetMove(move);
+		}
+		if (ImGui::Combo("Name", &currentType, typeItems, IM_ARRAYSIZE(typeItems))) {
+			obj->SetObjectType(static_cast<GameObject::GameObjectType>(currentType));
+		}
+		if (ImGui::DragFloat2("Pos{x,y}", (float*)&posXY, 0.1f)) {
+
+			//位置の制限を設けたが必要なし
+			/*if (posXY[0] < -POS_X_MAX) posXY[0] = -POS_X_MAX;
+			if (posXY[0] > POS_X_MAX)  posXY[0] = POS_X_MAX;
+			if (posXY[1] < -POS_Y_MAX) posXY[1] = -POS_Y_MAX;
+			if (posXY[1] > POS_Y_MAX)  posXY[1] = POS_Y_MAX;*/
+
+			// pos.z は変更せずにそのまま保持
+			pos.x = posXY[0];
+			pos.y = posXY[1];
+
+			obj->SetPos(pos);
+		}
+		if (ImGui::DragInt("SummonFrame", &summonframe, 1)) {
+			obj->SetSummonCount(summonframe);
+		}
+		if (ImGui::DragFloat3(u8"Rot 回転量{X,Y,Z}", (float*)&rot, 0.1f)) {
+			obj->SetLogicRotation(rot);
+		}
+		if (ImGui::DragFloat3(u8"Rotation 向き{X,Y,Z}", (float*)&rotation, 0.1f)) {
+			obj->SetRot(rotation);
+		}
+		if (ImGui::DragFloat3("Scale", (float*)&scale, 0.1f)) {
+			obj->SetScale(scale);
+		}
+		if (ImGui::DragFloat(u8"位置の一括変更｛Z｝", &zAxisOffsetPos, 0.1f, -1000.0f, 1000.0f, "%.3f")) {
+
+			for (auto* obj : m_gameObjects) {
+				if (obj) {
+					AdjustObjectZPos(obj, zAxisOffsetPos);
+				}
+			}
+		}
+		if (ImGui::DragFloat(u8"移動値の一括変更｛Z｝", &zAxisOffsetMove, 0.1f, -1000.0f, 1000.0f, "%.3f")) {
+
+			for (auto* obj : m_gameObjects) {
+				if (obj) {
+					AdjustObjectZMove(obj, zAxisOffsetMove);
+				}
+			}
+		}
+
+		// HoleObject にキャスト可能ならオフセットを表示
+		if (auto* holeObj = dynamic_cast<HoleObject*>(selectedObject)) {
+			// マーカーが存在しなければ生成（最初だけ）
+			if (!m_holemarker) {
+				m_holemarker = HoleMarkerObject::Create(holeObj);
+				m_holemarker->Init();
+				m_holemarker->Load();
+			}
+
+			// 毎フレーム、holeObj に合わせて更新
+			D3DXVECTOR3 offset = holeObj->GetHoleOffset();
+			D3DXVECTOR3 holerot = holeObj->GetHoleRot();
+			D3DXVECTOR3 holescale = holeObj->GetHoleScale();
+			D3DXVECTOR3 worldPos = holeObj->GetPos() + offset;
+
+			m_holemarker->SetPos(worldPos);
+			m_holemarker->SetRot(holerot);
+			m_holemarker->SetScale(holescale);
+			m_holemarker->SetVisible(true);
+
+			// 必要なら holeObj に登録
+			holeObj->SetHoleVisibleObject(m_holemarker);
+
+			// ImGui 操作
+			if (ImGui::DragFloat3(u8"穴のオフセット", (float*)&offset, 0.1f)) {
+				holeObj->SetHoleOffset(offset);
+			}
+			if (ImGui::DragFloat3(u8"穴の向き", (float*)&holerot, 0.1f)) {
+				holeObj->SetHoleRot(holerot);
+			}
+			if (ImGui::DragFloat3(u8"穴のスケール", (float*)&holescale, 0.1f)) {
+				holeObj->SetHoleScale(holescale);
+			}
+
+			// 矢印も更新
+			D3DXVECTOR3 arrowPos = holeObj->GetPos() + offset;
+			m_arrowObject_offset->SetPos(arrowPos);
+			m_arrowObject_offset->SetVisible(true);
+		}
+		else {
+			// HoleObject 以外が選ばれたら非表示に
+			if (m_holemarker && m_arrowObject_offset) {
+				m_holemarker->SetVisible(false);
+				m_arrowObject_offset->SetVisible(false);
+			}
+		}
+
+		//矢印オブジェクトの配置
+		m_arrowObject->SetPos(pos);  // 原点として配置
+		m_arrowObject->SetVisible(true);
+
+
+		if (ImGui::Combo(u8"ステージタグ", &currentTagIndex, tagOptions, IM_ARRAYSIZE(tagOptions))) {
+			m_stageTag = tagOptions[currentTagIndex];
+		}
+
+		if (ImGui::DragInt(u8"見切りフレーム", &AnticipationFrame, 1.0f))
+		{
+			if (AnticipationFrame < 0) AnticipationFrame = 0;
+		}
+	}
+	else {
+		ImGui::Text(u8"選択されていません");
+		m_arrowObject->SetVisible(false);
+		m_arrowObject_offset->SetVisible(false);
+
+	}
 }
