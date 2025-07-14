@@ -576,12 +576,8 @@ void GUIManager::Update()
     //==================================================================
     // --- 選択されたオブジェクトのパラメータ操作ウィンドウ ---
     //==================================================================
-    
 
 	SetObjParam();
-
-    
-
 
     //描画処理呼び出し
 	for (auto obj : m_gameObjects)
@@ -657,6 +653,7 @@ bool GUIManager::IsHoleObject(const std::string& path)
 	return path.find("hole") != std::string::npos;  // "hole" を含むモデルパスは穴あき扱い
 }
 
+//パラメータを設定
 void GUIManager::SetObjParam()
 {
 	ImGui::Begin(u8"オブジェクトのパラメータ");
@@ -794,6 +791,7 @@ void GUIManager::SetObjParam()
 		}
 	}
 	else {
+
 		ImGui::Text(u8"選択されていません");
 		m_arrowObject->SetVisible(false);
 		m_arrowObject_offset->SetVisible(false);

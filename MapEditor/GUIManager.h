@@ -38,7 +38,7 @@ public:
 	void BeginFrame();
 	void Update();        // ここに描画処理をまとめる
 	void EndFrame(IDirect3DDevice9* device);
-	//void SetObjectList(std::vector<GameObject*>& objectList);
+
 
 	// WndProc処理
 	bool WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);

@@ -309,14 +309,18 @@ void CGenericObject::Load()
     LPDIRECT3DDEVICE9 pDevice;
     pDevice = CManager::GetRenderer()->GetDevice();
 
-    //Xファイルの読み込み
-    D3DXLoadMeshFromX(m_modelPath.c_str(),
-        D3DXMESH_SYSTEMMEM, pDevice,
-        NULL,
-        &m_pBuffMat_Gn_Object,
-        NULL,
-        &m_dwNumMat_Gn_Object,
-        &m_pMesh_Gn_Object);
+	if (m_modelPath != "")
+	{
+		//Xファイルの読み込み
+		D3DXLoadMeshFromX(m_modelPath.c_str(),
+			D3DXMESH_SYSTEMMEM, pDevice,
+			NULL,
+			&m_pBuffMat_Gn_Object,
+			NULL,
+			&m_dwNumMat_Gn_Object,
+			&m_pMesh_Gn_Object);
+	}
+
 
     // モデルのテクスチャファイル
     m_pMaterial_Gn_Object = (D3DXMATERIAL*)m_pBuffMat_Gn_Object->GetBufferPointer();
