@@ -11,7 +11,7 @@
 #include "objectX.h"
 #include "pch.h"
 constexpr int NUMTEXTURE(5);
-constexpr int NUMOBJECTTYPE(5);
+
 constexpr double ARROWSCALE(1.0f);
 constexpr double ARROWSCALE_HOLE(0.5f);
 

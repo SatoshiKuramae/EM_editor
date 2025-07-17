@@ -1,6 +1,6 @@
 ﻿//============================================================
 //
-//GUImanager.h
+//GUIManager.h
 //
 // Auther : SatoshiKuramae
 //============================================================
@@ -20,6 +20,7 @@ constexpr double POS_X_MAX = 260.0f;
 constexpr double POS_Y_MAX = 135.0f;
 constexpr int NUM_PATTERN = 50;
 constexpr int PATTERNFRAME = 60;
+
 //GUIマネージャークラス
 class GUIManager
 {
@@ -38,7 +39,6 @@ public:
 	void BeginFrame();
 	void Update();        // ここに描画処理をまとめる
 	void EndFrame(IDirect3DDevice9* device);
-
 
 	// WndProc処理
 	bool WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -93,7 +93,7 @@ private:
 	float zAxisOffsetMove = 0.0f;
 
 	//配置するゲームオブジェクトモデルのパス
-	std::string gameobjectpath = ("Data\\Model\\");
+	std::string gameobjectpath = ("Data\\MODEL\\");
 	std::string jsonfilepath = ("Data\\JSON\\");
 	std::string m_loadedFileName;
 	char fileInputBuffer[128] = "";  // 直接入力用バッファ（GUIManagerのメンバーでOK）
@@ -103,6 +103,7 @@ private:
 	std::vector<std::string> jsonFiles = GetJsonFileList(jsonfilepath);
 	nlohmann::json jsonOutput;
 	int selected = 0;
+	int selectedHoleMarkerIndex = 0;
 	std::string selectedModelPath; // 選ばれたモデルのパス
 	std::string selectedJsonPath; // 選ばれたJsonのパス
 	std::vector<GameObject*> m_gameObjects;

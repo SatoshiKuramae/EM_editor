@@ -74,7 +74,7 @@ void CCamera::Update()
 
 	//posR=注視点posV=視点vecU=視点のベクトル
 
-#ifdef RELEACE
+#ifdef DEBUG
 	// 注視点と視点の差
 	D3DXVECTOR3 offset = m_posV - m_posR;
 

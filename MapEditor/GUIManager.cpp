@@ -1,6 +1,6 @@
 ﻿//==============================================================
 //
-// GUImanager.cpp
+// GUIManager.cpp
 //
 // Auther : SatoshiKuramae
 //==============================================================
@@ -283,10 +283,10 @@ void GUIManager::AdjustObjectZMove(GameObject* obj, float offset)
 	obj->SetMove(move);
 }
 
-
+//穴あきオブジェクトか判定を行う
 bool GUIManager::IsHoleObject(const std::string& path)
 {
-	return path.find("hole") != std::string::npos;  // "hole" を含むモデルパスは穴あき扱い
+	return path.find("hole") != std::string::npos;  // "hole" を含むモデルパスは穴あきオブジェクト
 }
 
 //パラメータを設定
@@ -299,7 +299,7 @@ void GUIManager::SetObjParam()
 		GameObject::GameObjectType type = obj->GetObjectType(); // タイプ取得
 		int currentType = static_cast<int>(type);
 
-		const char* typeItems[] = { "SafeZone", "Obstacle","HoleObstacle" };
+		const char* typeItems[] = { "SafeZone","Obstacle","HoleObstacle" };
 
 		D3DXVECTOR3 pos = obj->GetPos();
 		D3DXVECTOR3 rot = obj->GetLogicRotation();
@@ -323,7 +323,6 @@ void GUIManager::SetObjParam()
 			obj->SetObjectType(static_cast<GameObject::GameObjectType>(currentType));
 		}
 		if (ImGui::DragFloat2("Pos{x,y}", (float*)&posXY, 0.1f)) {
-
 
 			// pos.z は変更せずにそのまま保持
 			pos.x = posXY[0];
@@ -432,6 +431,7 @@ void GUIManager::SetObjParam()
 	ImGui::End();
 }
 
+//配置データセーブ
 void GUIManager::SaveJson()
 {
 	if (ImGui::Button(u8"セーブ")) {
@@ -499,8 +499,6 @@ void GUIManager::SaveJson()
 					saveFile += ".json";
 			}
 
-
-
 			// JSON構築
 			ordered_json jsonOutput;
 			jsonOutput["Level"] = m_currentLevel;
@@ -559,6 +557,7 @@ void GUIManager::SaveJson()
 	}
 }
 
+//配置データ読み込み
 void GUIManager::LoadJson()
 {
 	static std::string warningMessage = "";

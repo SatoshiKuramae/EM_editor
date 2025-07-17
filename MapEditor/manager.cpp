@@ -66,8 +66,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	g_pGuimanager = new GUIManager();
 
 
-	
-
 	//マネージャーを初期化
 	if (!g_pGuimanager->Initialize(hWnd, GetRenderer()->GetDevice()))
 	{

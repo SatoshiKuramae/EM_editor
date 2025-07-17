@@ -25,7 +25,7 @@ std::vector<std::string> GetXFileNamesInDirectory(const std::string& folderPath,
     return filenames;
 }
 
-
+//JSONのファイル名を抽出
 std::vector<std::string> GetJsonFileList(const std::string& folderPath)
 {
 	std::set<std::string> uniqueFileSet;

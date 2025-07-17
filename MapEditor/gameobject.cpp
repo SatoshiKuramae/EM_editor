@@ -428,7 +428,6 @@ void HoleMarkerObject::Draw()
 }
 
 //生成
-
 HoleMarkerObject* HoleMarkerObject::Create(HoleObject* parent)
 {
 	HoleMarkerObject* obj = new HoleMarkerObject();

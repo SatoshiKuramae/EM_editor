@@ -1,6 +1,6 @@
-//=======================
+ï»¿//=======================
 //
-//ƒEƒBƒ“ƒhƒE•\¦ˆ—:main.cpp
+//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦è¡¨ç¤ºå‡¦ç†:main.cpp
 //Author Kuramaesatoshi
 //
 //=======================
@@ -10,13 +10,13 @@
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx9.h"
 #include "imgui.h"
-#include <algorithm> // © std::transform ‚Ì‚½‚ß
-#include <string>    // © std::string ‚Ì‚½‚ß
-#include <cctype>    // © std::tolower ‚È‚Ç‚Ì•¶š•ÏŠ·—p
-#include <shlwapi.h>  // PathFindFileNameA ‚ÌéŒ¾
-#pragma comment(lib, "shlwapi.lib") // •K—v‚Èƒ‰ƒCƒuƒ‰ƒŠ
+#include <algorithm> // â† std::transform ã®ãŸã‚
+#include <string>    // â† std::string ã®ãŸã‚
+#include <cctype>    // â† std::tolower ãªã©ã®æ–‡å­—å¤‰æ›ç”¨
+#include <shlwapi.h>  // PathFindFileNameA ã®å®£è¨€
+#pragma comment(lib, "shlwapi.lib") // å¿…è¦ãªãƒ©ã‚¤ãƒ–ãƒ©ãƒª
 
-//PathFindFileNameA‚ğs‚¤‚½‚ß‚É•K—v
+//PathFindFileNameAã‚’è¡Œã†ãŸã‚ã«å¿…è¦
 const char* fullPath = "C:\\Users\\YourName\\Desktop\\model.x";
 const char* fileName = PathFindFileNameA(fullPath);
 CManager* g_pManager = nullptr;
@@ -24,7 +24,7 @@ CManager* g_pManager = nullptr;
 
 
 //===============
-//ƒƒCƒ“ŠÖ”		
+//ãƒ¡ã‚¤ãƒ³é–¢æ•°		
 //===============
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -53,28 +53,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
 
-	//	ƒEƒBƒ“ƒhƒEƒNƒ‰ƒX‚Ì“o˜^
+	//	ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹ã®ç™»éŒ²
 	RegisterClassEx(&wcex);
 
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
 
-	//ƒEƒBƒ“ƒhƒE‚ğ¶¬
-	hWnd = CreateWindowEx(0,						//Šg’£ƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹
-		CLASS_NAME,				//ƒEƒBƒ“ƒhƒEƒNƒ‰ƒX‚Ì–¼‘O
-		WINDOW_NAME,			//ƒEƒBƒ“ƒhƒE‚Ì–¼‘O
-		WS_OVERLAPPEDWINDOW,	//ƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹
-		CW_USEDEFAULT,			//ƒEƒBƒ“ƒhƒE‚Ì¶ãXÀ•W
-		CW_USEDEFAULT,			//ƒEƒBƒ“ƒhƒE‚Ì¶ãYÀ•W
-		(rect.right - rect.left),			//ƒEƒBƒ“ƒhƒE‚Ì•
-		(rect.bottom - rect.top),			//ƒEƒBƒ“ƒhƒE‚Ì‚‚³
-		NULL,					//eƒEƒBƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹
-		NULL,					//ƒƒjƒ…[ƒnƒ“ƒhƒ‹‚Ü‚½‚ÍqƒEƒBƒ“ƒhƒEID
-		hInstance,				//ƒCƒ“ƒXƒ^ƒ“ƒgƒnƒ“ƒhƒ‹
-		NULL);					//ƒEƒBƒ“ƒhƒEì¬ƒf[ƒ^
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ç”Ÿæˆ
+	hWnd = CreateWindowEx(0,						//æ‹¡å¼µã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«
+		CLASS_NAME,				//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹ã®åå‰
+		WINDOW_NAME,			//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®åå‰
+		WS_OVERLAPPEDWINDOW,	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«
+		CW_USEDEFAULT,			//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®å·¦ä¸ŠXåº§æ¨™
+		CW_USEDEFAULT,			//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®å·¦ä¸ŠYåº§æ¨™
+		(rect.right - rect.left),			//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®å¹…
+		(rect.bottom - rect.top),			//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®é«˜ã•
+		NULL,					//è¦ªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ãƒãƒ³ãƒ‰ãƒ«
+		NULL,					//ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ³ãƒ‰ãƒ«ã¾ãŸã¯å­ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ID
+		hInstance,				//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ«
+		NULL);					//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä½œæˆãƒ‡ãƒ¼ã‚¿
 
 
 
-	//‘SƒIƒuƒWƒFƒNƒg¶¬
+	//å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
 	g_pManager = new CManager();
 	g_pManager->Init(hInstance,hWnd,TRUE);
 
@@ -83,13 +83,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	{
 		return-1;
 	}
-	//•ª‰ğ”\‚ğİ’è
+	//åˆ†è§£èƒ½ã‚’è¨­å®š
 	{
 		timeBeginPeriod(1);
 		dwCurrentTime = 0;
 		dwExecLastTime = timeGetTime();
 	}
-	//ƒEƒBƒ“ƒhƒE‚Ì•\¦
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®è¡¨ç¤º
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
@@ -97,30 +97,30 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 
 	ZeroMemory(&msg, sizeof(msg));
 
-	//ƒƒCƒ“ƒ‹[ƒv
+	//ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—
 	while (msg.message != WM_QUIT)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0)
-		{//windows‚Ìˆ—
+		{//windowsã®å‡¦ç†
 			if (msg.message == WM_QUIT)
-			{//WM_QUITƒƒbƒZ[ƒW‚ğó‚¯æ‚Á‚½‚çƒƒbƒZ[ƒWƒOƒ‹[ƒv‚ğ”²‚¯‚é
+			{//WM_QUITãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å—ã‘å–ã£ãŸã‚‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚°ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹
 				break;
 			}
 			else
 			{
-				//ƒƒbƒZ[ƒW‚Ìİ’è
+				//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®è¨­å®š
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 			}
 		}
 		else
-		{//DirectX‚Ìˆ—
+		{//DirectXã®å‡¦ç†
 			dwCurrentTime = timeGetTime();
 			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
-			{//60•ª‚Ì1•b‚ÌŒo‰ß
+			{//60åˆ†ã®1ç§’ã®çµŒé
 				dwExecLastTime = dwCurrentTime;
-				//”X‚Ìˆ—
-				// ƒtƒŒ[ƒ€ŠJn
+				//è«¸ã€…ã®å‡¦ç†
+				// ãƒ•ãƒ¬ãƒ¼ãƒ é–‹å§‹
 				g_pManager->Update();
 				g_pManager->Draw();
 
@@ -128,7 +128,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		}
 	}
 
-	//I—¹ˆ—
+	//çµ‚äº†å‡¦ç†
 	g_pManager->Uninit();
 
 	
@@ -136,9 +136,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	delete g_pManager;
 
 
-	//•ª‰ğ”\‚ğ–ß‚·
+	//åˆ†è§£èƒ½ã‚’æˆ»ã™
 	timeEndPeriod(1);
-	//ƒEƒBƒ“ƒhƒEƒNƒ‰ƒX‚Ì“o˜^‚ğ‰ğœ
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹ã®ç™»éŒ²ã‚’è§£é™¤
 	UnregisterClass(CLASS_NAME, wcex.hInstance);
 
 	return (int)msg.wParam;
@@ -146,7 +146,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-//ƒEƒBƒ“ƒhƒEƒvƒƒV[ƒWƒƒ
+//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static POINT pos = { 100,100 };
@@ -164,7 +164,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	switch (uMsg)
 	{
 	case WM_DESTROY:
-		//WM_QUIT‚ÉƒƒbƒZ[ƒW‚ğ‘—‚é
+		//WM_QUITã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€ã‚‹
 		PostQuitMessage(0);
 		break;
 
@@ -173,10 +173,10 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 		case VK_ESCAPE:
 
-			nID = MessageBox(hWnd, "I—¹‚µ‚Ü‚·‚©H", "I—¹ƒƒbƒZ[ƒW", MB_YESNO);
+			nID = MessageBox(hWnd, "çµ‚äº†ã—ã¾ã™ã‹ï¼Ÿ", "çµ‚äº†ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸", MB_YESNO);
 			if (nID == IDYES)
 			{
-				//ƒEƒBƒ“ƒhƒE‚ğ•Â‚¶‚é
+				//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹
 				DestroyWindow(hWnd);
 			}
 			break;
@@ -184,11 +184,11 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 
-	case WM_CLOSE:				//•Â‚¶‚éƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½
-		nID = MessageBox(hWnd, "I—¹‚µ‚Ü‚·‚©H", "I—¹ƒƒbƒZ[ƒW", MB_YESNO);
+	case WM_CLOSE:				//é–‰ã˜ã‚‹ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸæ™‚
+		nID = MessageBox(hWnd, "çµ‚äº†ã—ã¾ã™ã‹ï¼Ÿ", "çµ‚äº†ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸", MB_YESNO);
 		if (nID == IDYES)
 		{
-			//ƒEƒBƒ“ƒhƒE‚ğ”jŠü
+			//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ç ´æ£„
 			DestroyWindow(hWnd);
 		}
 		else
@@ -197,54 +197,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 
-	case WM_DROPFILES:
-	
-		//MessageBox(hWnd, "ƒtƒ@ƒCƒ‹‚ªƒhƒƒbƒv‚³‚ê‚Ü‚µ‚½", "ƒƒbƒZ[ƒW", MB_OK);
-
-		/*HDROP hDrop = (HDROP)wParam;
-		UINT fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);*/
-
-		//for (UINT i = 0; i < fileCount; ++i)
-		//{
-		//	TCHAR filePath[MAX_PATH];
-		//	DragQueryFile(hDrop, i, filePath, MAX_PATH);
-
-		//	// Šg’£q‚ª .x ‚©Šm”Fi¬•¶š‘O’ñA•K—v‚È‚ç‘å•¶š‚É‚à‘Î‰‰Âj
-		//	std::string pathStr = filePath;
-		//	size_t dotPos = pathStr.find_last_of('.');
-		//	if (dotPos == std::string::npos) continue;
-
-		//	std::string ext = pathStr.substr(dotPos + 1);
-		//	std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower); // ¬•¶š‚É•ÏŠ·
-
-		//	if (ext != "x") continue; // .x ˆÈŠO‚Í–³‹
-
-		//	// ƒtƒ@ƒCƒ‹–¼æ“¾i—á: enemy.xj
-		//	std::string fileName = PathFindFileNameA(filePath);
-
-		//	// •Û‘¶æƒtƒHƒ‹ƒ_‚Ìâ‘ÎƒpƒX
-		//	std::string destFolder = "Assets/Models/";
-		//	std::string destPath = destFolder + fileName;
-
-		//	// Šù‚É‘¶İ‚·‚é‚È‚çƒXƒLƒbƒv
-		//	if (PathFileExistsA(destPath.c_str())) {
-		//		MessageBoxA(hWnd, ("ƒtƒ@ƒCƒ‹‚ÍŠù‚É‘¶İ‚µ‚Ä‚¢‚Ü‚·: " + fileName).c_str(), "Œx", MB_OK);
-		//		continue;
-		//	}
-
-		//	// ƒRƒs[ˆ—
-		//	if (CopyFileA(filePath, destPath.c_str(), TRUE)) {
-		//		MessageBoxA(hWnd, ("ƒRƒs[¬Œ÷: " + fileName).c_str(), "¬Œ÷", MB_OK);
-		//	}
-		//	else {
-		//		MessageBoxA(hWnd, ("ƒRƒs[¸”s: " + fileName).c_str(), "ƒGƒ‰[", MB_OK);
-		//	}
-		//}
-
-		//DragFinish(hDrop);
-		break;
 	}
-	return DefWindowProc(hWnd, uMsg, wParam, lParam);    // ‹K’è‚Ìˆ—‚ğ•Ô‚·
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);    // è¦å®šã®å‡¦ç†ã‚’è¿”ã™
 }
 
 
