@@ -9,18 +9,14 @@
 #include "main.h"
 #include "object.h"
 #include "object2D.h"
-
 #include "manager.h"
 #include "input.h"
-
 #include "camera.h"
 #include "light.h"
 #include "object3D.h"
-
 #include "objectX.h"
 #include "player.h"
 #include "floor.h"
-#include "GUImanager.h"
 #include "gameobject.h"
 
 
@@ -31,7 +27,8 @@ CCamera* CManager::m_pCamera = nullptr;
 CLight* CManager::m_pLight = nullptr;
 
 
-GUIManager* g_pGuimanager = nullptr;
+GUIManager* CManager::m_pGuimanager = nullptr;
+
 //コンストラクタ
 CManager::CManager()
 {
@@ -63,27 +60,14 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pLight = new CLight();
 	m_pLight->Init();
 
-	g_pGuimanager = new GUIManager();
+	m_pGuimanager = new GUIManager();
 
 
 	//マネージャーを初期化
-	if (!g_pGuimanager->Initialize(hWnd, GetRenderer()->GetDevice()))
+	if (!m_pGuimanager->Initialize(hWnd, GetRenderer()->GetDevice()))
 	{
 		return -1;
 	}
-	//上から順に描画される
-
-
-
-	CPlayer::Load();
-	CFloor::Load();
-	
-
-	//GameObject::Create();
-
-	//CPlayer::Create();
-	//CFloor::Create();
-
 
 	return S_OK;
 }
@@ -103,23 +87,23 @@ void CManager::Uninit()
 		delete m_pRenderer;
 		m_pRenderer = nullptr;
 
-		g_pGuimanager->Shutdown();
-		delete g_pGuimanager;
+		m_pGuimanager->Shutdown();
+		delete m_pGuimanager;
 	}
 }
 
 //更新処理
 void CManager::Update()
 {
-	g_pGuimanager->BeginFrame();
+	m_pGuimanager->BeginFrame();
 
 	m_pRenderer->Update();
 	m_pKeyboard->Update();
 	m_pCamera->Update();
 
-	g_pGuimanager->Update();
+	m_pGuimanager->Update();
 
-	g_pGuimanager->EndFrame(GetRenderer()->GetDevice());
+	m_pGuimanager->EndFrame(GetRenderer()->GetDevice());
 }
 
 //描画処理

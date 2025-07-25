@@ -31,7 +31,7 @@ GameObject::~GameObject()
         m_pBuffMat = nullptr;
     }
 
-    // テクスチャも忘れずに解放（必要であれば）
+    // テクスチャも忘れずに解放
     for (int i = 0; i < NUMTEXTURE; ++i) {
         if (m_pTexture[i]) {
             m_pTexture[i]->Release();
@@ -82,7 +82,7 @@ GameObject* GameObject::Loadjson(const json& objData)
 	}
 	else {
 		std::cout << "[警告] Name が存在しないため、デフォルトタイプを設定します\n";
-		this->SetObjectType(GameObject::FromTypeString("Default"));  // 適切な初期型に
+		this->SetObjectType(GameObject::FromTypeString("Default"));
 	}
 
 	if (objData.contains("Pos") && objData["Pos"].is_array() && objData["Pos"].size() == 3) {
@@ -214,7 +214,7 @@ HRESULT ArrowObject::Init()
 
     CObjectX::Init();
 
-    return S_OK;
+    return S_OK; 
 }
 
 //ロード
@@ -225,7 +225,7 @@ void ArrowObject::Load()
     pDevice = CManager::GetRenderer()->GetDevice();
 
     //Xファイルの読み込み
-    D3DXLoadMeshFromX("data\\model\\Nodisplaymodel\\arrow.x",
+    D3DXLoadMeshFromX("data\\MODEL\\Nodisplaymodel\\arrow.x",
         D3DXMESH_SYSTEMMEM, pDevice,
         NULL,
         &m_pBuffMat_arrow,

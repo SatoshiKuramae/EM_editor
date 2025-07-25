@@ -11,11 +11,12 @@
 #include <Windows.h>
 #include "renderer.h"
 #include "input.h"
+#include"GUIManager.h"
 
 //前方宣言
 class CCamera;
 class CLight;
-
+class GUIManager;
 //レンダラークラス
 class CManager
 {
@@ -37,7 +38,7 @@ private:
 	static CInputKeyboard* m_pKeyboard;
 	static CCamera* m_pCamera;	//ビュー情報
 	static CLight* m_pLight;	//ライト情報
-
+	static GUIManager* m_pGuimanager;
 };
 
 #endif
