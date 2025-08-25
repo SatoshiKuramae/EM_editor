@@ -156,7 +156,7 @@ GameObject* GameObject::Loadjson(const json& objData)
 			hole->SetHoleOffset(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 		}
 	}
-	else if (objData.contains("HoleRot")) {
+	if (objData.contains("HoleRot")) {
 		auto o = objData["HoleRot"];
 		if (HoleObject* hole = dynamic_cast<HoleObject*>(this)) {
 			hole->SetHoleRot(D3DXVECTOR3(o[0], o[1], o[2]));
@@ -166,8 +166,8 @@ GameObject* GameObject::Loadjson(const json& objData)
 			hole->SetHoleRot(D3DXVECTOR3(0.0f,0.0f,0.0f));
 		}
 	}
-	else if (objData.contains("HoleScale")) {
-		auto o = objData["HoleOffset"];
+	if (objData.contains("HoleScale")) {
+		auto o = objData["HoleScale"];
 		if (HoleObject* hole = dynamic_cast<HoleObject*>(this)) {
 			hole->SetHoleScale(D3DXVECTOR3(o[0], o[1], o[2]));
 		}

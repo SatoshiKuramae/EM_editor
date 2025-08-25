@@ -58,6 +58,7 @@ public:
 	void SaveJson();
 	void LoadJson();
 	void CreateObject();
+
 	//出力されるデータの端数を丸める処理
 	float RoundFloat(float value, int digits = 2) {
 		float factor = std::pow(10.0f, digits);

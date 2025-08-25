@@ -129,9 +129,8 @@ void GUIManager::Update()
 			else if (m_selectedIndex >= static_cast<int>(m_gameObjects.size())) {
 				m_selectedIndex = static_cast<int>(m_gameObjects.size()) - 1;
 			}
-        }
+		}
     }
-
 
     //モデル差し替え
     if (ImGui::Button(u8"モデルを差し替え"))
@@ -264,6 +263,7 @@ void GUIManager::SetSelectedObject(CObjectX* obj) {
     selectedObject = obj;
 }
 
+//Z座標の一括変更
 void GUIManager::AdjustObjectZPos(GameObject* obj, float offset)
 {
 	D3DXVECTOR3 pos = obj->GetPos();
@@ -273,7 +273,7 @@ void GUIManager::AdjustObjectZPos(GameObject* obj, float offset)
 	obj->SetPos(pos);
 }
 
-
+//Z方向の移動
 void GUIManager::AdjustObjectZMove(GameObject* obj, float offset)
 {
 	D3DXVECTOR3 move = obj->GetMove();
