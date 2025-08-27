@@ -7,7 +7,7 @@
 #include "main.h"
 #include "objectX.h"
 #include "manager.h"
-#include "player.h"
+
 //コンストラクタ
 CObjectX::CObjectX()
 {
@@ -113,7 +113,7 @@ void CObjectX::Draw()
 	pDevice->SetMaterial(&matDef);
 }
 
-//アウトラインの表示をやろうとしてるよ
+//アウトラインの表示（未実装）
 void CObjectX::DrawOutline()
 {
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
@@ -171,48 +171,27 @@ void CObjectX::DrawOutline()
 			m_pMesh->DrawSubset(i); // 通常表示
 		}
 	}
-
-}
-//ロード処理
-void CObjectX::Load()
-{
-
 }
 
-////諸々取得
-//void CObjectX::Setpos(D3DXVECTOR3 pos)
-//{
-//	m_pos = pos;
-//}
-//
-//void CObjectX::SetMove(D3DXVECTOR3 move)
-//{
-//	m_move = move;
-//}
-//
-//void CObjectX::SetRot(D3DXVECTOR3 rot)
-//{
-//	m_rot = rot;
-//}
-//
-//void CObjectX::SetScale(D3DXVECTOR3 scale)
-//{
-//	m_scale = scale;
-//}
 
+//バインドメッシュ
 void CObjectX::BindMesh(LPD3DXMESH pMesh, LPD3DXBUFFER pBuffMat, DWORD dwNumMat, D3DXMATERIAL* pMat, LPDIRECT3DTEXTURE9* pTexture)
 {
 	m_pMesh = pMesh;
 	m_pBuffMat = pBuffMat;
 	m_dwNumMat = dwNumMat;
 	m_pMaterial = pMat;
-	for (int i = 0; i < (int)m_dwNumMat; i++)
+
+	//テクスチャ反映
+	if (pTexture != nullptr)
 	{
-		if (m_pTexture[i] == nullptr)
+		for (int i = 0; i < (int)m_dwNumMat; i++)
 		{
-			m_pTexture[i] = pTexture[i];
-			break;
+			if (m_pTexture[i] == nullptr)
+			{
+				m_pTexture[i] = pTexture[i];
+				break;
+			}
 		}
 	}
-
 }

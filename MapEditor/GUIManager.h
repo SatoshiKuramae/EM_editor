@@ -16,8 +16,6 @@
 #include "pch.h"
 #include "FileUtil.h"
 
-constexpr double POS_X_MAX = 260.0f;
-constexpr double POS_Y_MAX = 135.0f;
 constexpr int NUM_PATTERN = 50;
 constexpr int PATTERNFRAME = 60;
 
@@ -46,13 +44,16 @@ public:
 	// 初期化チェック用
 	bool IsInitialized() const { return m_Initialized; }
 
+	//選択中のオブジェクト定義
 	void SetSelectedObject(CObjectX* obj);
 
+	//Z方向の位置、移動値を一括
 	void AdjustObjectZPos(GameObject* obj, float offset);
 	void AdjustObjectZMove(GameObject* obj, float offset);
 
 	//パス名にholeが含まれているとき穴あきオブジェクトと判定する
 	bool IsHoleObject(const std::string& path);
+
 	//各UIごとの処理関数
 	void SetObjParam();
 	void SaveJson();
@@ -79,11 +80,10 @@ public:
 
 private:
 	int m_currentLevel = 1;
-
 	static const char* tagOptions[];
 	int AnticipationFrame = PATTERNFRAME;		//初期値決めてね
 	int currentTagIndex = 0;  // 0: None（初期）
-	std::string m_stageTag = "None";  // 実際に保存されるタグ
+	std::string m_stageTag = "None";  // 実際に保存されるタグ名
 
 	int patternIndex;					//今選択しているパターンインデックス
 	const int maxPattern = NUM_PATTERN; // パターン数（必要に応じて増やせる）
@@ -97,12 +97,15 @@ private:
 	std::string gameobjectpath = ("Data\\MODEL\\");
 	std::string jsonfilepath = ("Data\\JSON\\");
 	std::string m_loadedFileName;
+
 	char fileInputBuffer[128] = "";  // 直接入力用バッファ（GUIManagerのメンバーでOK）
 	int selectedJsonIndex = -1;      // リスト上で選ばれているファイル
+
 	//指定フォルダ内のファイル名を取得する
 	std::vector<std::string> modelFiles = GetXFileNamesInDirectory(gameobjectpath, "x");
 	std::vector<std::string> jsonFiles = GetJsonFileList(jsonfilepath);
 	nlohmann::json jsonOutput;
+
 	int selected = 0;
 	int selectedHoleMarkerIndex = 0;
 	std::string selectedModelPath; // 選ばれたモデルのパス

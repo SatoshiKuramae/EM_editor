@@ -11,6 +11,8 @@
 constexpr double CAMERASPEED(1.0f);
 constexpr float CAMERA_POSV_Y(-400.0f);
 constexpr float CAMERA_POSR_Y(400.0f);
+constexpr float CAMERA_VEC_Y(20.0f);
+
 struct MouseInput {
 	float deltaX, deltaY;
 	float wheelDelta;
@@ -27,13 +29,8 @@ public:
 	CCamera();
 	~CCamera();
 	HRESULT Init();
-	void Uninit();
 	void Update();
 	void SetCamera();	//カメラの設定
-	void SetQuake(int quakeflame, float quakesize);
-	void UpdateFromMouse(const MouseInput& mouse);
-	void UpdateViewMatrix();
-
 	D3DXVECTOR3& GetRot() { return m_rot; }
 private:
 	D3DXVECTOR3 m_posV;				//視点
@@ -48,8 +45,6 @@ private:
 	float m_QuakeSize;
 	D3DXVECTOR3 m_AveragePlayer_pos;
 
-	static DIMOUSESTATE m_CurrentMouseState;		//!< マウスの現在の入力情報
-	static DIMOUSESTATE m_PrevMouseState;			//!< マウスの一フレーム前の入力情報
 };
 
 

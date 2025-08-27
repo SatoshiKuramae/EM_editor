@@ -21,8 +21,6 @@ const char* fullPath = "C:\\Users\\YourName\\Desktop\\model.x";
 const char* fileName = PathFindFileNameA(fullPath);
 CManager* g_pManager = nullptr;
 
-
-
 //===============
 //メイン関数		
 //===============
@@ -130,9 +128,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 
 	//終了処理
 	g_pManager->Uninit();
-
-	
-
 	delete g_pManager;
 
 
@@ -153,8 +148,6 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	const RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
 	int nID;
 	static HWND hWndEditOutput;
-
-
 
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
 	{

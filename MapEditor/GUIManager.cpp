@@ -152,6 +152,7 @@ void GUIManager::Update()
 
 		//モデル情報のみの差し替えだと穴あきオブジェクトが生成できないので、位置等の情報を保存し、
 		//再度生成した後にSetpos等パラメータ設定を行う方式にしました
+
 		if (ImGui::Button(u8"確定")) {
 			// モデル差し替え先が穴あきオブジェクトであるか判定
 			bool isHole = IsHoleObject(selectedModelPath);
@@ -219,9 +220,7 @@ void GUIManager::Update()
 	{
 		if (!obj) continue;  // nullptr ならスキップ
 
-
 		obj->Draw(); // 通常描画
-		
 	}
 
     //矢印オブジェクトの表示を行うか否か
@@ -259,6 +258,7 @@ bool GUIManager::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam);
 }
 
+//選択中のオブジェクト定義
 void GUIManager::SetSelectedObject(CObjectX* obj) {
     selectedObject = obj;
 }
@@ -410,11 +410,12 @@ void GUIManager::SetObjParam()
 		m_arrowObject->SetPos(pos);  // 原点として配置
 		m_arrowObject->SetVisible(true);
 
-
+		//ステージタグ設定UI
 		if (ImGui::Combo(u8"ステージタグ", &currentTagIndex, tagOptions, IM_ARRAYSIZE(tagOptions))) {
 			m_stageTag = tagOptions[currentTagIndex];
 		}
 
+		//見切りフレーム設定UI
 		if (ImGui::DragInt(u8"見切りフレーム", &AnticipationFrame, 1.0f))
 		{
 			if (AnticipationFrame < 0) AnticipationFrame = 0;
@@ -425,7 +426,6 @@ void GUIManager::SetObjParam()
 		ImGui::Text(u8"選択されていません");
 		m_arrowObject->SetVisible(false);
 		m_arrowObject_offset->SetVisible(false);
-
 	}
 
 	ImGui::End();
@@ -596,7 +596,6 @@ void GUIManager::LoadJson()
 
 				// 既存オブジェクトの削除
 				for (auto* obj : m_gameObjects) {
-					//delete obj;
 					obj->Uninit();
 					obj = nullptr;
 				}
@@ -777,7 +776,7 @@ void GUIManager::CreateObject()
 
 		ImGui::EndChild();
 
-		// ▼ モデル生成ボタンを追加
+		//モデル生成ボタンを追加
 		if (ImGui::Button(u8"このモデルでオブジェクトを生成")) {
 			// 例: GenericObject生成に使う
 			if (!selectedModelPath.empty())

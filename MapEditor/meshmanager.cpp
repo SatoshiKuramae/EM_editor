@@ -2,7 +2,8 @@
 //
 //meshmanager.cpp
 //
-//Author Kuramaesatoshi
+//Author:Kuramaesatoshi
+// 今は使ってません
 //===============================================================================
 #include "MeshManager.h"
 

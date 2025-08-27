@@ -176,7 +176,6 @@
     <ClCompile Include="object2D.cpp" />
     <ClCompile Include="object3D.cpp" />
     <ClCompile Include="objectX.cpp" />
-    <ClCompile Include="player.cpp" />
     <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -205,7 +204,6 @@
     <ClInclude Include="object3D.h" />
     <ClInclude Include="objectX.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="player.h" />
     <ClInclude Include="renderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

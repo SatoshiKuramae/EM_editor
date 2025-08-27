@@ -27,8 +27,8 @@
 #pragma comment(lib,"dinput8.lib")	//入力処理に必要
 
 //マクロ定義
-#define SCREEN_WIDTH (1280)
-#define SCREEN_HEIGHT (720)
+constexpr double SCREEN_WIDTH(1280);
+constexpr double SCREEN_HEIGHT(720);
 #define FVF_VERTEX_2D (D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 #define FVF_VERTEX_3D	(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 //RGBA

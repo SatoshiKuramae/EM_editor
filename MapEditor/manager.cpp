@@ -15,7 +15,6 @@
 #include "light.h"
 #include "object3D.h"
 #include "objectX.h"
-#include "player.h"
 #include "floor.h"
 #include "gameobject.h"
 

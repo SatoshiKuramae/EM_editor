@@ -2,7 +2,8 @@
 //
 //meshmanager.h
 //
-//Author Kuramaesatoshi
+//Author:Kuramaesatoshi
+// 今は使ってません
 //===============================================================================
 #pragma once
 #include "pch.h"

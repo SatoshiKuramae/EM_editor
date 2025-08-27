@@ -7,7 +7,7 @@
 #include "camera.h"
 #include "manager.h"
 #include"input.h"
-#include "Player.h"
+
 #include "imgui.h"
 #include <algorithm>
 #include <vector>
@@ -32,7 +32,7 @@ HRESULT CCamera::Init()
 	m_flattery = false;
 	CCamera::m_posV = D3DXVECTOR3(0.0f, 0.0f, CAMERA_POSV_Y);
 	CCamera::m_posR = D3DXVECTOR3(0.0f, 0.0f, CAMERA_POSR_Y);
-	CCamera::m_vecU = D3DXVECTOR3(0.0f, 20.0f, 0.0f);
+	CCamera::m_vecU = D3DXVECTOR3(0.0f, CAMERA_VEC_Y, 0.0f);
 	CCamera::m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	return S_OK;
 }
@@ -180,60 +180,3 @@ void CCamera::Update()
 	
 }
 
-//マウス操作に対応させようとしてます
-void CCamera::UpdateFromMouse(const MouseInput& mouse)
-{
-	// 右クリックドラッグで回転
-	if (mouse.rightButtonHeld)
-	{
-		float dx = mouse.deltaX * m_rot.x;
-		float dy = mouse.deltaY * m_rot.y;
-
-		m_rot.x += dx;
-		m_rot.y += dy;
-
-		// クランプ(代替)
-		if (m_rot.y > 89.0f) m_rot.y = 89.0f;
-		if (m_rot.y < -89.0f) m_rot.y = -89.0f;
-		UpdateViewMatrix();
-	}
-
-	//// ホイールでズーム
-	//if (mouse.wheelDelta != 0)
-	//{
-	//	m_Distance -= mouse.wheelDelta * zoomSpeed;
-	//	m_Distance = std::clamp(m_Distance, minZoom, maxZoom);
-
-	//	UpdateViewMatrix();
-	//}
-
-	//// 中クリック or Shift+左クリックで平行移動
-	//if (mouse.middleButtonHeld || (mouse.shiftHeld && mouse.leftButtonHeld))
-	//{
-	//	float panX = -mouse.deltaX * panSpeed;
-	//	float panY = mouse.deltaY * panSpeed;
-
-	//	// カメラの方向に応じてパン方向を計算
-	//	D3DXVECTOR3 right, up;
-	//	CalculateCameraBasis(right, up); // viewMatrixからright/upベクトル抽出
-	//	m_Target += right * panX + up * panY;
-
-	//	UpdateViewMatrix();
-	//}
-}
-
-void CCamera::UpdateViewMatrix()
-{
-	// 球面座標系でカメラ位置を更新
-	float radYaw = D3DXToRadian(m_rot.x);
-	float radPitch = D3DXToRadian(m_rot.y);
-	float m_Distance=100.0f;
-	D3DXVECTOR3 offset;
-	offset.x = m_Distance * cosf(radPitch) * sinf(radYaw);
-	offset.y = m_Distance * sinf(radPitch);
-	offset.z = m_Distance * cosf(radPitch) * cosf(radYaw);
-
-	m_posV = m_TargetPosV - offset;
-
-	D3DXMatrixLookAtLH(&m_mtxView, &m_posV, &m_TargetPosV, &m_vecU);
-}

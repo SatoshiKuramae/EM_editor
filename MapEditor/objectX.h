@@ -22,7 +22,7 @@ public:
 	void Update() override;
 	void Draw() override;
 	void DrawOutline();
-	void Load();
+
 	void BindMesh(LPD3DXMESH pMesh, LPD3DXBUFFER pBuffMat, DWORD dwNumMat, D3DXMATERIAL* pMat, LPDIRECT3DTEXTURE9* pTexture);
 
 

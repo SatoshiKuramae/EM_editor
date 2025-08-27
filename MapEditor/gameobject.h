@@ -15,7 +15,6 @@ constexpr int NUMTEXTURE(5);
 constexpr double ARROWSCALE(1.0f);
 constexpr double ARROWSCALE_HOLE(0.5f);
 
-
 using json = nlohmann::json; // 省略しないなら nlohmann::json を毎回使ってもOK
 
 class GameObject : public CObjectX {
