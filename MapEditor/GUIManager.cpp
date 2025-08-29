@@ -221,6 +221,7 @@ void GUIManager::Update()
 		if (!obj) continue;  // nullptr ならスキップ
 
 		obj->Draw(); // 通常描画
+
 	}
 
     //矢印オブジェクトの表示を行うか否か
@@ -776,9 +777,8 @@ void GUIManager::CreateObject()
 
 		ImGui::EndChild();
 
-		//モデル生成ボタンを追加
-		if (ImGui::Button(u8"このモデルでオブジェクトを生成")) {
-			// 例: GenericObject生成に使う
+		//モデル生成ボタン
+		if (ImGui::Button(u8"選択中のオブジェクトを生成")) {
 			if (!selectedModelPath.empty())
 			{
 				GameObject* newObj = nullptr;

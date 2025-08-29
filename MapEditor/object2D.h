@@ -8,7 +8,7 @@
 #define _OBJECT2D_H_
 #include "main.h"
 #include "object.h"
-#define TEX_X (0.1f)
+constexpr double TEX_X(0.1f);
 
 //2Dオブジェクトクラス
 class CObject2D : public CObject

@@ -8,7 +8,7 @@
 #define _LIGHT_H_
 
 #include "main.h"
-#define NUM_LIGHT	(3)
+constexpr int NUM_LIGHT(3);
 //ライト
 class CLight
 {

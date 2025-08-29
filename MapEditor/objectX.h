@@ -8,7 +8,7 @@
 #define _OBJECTX_H_
 #include "main.h"
 #include "object.h"
-#define NUM_TEXTURE (50)
+constexpr int NUM_TEXTURE(50);
 
 //オブジェクトXクラス
 class CObjectX : public CObject

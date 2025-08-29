@@ -8,7 +8,7 @@
 #define _OBJECT3D_H_
 #include "main.h"
 #include "object.h"
-#define NUM_POLYGON (50)
+constexpr int NUM_POLYGON(50);
 
 //3Dオブジェクトクラス
 class CObject3D : public CObject

@@ -32,10 +32,10 @@ constexpr double SCREEN_HEIGHT(720);
 #define FVF_VERTEX_2D (D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 #define FVF_VERTEX_3D	(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 //RGBA
-#define RED (255)
-#define GREEN (255)
-#define BLUE (255)
-#define A (255)
+constexpr int RED(255);
+constexpr int GREEN(255);
+constexpr int BLUE(255);
+constexpr int A(255);
 
 #define NUMOBJECT (128)
 #define NUMPRIORITY (10)

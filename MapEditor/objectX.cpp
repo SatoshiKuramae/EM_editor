@@ -134,7 +134,7 @@ void CObjectX::DrawOutline()
 
 	// ワールド行列（拡大版）
 	D3DXMATRIX mtxScale, mtxRot, mtxTrans, mtxWorld;
-	const float outlineScale = 2.0f; // 微妙に拡大
+	const float outlineScale = 20.0f; // 微妙に拡大
 
 	D3DXMatrixScaling(&mtxScale, m_scale.x * outlineScale, m_scale.y * outlineScale, m_scale.z * outlineScale);
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);

@@ -35,10 +35,10 @@ HRESULT CObject3D::Init()
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(m_pos.x - 1000.0f, m_pos.y, m_pos.z + 1000.0f);
-	pVtx[1].pos = D3DXVECTOR3(m_pos.x + 1000.0f, m_pos.y, m_pos.z + 1000.0f);
-	pVtx[2].pos = D3DXVECTOR3(m_pos.x - 1000.0f, m_pos.y, m_pos.z - 1000.0f);
-	pVtx[3].pos = D3DXVECTOR3(m_pos.x + 1000.0f, m_pos.y, m_pos.z - 1000.0f);
+	pVtx[0].pos = D3DXVECTOR3(m_pos.x, m_pos.y, m_pos.z );
+	pVtx[1].pos = D3DXVECTOR3(m_pos.x, m_pos.y, m_pos.z );
+	pVtx[2].pos = D3DXVECTOR3(m_pos.x, m_pos.y, m_pos.z );
+	pVtx[3].pos = D3DXVECTOR3(m_pos.x, m_pos.y, m_pos.z );
 
 	//法線ベクトルの設定
 	pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);

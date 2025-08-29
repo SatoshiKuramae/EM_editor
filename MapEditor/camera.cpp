@@ -7,7 +7,6 @@
 #include "camera.h"
 #include "manager.h"
 #include"input.h"
-
 #include "imgui.h"
 #include <algorithm>
 #include <vector>

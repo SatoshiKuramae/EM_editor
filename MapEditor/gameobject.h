@@ -10,8 +10,8 @@
 #include "main.h"
 #include "objectX.h"
 #include "pch.h"
-constexpr int NUMTEXTURE(5);
 
+constexpr int NUMTEXTURE(5);
 constexpr double ARROWSCALE(1.0f);
 constexpr double ARROWSCALE_HOLE(0.5f);
 
@@ -44,9 +44,8 @@ public:
     void SetSummonCount(int summoncnt) { m_nSummonCnt = summoncnt; }
     int GetSummonCount()const { return m_nSummonCnt;}
 
-    //向きではなく回転量を操作するから親クラスのrotじゃなくて独自の数値が必要なんすよ
+    //向きではなく回転量を調整する変数
     void SetLogicRotation(const D3DXVECTOR3& rot) { m_logicRotation = rot; }
-    //向きではなく回転量を操作するから親クラスのrotじゃなくて独自の数値が必要なんすよ
     D3DXVECTOR3 GetLogicRotation() const { return m_logicRotation; }
 
     // モデル差し替え関数（派生クラスで必要に応じてオーバーライド）

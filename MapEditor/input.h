@@ -11,9 +11,9 @@
 #include "d3dx9.h" //描画処理に必要"
 #include "Xinput.h"//ジョイパッド
 #include "xaudio2.h"
-#define MAX_KEY (256)
-#define JOYPAD_DEADZONE (1)
-#define SPEED_KEY (1)
+constexpr int MAX_KEY(256);
+constexpr int JOYPAD_DEADZONE(1);
+constexpr int SPEED_KEY(1);
 //ライブラリのリンク
 #pragma comment(lib, "d3d9.lib")		//描画処理に必要
 #pragma	comment(lib, "d3dx9.lib")	//[d3d9.lib]の拡張ライブラリ

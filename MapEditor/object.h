@@ -36,7 +36,7 @@ public:
 	static void UpdateAll();	//全オブジェクトの更新
 	static void DrawAll();		//全オブジェクトの描画
 	
-	//継承を使うためにこれらの処理をパラメータ操作処理を行う
+	//全オブジェクトのパラメータ操作を行えるようにする
 	virtual D3DXVECTOR3 GetPos() const { return D3DXVECTOR3(0, 0, 0); }
 	virtual void SetPos(const D3DXVECTOR3&) {}
 
