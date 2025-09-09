@@ -211,7 +211,6 @@ void GUIManager::Update()
 
     ImGui::End();
 
-
 	//パラメータの操作処理
 	SetObjParam();
 

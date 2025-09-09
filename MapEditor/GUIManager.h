@@ -79,7 +79,7 @@ public:
 	}
 
 private:
-	int m_currentLevel = 1;
+	int m_currentLevel = 1;				//ステージごとのレベル
 	static const char* tagOptions[];
 	int AnticipationFrame = PATTERNFRAME;		//初期値決めてね
 	int currentTagIndex = 0;  // 0: None（初期）
